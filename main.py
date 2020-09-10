@@ -1,8 +1,12 @@
-import di
-from helper.config import Config
+from injector import Injector
 
+from di.argo_module import ArgoModule
+from app.watcher import EnforcementWatcher
 
-config = Config()
+injector = Injector([
+    ArgoModule()
+])
 
 if __name__ == "__main__":
-    di.watcher.run()
+    watcher = injector.get(EnforcementWatcher)
+    watcher.run()

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "fea80c1c5edc7553e3160adc0f79bfc1e3288c00a480379ed76c8fba7177ee2f"
+            "sha256": "0a3cefa3d71459a25955ab7a33cea8f5e447f3e39be3e647234cb4e85e927b2e"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -19,7 +19,7 @@
         "argocd-client": {
             "editable": true,
             "git": "https://github.com/globocom/argocd-client.git",
-            "ref": "0a96fd2664ff65df2c701219e3b21b3546325d2b"
+            "ref": "285734bf019f0ab4a3ee6c1266eb81bf30517bfc"
         },
         "certifi": {
             "hashes": [
@@ -28,20 +28,27 @@
             ],
             "version": "==2020.6.20"
         },
-        "decorator": {
+        "chardet": {
             "hashes": [
-                "sha256:41fa54c2a0cc4ba648be4fd43cff00aedf5b9465c9bf18d64325bc225f08f760",
-                "sha256:e3a62f0520172440ca0dcc823749319382e377f37f140a0b99ef45fecb84bfe7"
+                "sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae",
+                "sha256:fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"
             ],
-            "version": "==4.4.2"
+            "version": "==3.0.4"
         },
-        "pinject": {
+        "idna": {
             "hashes": [
-                "sha256:0f0a0b14f9df87a85b529a21cdaf530269b1f24fb303d418583a12bb53f69382",
-                "sha256:dfc4981a36d3f7cf2fa82bd8922f713c769004fe7af935def3e2a52147aeda66"
+                "sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6",
+                "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"
+            ],
+            "version": "==2.10"
+        },
+        "injector": {
+            "hashes": [
+                "sha256:04c15a965504c4628873a56886950bd254102552a1d41ee983bfb1a7f7c7e7d6",
+                "sha256:b88f7e1433c288b8986568c6a73cc45a86659e18fae19b893c1d89572b5d84b4"
             ],
             "index": "pypi",
-            "version": "==0.14.1"
+            "version": "==0.18.3"
         },
         "python-dateutil": {
             "hashes": [
@@ -50,12 +57,28 @@
             ],
             "version": "==2.8.1"
         },
+        "requests": {
+            "hashes": [
+                "sha256:b3559a131db72c33ee969480840fff4bb6dd111de7dd27c8ee1f820f4f00231b",
+                "sha256:fe75cc94a9443b9246fc7049224f75604b113c36acb93f87b80ed42c44cbb898"
+            ],
+            "index": "pypi",
+            "version": "==2.24.0"
+        },
         "six": {
             "hashes": [
                 "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259",
                 "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"
             ],
             "version": "==1.15.0"
+        },
+        "typing-extensions": {
+            "hashes": [
+                "sha256:7cb407020f00f7bfc3cb3e7881628838e69d8f3fcab2f64742a5e76b2f841918",
+                "sha256:99d4073b617d30288f569d3f13d2bd7548c3a7e4c8de87db09a9d29bb3a4a60c",
+                "sha256:dafc7639cde7f1b6e1acc0f457842a83e722ccca8eef5270af2d74792619a89f"
+            ],
+            "version": "==3.7.4.3"
         },
         "urllib3": {
             "hashes": [

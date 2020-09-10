@@ -7,7 +7,8 @@ verify_ssl = true
 
 [packages]
 argocd-client = {editable = true,git = "https://github.com/globocom/argocd-client.git"}
-pinject = "*"
+injector = "*"
+requests = "*"
 
 [requires]
 python_version = "3.8"

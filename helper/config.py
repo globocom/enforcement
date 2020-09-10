@@ -1,8 +1,10 @@
 import os
 import configparser
+from injector import inject
 
 
 class Config:
+    @inject
     def __init__(self):
         config = configparser.ConfigParser()
         config.read("config.ini")
