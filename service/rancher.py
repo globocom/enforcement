@@ -10,7 +10,7 @@ from dataclasses import dataclass
 class RancherService:
     _config: Config
 
-    def get_clusters(self) -> str:
+    def get_clusters(self) -> dict:
         headers = {
             "Authorization": f"Bearer {self._config.rancher_token}"
         }
