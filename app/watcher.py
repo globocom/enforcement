@@ -1,26 +1,24 @@
 from injector import inject
 from dataclasses import dataclass
-from typing import List
 
-from service.rancher import RancherService
-from helper.config import Config
-from argocd_client import V1alpha1ClusterConfig, ClusterServiceApi, V1alpha1Cluster,  \
-    V1alpha1ClusterList, V1alpha1TLSClientConfig, V1alpha1Application, V1alpha1ApplicationSpec, \
-    V1alpha1ApplicationDestination, V1alpha1ApplicationSource, ApplicationServiceApi, V1ObjectMeta, \
+from data import RancherRepository, ArgoRepository, RancherClusterConverter
+from helper import Config
+from argocd_client import V1alpha1Application, V1alpha1ApplicationSpec, \
+    V1alpha1ApplicationDestination, V1alpha1ApplicationSource, V1ObjectMeta, \
     V1alpha1SyncPolicy, V1alpha1SyncPolicyAutomated
 
 
 @inject
 @dataclass
 class EnforcementWatcher:
-    _rancher_service: RancherService
-    _cluster_service: ClusterServiceApi
-    _application_service: ApplicationServiceApi
+    _rancher_repository: RancherRepository
+    _argo_repository: ArgoRepository
+    _rancher_converter: RancherClusterConverter
     _config: Config
 
     def run(self):
-        argo_clusters_names = self._get_argo_clusters_name()
-        rancher_clusters = self._rancher_service.get_clusters()
+        argo_clusters_names = self._argo_repository.list_cluster_names()
+        rancher_clusters = self._rancher_repository.get_clusters()
 
         unregistered_clusters = list(
             filter(
@@ -33,16 +31,13 @@ class EnforcementWatcher:
             self._register_cluster(unregistered_cluster)
 
     def _register_cluster(self, rancher_cluster: dict):
-        argo_cluster = V1alpha1Cluster(
-            name=rancher_cluster['name'],
-            server=f"{self._config.rancher_url}/k8s/clusters/{rancher_cluster['id']}",
-            config=V1alpha1ClusterConfig(
-                bearer_token=self._config.rancher_token,
-                tls_client_config=V1alpha1TLSClientConfig(insecure=True)
-            ),
+        self._argo_repository.register_cluster(
+            self._rancher_converter.to_argo_cluster(
+                rancher_url=self._config.rancher_url,
+                rancher_token=self._config.rancher_token,
+                rancher_cluster=rancher_cluster,
+            )
         )
-
-        self._cluster_service.create(argo_cluster)
 
         application = V1alpha1Application(
             metadata=V1ObjectMeta(
@@ -66,10 +61,6 @@ class EnforcementWatcher:
             )
         )
 
-        self._application_service.create_mixin9(application)
+        self._argo_repository.register_application(application)
 
-    def _get_argo_clusters_name(self) -> List[str]:
-        argo_clusters: V1alpha1ClusterList = self._cluster_service.list()
-        names = [item.name for item in argo_clusters.items]
-        return names
 
