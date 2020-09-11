@@ -29,3 +29,7 @@ class Config:
     @property
     def argo_password(self):
         return os.environ.get('ARGO_PASSWORD', None) or self._config.get('argo', 'password')
+
+    @property
+    def enforcement_core_repo(self):
+        return os.environ.get('ENFORCEMENT_CORE_REPO', None) or self._config.get('enforcement-core', 'repo')
