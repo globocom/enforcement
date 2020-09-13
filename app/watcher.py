@@ -5,7 +5,8 @@ from data import RancherRepository, ArgoRepository, RancherClusterConverter
 from helper import Config
 from argocd_client import V1alpha1Application, V1alpha1ApplicationSpec, \
     V1alpha1ApplicationDestination, V1alpha1ApplicationSource, V1ObjectMeta, \
-    V1alpha1SyncPolicy, V1alpha1SyncPolicyAutomated
+    V1alpha1SyncPolicy, V1alpha1SyncPolicyAutomated, V1alpha1ApplicationSourceHelm, \
+    V1alpha1HelmParameter
 
 
 @inject
@@ -45,12 +46,18 @@ class EnforcementWatcher:
             ),
             spec=V1alpha1ApplicationSpec(
                 destination=V1alpha1ApplicationDestination(
-                    name=rancher_cluster['name'],
-                    namespace='default',
+                    server='https://kubernetes.default.svc',
+                    namespace='argocd',
                 ),
                 source=V1alpha1ApplicationSource(
-                    path='guestbook',
-                    repo_url='https://github.com/ribeiro-rodrigo-exemplos/argocd-example-apps.git'
+                    path=self._config.enforcement_core_path,
+                    repo_url=self._config.enforcement_core_repo,
+                    helm=V1alpha1ApplicationSourceHelm(
+                        parameters=[
+                            V1alpha1HelmParameter(name="spec.destination.name", value=rancher_cluster['name']),
+                            V1alpha1HelmParameter(name="spec.source.repoURL", value=self._config.enforcement_core_repo)
+                        ]
+                    )
                 ),
                 sync_policy=V1alpha1SyncPolicy(
                     automated=V1alpha1SyncPolicyAutomated(

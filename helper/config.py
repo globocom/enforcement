@@ -33,3 +33,11 @@ class Config:
     @property
     def enforcement_core_repo(self):
         return os.environ.get('ENFORCEMENT_CORE_REPO', None) or self._config.get('enforcement-core', 'repo')
+
+    @property
+    def enforcement_core_path(self):
+        return os.environ.get('ENFORCEMENT_CORE_PATH', None) or self._config.get('enforcement-core', 'path')
+
+    @property
+    def enforcement_name(self):
+        return os.environ.get('ENFORCEMENT_NAME', None) or self._config.get('enforcement-core', 'name')
