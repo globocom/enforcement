@@ -3,10 +3,6 @@ from dataclasses import dataclass
 
 from data import RancherRepository, ArgoRepository, RancherClusterConverter
 from helper import Config
-from argocd_client import V1alpha1Application, V1alpha1ApplicationSpec, \
-    V1alpha1ApplicationDestination, V1alpha1ApplicationSource, V1ObjectMeta, \
-    V1alpha1SyncPolicy, V1alpha1SyncPolicyAutomated, V1alpha1ApplicationSourceHelm, \
-    V1alpha1HelmParameter
 
 
 @inject
@@ -40,34 +36,11 @@ class EnforcementWatcher:
             )
         )
 
-        application = V1alpha1Application(
-            metadata=V1ObjectMeta(
-               name='guestbook-enforcement'
-            ),
-            spec=V1alpha1ApplicationSpec(
-                destination=V1alpha1ApplicationDestination(
-                    server='https://kubernetes.default.svc',
-                    namespace='argocd',
-                ),
-                source=V1alpha1ApplicationSource(
-                    path=self._config.enforcement_core_path,
-                    repo_url=self._config.enforcement_core_repo,
-                    helm=V1alpha1ApplicationSourceHelm(
-                        parameters=[
-                            V1alpha1HelmParameter(name="spec.destination.name", value=rancher_cluster['name']),
-                            V1alpha1HelmParameter(name="spec.source.repoURL", value=self._config.enforcement_core_repo)
-                        ]
-                    )
-                ),
-                sync_policy=V1alpha1SyncPolicy(
-                    automated=V1alpha1SyncPolicyAutomated(
-                        prune=False,
-                        self_heal=True,
-                    )
-                )
-            )
+        self._argo_repository.create_application(
+            name=self._config.enforcement_name,
+            cluster_name=rancher_cluster['name'],
+            repo=self._config.enforcement_core_repo,
+            path=self._config.enforcement_core_path
         )
-
-        self._argo_repository.register_application(application)
 
 
