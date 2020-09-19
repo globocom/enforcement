@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import List
 
 
-from data import RancherRepository, ArgoRepository
+from data import RancherRepository, ClusterRepository
 from model.cluster import Cluster
 from model.cluster_factory import ClusterFactory
 
@@ -12,12 +12,12 @@ from model.cluster_factory import ClusterFactory
 @dataclass
 class ClusterMonitor:
     _rancher_repository: RancherRepository
-    _argo_repository: ArgoRepository
+    _cluster_repository: ClusterRepository
     _cluster_factory: ClusterFactory
 
     def __post_init__(self):
         self._rancher_clusters = self._rancher_repository.get_clusters()
-        self._argo_clusters_info = self._argo_repository.list_clusters_info()
+        self._argo_clusters_info = self._cluster_repository.list_clusters_info()
 
     def detect_new_clusters(self) -> List[Cluster]:
 
@@ -46,8 +46,8 @@ class ClusterMonitor:
         )
 
     def register(self, cluster: Cluster):
-        self._argo_repository.register_cluster(cluster)
+        self._cluster_repository.register_cluster(cluster)
 
     def unregister(self, cluster):
         if cluster.name != 'in-cluster':
-            self._argo_repository.unregister_cluster(cluster)
+            self._cluster_repository.unregister_cluster(cluster)

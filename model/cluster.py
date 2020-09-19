@@ -1,6 +1,8 @@
-from dataclasses import dataclass
-from typing import Optional
-from model.enforcement import EnforcementOfCluster
+from dataclasses import dataclass, field
+from typing import Optional, List
+
+from model.enforcement import Enforcement
+from data import EnforcementRepository
 
 
 @dataclass
@@ -8,14 +10,20 @@ class Cluster:
     name: str
     token: str
     url: str
-    id: Optional[str] = None
+    _enforcement_repository: EnforcementRepository
+    _enforcements: List[Enforcement] = field(default=[], init=False)
+    id: Optional[str] = field(default=None)
 
-    def __post_init__(self):
-        self._enforcements = EnforcementOfCluster()
+    def apply_all_enforcements(self):
+        for enforcement in self._enforcements:
+            self._enforcement_repository.create_enforcement(self.name, enforcement)
 
-    @property
-    def enforcements(self):
-        return self._enforcements
+    def remove_all_enforcements(self):
+        pass
+
+
+
+
 
 
 

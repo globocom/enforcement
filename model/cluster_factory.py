@@ -3,19 +3,22 @@ from dataclasses import dataclass
 
 from helper import Config
 from model.cluster import Cluster
+from data import EnforcementRepository
 
 
 @inject
 @dataclass
 class ClusterFactory:
     _config: Config
+    _enforcement_repository: EnforcementRepository
 
     def create(self, cluster_map):
         return Cluster(
             url=self._make_cluster_url(cluster_map),
             token=self._config.rancher_token,
             id=cluster_map.get('id'),
-            name=cluster_map.get('name')
+            name=cluster_map.get('name'),
+            _enforcement_repository=self._enforcement_repository,
         )
 
     def _make_cluster_url(self, cluster_map) -> str:
