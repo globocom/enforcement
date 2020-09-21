@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 from helper import Config
 from model.cluster import Cluster
+from model.enforcement import make_default_enforcement
 from data import EnforcementRepository
 
 
@@ -13,12 +14,14 @@ class ClusterFactory:
     _enforcement_repository: EnforcementRepository
 
     def create(self, cluster_map):
+        cluster_name = cluster_map.get('name')
         return Cluster(
             url=self._make_cluster_url(cluster_map),
             token=self._config.rancher_token,
             id=cluster_map.get('id'),
-            name=cluster_map.get('name'),
+            name=cluster_name,
             _enforcement_repository=self._enforcement_repository,
+            _default_enforcement_factory=make_default_enforcement(cluster_name, self._config)
         )
 
     def _make_cluster_url(self, cluster_map) -> str:

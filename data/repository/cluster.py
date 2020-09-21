@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from injector import inject
 from typing import List
 
-from model import Cluster
+from model.cluster import Cluster
 
 from argocd_client import ClusterServiceApi, V1alpha1Cluster, V1alpha1ClusterList, \
     V1alpha1ClusterConfig, V1alpha1TLSClientConfig

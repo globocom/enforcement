@@ -1,7 +1,7 @@
 from injector import inject
 from dataclasses import dataclass
 
-from model import ClusterMonitor
+from model.cluster_monitor import ClusterMonitor
 
 
 @inject
