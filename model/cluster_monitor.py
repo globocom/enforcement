@@ -21,11 +21,13 @@ class ClusterMonitor:
 
     def detect_new_clusters(self) -> List[Cluster]:
 
+        cluster_info_names = [cluster['name'] for cluster in self._argo_clusters_info]
+
         return list(
             map(
                 lambda cluster_map: self._cluster_factory.create(cluster_map),
                 filter(
-                    lambda cluster: cluster['name'] not in self._argo_clusters_info,
+                    lambda cluster: cluster['name'] not in cluster_info_names,
                     self._rancher_clusters
                 )
             )
