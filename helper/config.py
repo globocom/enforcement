@@ -1,6 +1,7 @@
 import os
 import configparser
 from injector import inject
+from typing import List
 
 
 class Config:
@@ -41,3 +42,13 @@ class Config:
     @property
     def enforcement_name(self):
         return os.environ.get('ENFORCEMENT_NAME', None) or self._config.get('enforcement-core', 'name')
+
+    @property
+    def ignore_clusters(self) -> List[str]:
+
+        try:
+            clusters_str: str = os.environ.get('IGNORE_CLUSTERS', "") or self._config.get('rancher', 'ignore_clusters')
+            clusters = list(map(lambda cluster: cluster.strip(), clusters_str.split(",")))
+            return clusters
+        except configparser.NoOptionError:
+            return []

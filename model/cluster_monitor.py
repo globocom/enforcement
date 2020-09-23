@@ -4,6 +4,7 @@ from typing import List
 
 
 from data import RancherRepository, ClusterRepository
+from helper import Config
 from model.cluster import Cluster
 from model.cluster_factory import ClusterFactory
 
@@ -14,6 +15,7 @@ class ClusterMonitor:
     _rancher_repository: RancherRepository
     _cluster_repository: ClusterRepository
     _cluster_factory: ClusterFactory
+    _config: Config
 
     def __post_init__(self):
         self._rancher_clusters = self._rancher_repository.get_clusters()
@@ -21,13 +23,14 @@ class ClusterMonitor:
 
     def detect_new_clusters(self) -> List[Cluster]:
 
-        cluster_info_names = [cluster['name'] for cluster in self._argo_clusters_info]
+        cluster_info_names = {cluster['name'] for cluster in self._argo_clusters_info}
+        evaluated_clusters = cluster_info_names.union(self._config.ignore_clusters)
 
         return list(
             map(
                 lambda cluster_map: self._cluster_factory.create(cluster_map),
                 filter(
-                    lambda cluster: cluster['name'] not in cluster_info_names,
+                    lambda cluster: cluster['name'] not in evaluated_clusters,
                     self._rancher_clusters
                 )
             )
