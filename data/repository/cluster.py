@@ -19,7 +19,6 @@ class ClusterRepository:
         return info
 
     def unregister_cluster(self, cluster: Cluster):
-        print(cluster)
         self._cluster_service.delete(server=cluster.url, name=cluster.name)
 
     def register_cluster(self, cluster: Cluster):

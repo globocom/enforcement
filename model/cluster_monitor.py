@@ -17,12 +17,8 @@ class ClusterMonitor:
     _cluster_factory: ClusterFactory
     _config: Config
 
-    def __post_init__(self):
-        self._rancher_clusters = self._rancher_repository.get_clusters(state="active")
-        self._argo_clusters_info = self._cluster_repository.list_clusters_info()
-
     def detect_new_clusters(self) -> List[Cluster]:
-
+        self._load()
         cluster_info_names = {cluster['name'] for cluster in self._argo_clusters_info}
         evaluated_clusters = cluster_info_names.union(self._config.ignore_clusters)
 
@@ -37,7 +33,7 @@ class ClusterMonitor:
         )
 
     def detect_deleted_clusters(self) -> List[Cluster]:
-
+        self._load()
         clusters_map = {cluster['name']: cluster for cluster in self._rancher_clusters}
 
         return list(
@@ -56,3 +52,7 @@ class ClusterMonitor:
     def unregister(self, cluster):
         if cluster.name != 'in-cluster':
             self._cluster_repository.unregister_cluster(cluster)
+
+    def _load(self):
+        self._rancher_clusters = self._rancher_repository.get_clusters(state="active")
+        self._argo_clusters_info = self._cluster_repository.list_clusters_info()

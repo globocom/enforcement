@@ -16,16 +16,20 @@ class Cluster:
     id: Optional[str] = field(default=None)
 
     def __post_init__(self):
-        self._detect_enforcements()
+        self._detect_new_enforcements()
 
     def apply_all_enforcements(self):
         for enforcement in self._enforcements:
             self._enforcement_repository.create_enforcement(enforcement)
 
     def remove_all_enforcements(self):
-        pass
+        installed_enforcements = self._enforcement_repository.list_installed_enforcements(
+            cluster=self.name
+        )
+        for enforcement in installed_enforcements:
+            self._enforcement_repository.remove_enforcement(enforcement)
 
-    def _detect_enforcements(self):
+    def _detect_new_enforcements(self):
         self._enforcements.append(self._default_enforcement_factory())
 
 
