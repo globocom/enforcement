@@ -11,12 +11,12 @@ from dataclasses import dataclass
 class RancherRepository:
     _config: Config
 
-    def get_clusters(self) -> List[dict]:
+    def get_clusters(self, **filters) -> List[dict]:
         headers = {
             "Authorization": f"Bearer {self._config.rancher_token}"
         }
         url = f"{self._config.rancher_url}/v3/clusters"
-        response = requests.get(url, verify=False, headers=headers)
+        response = requests.get(url, verify=False, headers=headers, params=filters)
 
         try:
             response.raise_for_status()

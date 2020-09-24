@@ -18,7 +18,7 @@ class ClusterMonitor:
     _config: Config
 
     def __post_init__(self):
-        self._rancher_clusters = self._rancher_repository.get_clusters()
+        self._rancher_clusters = self._rancher_repository.get_clusters(state="active")
         self._argo_clusters_info = self._cluster_repository.list_clusters_info()
 
     def detect_new_clusters(self) -> List[Cluster]:
