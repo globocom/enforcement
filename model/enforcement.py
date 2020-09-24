@@ -12,10 +12,18 @@ class Enforcement:
     path: str
     cluster_name: str
     name: str
+    _labels: dict = field(default_factory=dict)
+
+    def add_label(self, name, value):
+        self._labels[name] = value
 
     def render(self) -> V1alpha1ApplicationSource:
         source = V1alpha1ApplicationSource(path=self.path, repo_url=self.repo)
         return source
+
+    @property
+    def labels(self) -> dict:
+        return self._labels
 
 
 @dataclass
@@ -45,6 +53,8 @@ def make_default_enforcement(cluster_name: str, config: Config) -> Callable[[], 
         cluster_name='in-cluster',
         name=f"{cluster_name}-{config.enforcement_name}",
     )
+
+    default_enforcement.add_label("cluster", cluster_name)
 
     default_enforcement.add_parameter('spec.destination.name', cluster_name)
     return lambda: default_enforcement

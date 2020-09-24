@@ -16,7 +16,8 @@ class EnforcementRepository:
 
         application = V1alpha1Application(
             metadata=V1ObjectMeta(
-               name=enforcement.name
+               name=enforcement.name,
+               labels=enforcement.labels
             ),
             spec=V1alpha1ApplicationSpec(
                 destination=V1alpha1ApplicationDestination(
