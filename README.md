@@ -6,8 +6,7 @@ Enforcement also allows you to configure a GIT repository with standard applicat
 
 ## How does it work?
 
-The Enforcement service lists all the clusters orchestrated by Rancher through its API Rest. After obtaining all the clusters, the service configures all of them on the ArgoCD and performs and requests the installation of the standard applications present in the configured Git repository. ArgoCD installs all applications on the configured clusters and guarantees that they will always be installed.
+The Enforcement service lists all the clusters orchestrated by Rancher through its API Rest. After obtaining all the clusters, the service configures all of them on the ArgoCD and requests the installation of the standard applications present in the configured Git repository. ArgoCD installs all applications on the configured clusters and guarantees that they will always be installed.
 
-\
 \
 ![alt text](https://raw.githubusercontent.com/globocom/enforcement-service/master/architecture.png)
