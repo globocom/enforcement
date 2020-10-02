@@ -61,7 +61,7 @@ Enforcement uses the environment variables described in the table below.
 
 ## Enforcement Core Repository
 The Enforcement Service allows you to configure a repository containing applications that must be installed in all clusters created by Rancher. This can be useful if you want to install certain packages that need to be present in all clusters.
-For example, you may want to install a CNI Calico whenever a new cluster is created, or install FluentD daemonset for log collection.
+For example, you may want to install CNI Calico or FluentD daemonset for log collection whenever a new cluster is created. 
 \
 \
 The Enforcement Core Repository uses the ArgoCD [App Of Apps](https://argoproj.github.io/argo-cd/operator-manual/cluster-bootstrapping/) standard for configuring standard applications.
@@ -75,5 +75,41 @@ The standard repository should be structured as follows:
 |   ├── templates
 |   |   ├── application1.yaml
 |   |   └── application2.yaml
+|   |   └── ...
 
+```
+The `values.yaml` file should look like the one described below:
+
+```yaml
+spec:
+  destination:
+    name: in-cluster
+  source:
+    targetRevision: HEAD
+```
+Files within the `templates` directory can have any name. The contents of each file should look like the one shown below:
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.spec.destination.name }}-application-name # concatene the variable .Values.spec.destination.name with the name of your application
+  namespace: argocd
+  labels: 
+    cluster: {{ .Values.spec.destination.name }}
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: default
+    name: {{ .Values.spec.destination.name }}
+  project: default
+  source:
+    path: applicationpath # customize the path within the Git repository that contains your application's package.
+    repoURL: https://github.com/yourusername/yourrepository # customize with the URL of your Git repository
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+  syncPolicy:
+    automated: 
+      selfHeal: true
+      prune: true
 ```
