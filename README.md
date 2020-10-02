@@ -18,6 +18,32 @@ Enforcement can be installed on Kubernetes using a helm chart. See the following
 \
 [Installing the helm chart](https://github.com/globocom/charts/tree/master/sources/enforcement)
 
+## Running Local 
+Install the dependencies using PipEnv. 
+
+```shell
+pipenv install 
+```
+activate the Pipenv shell. 
+
+```shell
+pipenv shell
+```
+Run the application. 
+```shell
+python main.py
+```
+It is also possible to run the application through Docker.
+\
+Build the Docker image. 
+```shell
+docker build -t enforcement . 
+```
+Run container. 
+```shell
+docker container run --env VARIABLE1=value --env VARIABLE2=value enforcement
+```
+
 ## Configuration 
 Enforcement uses the environment variables described in the table below. 
 
