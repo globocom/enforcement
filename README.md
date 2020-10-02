@@ -113,3 +113,4 @@ spec:
       selfHeal: true
       prune: true
 ```
+You can get a complete example of an Enforcement Core Repository [here](https://globocom/enforcement-core-example.git). 
