@@ -58,3 +58,22 @@ Enforcement uses the environment variables described in the table below.
 | ENFORCEMENT_CORE_REPO      | https://globocom/enforcement-core-example.git | Git repository that contains the standard packages that must be installed in all clusters created by Rancher. | 
 | ENFORCEMENT_CORE_PATH      | standard                                      | Path within the Git repository configured at ENFORCEMENT_CORE_REPO that contains the standard packages| 
 | ENFORCEMENT_NAME           | standard                                      | Name of the standard application created in Argo for each cluster created by Rancher|
+
+## Enforcement Core Repository
+The Enforcement Service allows you to configure a repository containing applications that must be installed in all clusters created by Rancher. This can be useful if you want to install certain packages that need to be present in all clusters.
+For example, you may want to install a CNI Calico whenever a new cluster is created, or install FluentD daemonset for log collection.
+\
+\
+The Enforcement Core Repository uses the ArgoCD [App Of Apps](https://argoproj.github.io/argo-cd/operator-manual/cluster-bootstrapping/) standard for configuring standard applications.
+The standard repository should be structured as follows:
+
+```
+.
+├── standard
+|   ├── Chart.yaml
+|   └── values.yaml
+|   ├── templates
+|   |   ├── application1.yaml
+|   |   └── application2.yaml
+
+```
