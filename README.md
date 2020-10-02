@@ -55,7 +55,7 @@ Enforcement uses the environment variables described in the table below.
 | ARGO_URL                   | https://myargourl.domain.com                  | Argo URL          |
 | ARGO_USERNAME              | admin                                         | Argo Username            |
 | ARGO_PASSWORD              | password                                      | Argo Password
-| ENFORCEMENT_CORE_REPO      | https://globocom/enforcement-core-example.git | Git repository that contains the standard packages that must be installed in all clusters created by Rancher. | 
+| ENFORCEMENT_CORE_REPO      | https://github.com/globocom/enforcement-core-example.git | Git repository that contains the standard packages that must be installed in all clusters created by Rancher. | 
 | ENFORCEMENT_CORE_PATH      | standard                                      | Path within the Git repository configured at ENFORCEMENT_CORE_REPO that contains the standard packages| 
 | ENFORCEMENT_NAME           | standard                                      | Name of the standard application created in Argo for each cluster created by Rancher|
 
@@ -113,4 +113,4 @@ spec:
       selfHeal: true
       prune: true
 ```
-You can get a complete example of an Enforcement Core Repository [here](https://globocom/enforcement-core-example.git). 
+You can get a complete example of an Enforcement Core Repository [here](https://github.com/globocom/enforcement-core-example.git). 
