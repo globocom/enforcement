@@ -17,3 +17,18 @@ Enforcement can be installed on Kubernetes using a helm chart. See the following
 \
 \
 [Installing the helm chart](https://github.com/globocom/charts/tree/master/sources/enforcement)
+
+## Configuration 
+Enforcement uses the environment variables described in the table below. 
+
+| Environment Variable |      Example     |          Description         |
+|:--------------------:|:----------------:|:----------------------------:|
+| RANCHER_URL                | https://myrancherurl.domain.com               | Rancher URL         |
+| RANCHER_TOKEN              | token-q5bhr:xtcd5lbzlg6mhnvncwbrk55zvmh       | Rancher API Key configured without scope |
+| IGNORE_CLUSTERS            | "cluster1, cluster2, cluster3"                | Name of clusters orchestrated by Rancher that should be ignored by Enforcement     |
+| ARGO_URL                   | https://myargourl.domain.com                  | Argo URL          |
+| ARGO_USERNAME              | admin                                         | Argo Username            |
+| ARGO_PASSWORD              | password                                      | Argo Password
+| ENFORCEMENT_CORE_REPO      | https://globocom/enforcement-core-example.git | Git repository that contains the standard packages that must be installed in all clusters created by Rancher. | 
+| ENFORCEMENT_CORE_PATH      | standard                                      | Path within the Git repository configured at ENFORCEMENT_CORE_REPO that contains the standard packages| 
+| ENFORCEMENT_NAME           | standard                                      | Name of the standard application created in Argo for each cluster created by Rancher|
