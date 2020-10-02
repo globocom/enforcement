@@ -10,3 +10,10 @@ The Enforcement service lists all the clusters orchestrated by Rancher through i
 
 \
 ![alt text](https://raw.githubusercontent.com/globocom/enforcement-service/master/architecture.png)
+
+## Installation 
+
+Enforcement can be installed on Kubernetes using a helm chart. See the following page for information on how to get Enforcement up and running.
+\
+\
+[Installing the helm chart](https://github.com/globocom/charts/tree/master/sources/enforcement)
