@@ -1,9 +1,11 @@
 from dataclasses import dataclass, field
-from typing import List, Callable
+from typing import Dict, List, Callable
 
 from helper import Config
 
 from argocd_client import V1alpha1ApplicationSource, V1alpha1ApplicationSourceHelm, V1alpha1HelmParameter
+
+from model.cluster import Cluster
 
 
 @dataclass
@@ -12,9 +14,9 @@ class Enforcement:
     path: str
     cluster_name: str
     name: str
-    _labels: dict = field(default_factory=dict)
+    _labels: Dict[str, str] = field(default_factory=dict)
 
-    def add_label(self, name, value):
+    def add_label(self, name: str, value: str) -> None:
         self._labels[name] = value
 
     def render(self) -> V1alpha1ApplicationSource:
@@ -22,15 +24,15 @@ class Enforcement:
         return source
 
     @property
-    def labels(self) -> dict:
+    def labels(self) -> Dict[str, str]:
         return self._labels
 
 
 @dataclass
 class EnforcementHelm(Enforcement):
-    params: List[dict] = field(default_factory=list)
+    params: List[Dict[str, str]] = field(default_factory=list)
 
-    def render(self):
+    def render(self) -> V1alpha1ApplicationSource:
         source = super().render()
 
         source.helm = V1alpha1ApplicationSourceHelm(parameters=[
@@ -42,11 +44,11 @@ class EnforcementHelm(Enforcement):
         ])
         return source
 
-    def add_parameter(self, name: str, value: str):
+    def add_parameter(self, name: str, value: str) -> None:
         self.params.append({"name": name, "value": value})
 
 
-def make_default_enforcement(cluster_name: str, config: Config) -> Callable[[], EnforcementHelm]:
+def make_default_enforcement(cluster_name: str, config: Config) -> Callable[[Cluster], EnforcementHelm]:
     default_enforcement = EnforcementHelm(
         repo=config.enforcement_core_repo,
         path=config.enforcement_core_path,
@@ -57,4 +59,4 @@ def make_default_enforcement(cluster_name: str, config: Config) -> Callable[[], 
     default_enforcement.add_label("cluster", cluster_name)
 
     default_enforcement.add_parameter('spec.destination.name', cluster_name)
-    return lambda: default_enforcement
+    return lambda _self: default_enforcement

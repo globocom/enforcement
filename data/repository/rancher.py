@@ -1,9 +1,10 @@
-from injector import inject
-from helper.config import Config
-import requests
-from typing import List
-
 from dataclasses import dataclass
+from typing import Dict, List, Any
+
+import requests
+from injector import inject
+
+from helper.config import Config
 
 
 @inject
@@ -11,7 +12,7 @@ from dataclasses import dataclass
 class RancherRepository:
     _config: Config
 
-    def get_clusters(self, **filters) -> List[dict]:
+    def get_clusters(self, **filters: Any) -> List[Dict[str, str]]:
         headers = {
             "Authorization": f"Bearer {self._config.rancher_token}"
         }
@@ -23,5 +24,5 @@ class RancherRepository:
         finally:
             response.close()
 
-        return response.json()['data']
+        return response.json()['data']  # type: ignore[no-any-return]
 

@@ -9,8 +9,7 @@ from model.cluster_monitor import ClusterMonitor
 class EnforcementWatcher:
     _cluster_monitor: ClusterMonitor
 
-    def run(self):
-
+    def run(self) -> None:
         for cluster in self._cluster_monitor.detect_new_clusters():
             self._cluster_monitor.register(cluster)
             cluster.apply_all_enforcements()

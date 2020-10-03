@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from injector import inject
-from typing import List
+from typing import Dict, List
 
 from model.cluster import Cluster
 
@@ -13,15 +13,15 @@ from argocd_client import ClusterServiceApi, V1alpha1Cluster, V1alpha1ClusterLis
 class ClusterRepository:
     _cluster_service: ClusterServiceApi
 
-    def list_clusters_info(self) -> List[dict]:
+    def list_clusters_info(self) -> List[Dict[str, str]]:
         argo_clusters: V1alpha1ClusterList = self._cluster_service.list()
         info = [{"name": item.name, "url": item.server} for item in argo_clusters.items]
         return info
 
-    def unregister_cluster(self, cluster: Cluster):
+    def unregister_cluster(self, cluster: Cluster) -> None:
         self._cluster_service.delete(server=cluster.url, name=cluster.name)
 
-    def register_cluster(self, cluster: Cluster):
+    def register_cluster(self, cluster: Cluster) -> None:
 
         argo_cluster = V1alpha1Cluster(
             name=cluster.name,

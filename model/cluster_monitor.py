@@ -46,13 +46,13 @@ class ClusterMonitor:
             )
         )
 
-    def register(self, cluster: Cluster):
+    def register(self, cluster: Cluster) -> None:
         self._cluster_repository.register_cluster(cluster)
 
-    def unregister(self, cluster):
+    def unregister(self, cluster: Cluster) -> None:
         if cluster.name != 'in-cluster':
             self._cluster_repository.unregister_cluster(cluster)
 
-    def _load(self):
+    def _load(self) -> None:
         self._rancher_clusters = self._rancher_repository.get_clusters(state="active")
         self._argo_clusters_info = self._cluster_repository.list_clusters_info()
