@@ -1,11 +1,14 @@
 from dataclasses import dataclass, field
 from typing import Dict, List, Callable
 
-from helper import Config
-
-from argocd_client import V1alpha1ApplicationSource, V1alpha1ApplicationSourceHelm, V1alpha1HelmParameter
+from argocd_client import (
+    V1alpha1ApplicationSource,
+    V1alpha1ApplicationSourceHelm,
+    V1alpha1HelmParameter,
+)
 
 from model.cluster import Cluster
+from helper import Config
 
 
 @dataclass
@@ -48,7 +51,9 @@ class EnforcementHelm(Enforcement):
         self.params.append({"name": name, "value": value})
 
 
-def make_default_enforcement(cluster_name: str, config: Config) -> Callable[[Cluster], EnforcementHelm]:
+def make_default_enforcement(
+        cluster_name: str, config: Config,
+) -> Callable[[Cluster], EnforcementHelm]:
     default_enforcement = EnforcementHelm(
         repo=config.enforcement_core_repo,
         path=config.enforcement_core_path,
@@ -57,6 +62,6 @@ def make_default_enforcement(cluster_name: str, config: Config) -> Callable[[Clu
     )
 
     default_enforcement.add_label("cluster", cluster_name)
-
     default_enforcement.add_parameter('spec.destination.name', cluster_name)
+
     return lambda _self: default_enforcement

@@ -1,7 +1,7 @@
-from injector import inject
 from dataclasses import dataclass
-from typing import List
+from typing import List, Callable, Dict
 
+from injector import inject
 
 from data import RancherRepository, ClusterRepository
 from helper import Config
@@ -22,29 +22,29 @@ class ClusterMonitor:
         cluster_info_names = {cluster['name'] for cluster in self._argo_clusters_info}
         evaluated_clusters = cluster_info_names.union(self._config.ignore_clusters)
 
-        return list(
-            map(
-                lambda cluster_map: self._cluster_factory.create(cluster_map),
-                filter(
-                    lambda cluster: cluster['name'] not in evaluated_clusters,
-                    self._rancher_clusters
-                )
-            )
+        return self.__filter_and_create_cluster_instances(
+            lambda cluster: cluster['name'] not in evaluated_clusters,
+            self._rancher_clusters,
         )
 
     def detect_deleted_clusters(self) -> List[Cluster]:
         self._load()
         clusters_map = {cluster['name']: cluster for cluster in self._rancher_clusters}
 
-        return list(
-            map(
-                lambda cluster_info: self._cluster_factory.create(cluster_info),
-                filter(
-                    lambda cluster_info: cluster_info["name"] not in clusters_map,
-                    self._argo_clusters_info
-                )
-            )
+        return self.__filter_and_create_cluster_instances(
+            lambda cluster_info: cluster_info["name"] not in clusters_map,
+            self._argo_clusters_info,
         )
+
+    def __filter_and_create_cluster_instances(
+        self,
+        filter_function: Callable[[Dict[str, str]], bool],
+        raw_cluster_list: List[Dict[str, str]],
+    ) -> List[Cluster]:
+        return [
+            self._cluster_factory.create(cluster)
+            for cluster in raw_cluster_list if filter_function(cluster)
+        ]
 
     def register(self, cluster: Cluster) -> None:
         self._cluster_repository.register_cluster(cluster)

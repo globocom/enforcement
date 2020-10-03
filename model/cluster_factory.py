@@ -1,6 +1,7 @@
-from injector import inject
 from dataclasses import dataclass
 from typing import Dict
+
+from injector import inject
 
 from helper import Config
 from model.cluster import Cluster
@@ -27,8 +28,6 @@ class ClusterFactory:
 
     def _make_cluster_url(self, cluster_map: Dict[str, str]) -> str:
         if cluster_map.get('url') is None:
-            return f"{self._config.rancher_url}/k8s/clusters/{cluster_map['id']}"
+            return f'{self._config.rancher_url}/k8s/clusters/{cluster_map["id"]}'
         else:
             return cluster_map.get('url', '')
-
-
