@@ -1,5 +1,6 @@
-from injector import inject
 from dataclasses import dataclass
+
+from injector import inject
 
 from model.cluster_monitor import ClusterMonitor
 
@@ -17,8 +18,3 @@ class EnforcementWatcher:
         for cluster in self._cluster_monitor.detect_deleted_clusters():
             cluster.remove_all_enforcements()
             self._cluster_monitor.unregister(cluster)
-
-
-
-
-
