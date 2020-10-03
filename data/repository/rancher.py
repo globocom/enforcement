@@ -17,12 +17,10 @@ class RancherRepository:
             "Authorization": f"Bearer {self._config.rancher_token}"
         }
         url = f"{self._config.rancher_url}/v3/clusters"
-        response = requests.get(url, verify=False, headers=headers, params=filters)
 
-        try:
+        with requests.get(
+            url, verify=False, headers=headers, params=filters,
+        ) as response:
             response.raise_for_status()
-        finally:
-            response.close()
-
-        return response.json()['data']  # type: ignore[no-any-return]
+            return response.json()['data']  # type: ignore[no-any-return]
 

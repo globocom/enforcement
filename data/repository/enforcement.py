@@ -1,13 +1,20 @@
 from dataclasses import dataclass
-from injector import inject
 from typing import Dict, List, Any
-from helper.logger import logger
+
+from injector import inject
+from argocd_client import (
+    V1alpha1ApplicationDestination,
+    V1alpha1Application,
+    V1alpha1ApplicationSpec,
+    ApplicationServiceApi,
+    V1ObjectMeta,
+    V1alpha1SyncPolicy,
+    V1alpha1SyncPolicyAutomated,
+    V1alpha1ApplicationList,
+)
 
 from model.enforcement import Enforcement
-
-from argocd_client import V1alpha1ApplicationDestination, V1alpha1Application, V1alpha1ApplicationSpec, \
-    ApplicationServiceApi, V1ObjectMeta, V1alpha1SyncPolicy, V1alpha1SyncPolicyAutomated, \
-    V1alpha1ApplicationList
+from helper.logger import logger
 
 
 @inject
@@ -16,7 +23,6 @@ class EnforcementRepository:
     _application_service: ApplicationServiceApi
 
     def create_enforcement(self, enforcement: Enforcement) -> None:
-
         application = V1alpha1Application(
             metadata=V1ObjectMeta(
                name=enforcement.name,
@@ -39,7 +45,6 @@ class EnforcementRepository:
         self._application_service.create_mixin9(application)
 
     def remove_enforcement(self, enforcement: Enforcement) -> None:
-
         application = V1alpha1Application(
             metadata=V1ObjectMeta(
                name=enforcement.name
@@ -55,11 +60,7 @@ class EnforcementRepository:
             selector=labels
         )
 
-        if not application_list.items:
-            return []
-
         applications: List[V1alpha1Application] = application_list.items
-
         enforcements = [
             self._make_enforcement_by_application(application)
             for application in applications
@@ -68,7 +69,7 @@ class EnforcementRepository:
         return enforcements
 
     def _make_labels(self, labels: Dict[str, str]) -> str:
-        list_labels = [f"{t[0]}={t[1]}" for t in list(labels.items())]
+        list_labels = [f"{key}={value}" for key, value in list(labels.items())]
         separator = ","
         return separator.join(list_labels)
 

@@ -1,11 +1,16 @@
 from dataclasses import dataclass
-from injector import inject
 from typing import Dict, List
 
-from model.cluster import Cluster
+from argocd_client import (
+    ClusterServiceApi,
+    V1alpha1Cluster,
+    V1alpha1ClusterList,
+    V1alpha1ClusterConfig,
+    V1alpha1TLSClientConfig,
+)
+from injector import inject
 
-from argocd_client import ClusterServiceApi, V1alpha1Cluster, V1alpha1ClusterList, \
-    V1alpha1ClusterConfig, V1alpha1TLSClientConfig
+from model.cluster import Cluster
 
 
 @inject
@@ -22,7 +27,6 @@ class ClusterRepository:
         self._cluster_service.delete(server=cluster.url, name=cluster.name)
 
     def register_cluster(self, cluster: Cluster) -> None:
-
         argo_cluster = V1alpha1Cluster(
             name=cluster.name,
             server=cluster.url,
@@ -32,4 +36,3 @@ class ClusterRepository:
             ),
         )
         self._cluster_service.create(argo_cluster)
-
