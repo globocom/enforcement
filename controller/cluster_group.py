@@ -12,8 +12,6 @@ class ClusterGroupController(BaseController):
         logger.info("Invoke create controller")
         logger.info(f"Object created %s", body)
 
-    # noinspection PyTypeChecker
     def register(self):
-        create_decorate = kopf.on.create('enforcement.globo.com', 'v1beta1', 'clustergroups')
-        create_decorate(self.create)
+        self.register_method(kopf.on.create, self.create, 'clustergroups')
 
