@@ -139,3 +139,5 @@ cython_debug/
 
 # Config.ini
 config.ini
+
+crd
