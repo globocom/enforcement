@@ -1,0 +1,28 @@
+name: test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Setup pipenv
+      uses: dschep/install-pipenv-action@v1
+
+    - name: Install dependencies
+      run: pipenv --python ${{ matrix.python_version }} sync -d
+
+    - name: Run static type tests
+      run: pipenv run mypy ./**/*.py

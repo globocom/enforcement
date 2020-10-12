@@ -1,54 +1,64 @@
-import os
 import configparser
-from injector import inject
+import os
 from typing import List
+
+from injector import inject
 
 
 class Config:
     @inject
-    def __init__(self):
+    def __init__(self) -> None:
         config = configparser.ConfigParser()
         config.read("config.ini")
         self._config = config
 
     @property
-    def rancher_url(self):
-        return os.environ.get('RANCHER_URL', None) or self._config.get('rancher', 'url')
+    def rancher_url(self) -> str:
+        return self.__get_config_value('RANCHER_URL', 'rancher', 'url')
 
     @property
-    def rancher_token(self):
-        return os.environ.get('RANCHER_TOKEN', None) or self._config.get('rancher', 'token')
+    def rancher_token(self) -> str:
+        return self.__get_config_value('RANCHER_TOKEN', 'rancher', 'token')
 
     @property
-    def argo_url(self):
-        return os.environ.get('ARGO_URL', None) or self._config.get('argo', 'url')
+    def argo_url(self) -> str:
+        return self.__get_config_value('ARGO_URL', 'argo', 'url')
 
     @property
-    def argo_username(self):
-        return os.environ.get('ARGO_USERNAME', None) or self._config.get('argo', 'username')
+    def argo_username(self) -> str:
+        return self.__get_config_value('ARGO_USERNAME', 'argo', 'username')
 
     @property
-    def argo_password(self):
-        return os.environ.get('ARGO_PASSWORD', None) or self._config.get('argo', 'password')
+    def argo_password(self) -> str:
+        return self.__get_config_value('ARGO_PASSWORD', 'argo', 'password')
 
     @property
-    def enforcement_core_repo(self):
-        return os.environ.get('ENFORCEMENT_CORE_REPO', None) or self._config.get('enforcement-core', 'repo')
+    def enforcement_core_repo(self) -> str:
+        return self.__get_config_value('ENFORCEMENT_CORE_REPO', 'enforcement-core', 'repo')
 
     @property
-    def enforcement_core_path(self):
-        return os.environ.get('ENFORCEMENT_CORE_PATH', None) or self._config.get('enforcement-core', 'path')
+    def enforcement_core_path(self) -> str:
+        return self.__get_config_value('ENFORCEMENT_CORE_PATH', 'enforcement-core', 'path')
 
     @property
-    def enforcement_name(self):
-        return os.environ.get('ENFORCEMENT_NAME', None) or self._config.get('enforcement-core', 'name')
+    def enforcement_name(self) -> str:
+        return self.__get_config_value('ENFORCEMENT_NAME', 'enforcement-core', 'name')
 
     @property
     def ignore_clusters(self) -> List[str]:
-
         try:
-            clusters_str: str = os.environ.get('IGNORE_CLUSTERS', "") or self._config.get('rancher', 'ignore_clusters')
-            clusters = list(map(lambda cluster: cluster.strip(), clusters_str.split(",")))
+            clusters_str = self.__get_config_value(
+                'IGNORE_CLUSTERS', 'rancher', 'ignore_clusters'
+            )
+            clusters = [cluster.strip() for cluster in clusters_str.split(',')]
             return clusters
         except configparser.NoOptionError:
             return []
+
+    def __get_config_value(
+            self, environemnt_variable_name: str, config_name: str, config_attribute: str,
+    ) -> str:
+        return (
+            os.getenv(environemnt_variable_name)
+            or self._config.get(config_name, config_attribute)
+        )
