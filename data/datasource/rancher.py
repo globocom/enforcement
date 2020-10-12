@@ -36,6 +36,7 @@ class RancherRepository(ClusterDatasource):
             clusters.append(
                 Cluster(
                     name=cluster['name'],
+                    id=cluster['id'],
                     token=self._config.rancher_token,
                     url=f'{self._config.rancher_url}/k8s/clusters/{cluster["id"]}',
                 )
