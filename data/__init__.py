@@ -1,4 +1,4 @@
-from data.repository.rancher import RancherRepository
+from data.datasource.rancher import RancherRepository
 from data.repository.enforcement import EnforcementRepository
 from data.repository.cluster import ClusterRepository
 
