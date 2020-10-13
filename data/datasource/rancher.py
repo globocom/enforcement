@@ -2,18 +2,17 @@ from typing import List
 import requests
 
 from data.datasource.datasource import ClusterDatasource
-from model.entities import RancherSource
-from model.cluster import Cluster
+from model.entities import RancherSource, Cluster, EnforcementSource
 
 
 class RancherDatasource(ClusterDatasource):
 
-    def get_clusters(self, source: RancherSource) -> List[Cluster]:
+    def get_clusters(self, source: EnforcementSource) -> List[Cluster]:
         headers = {
             "Authorization": f"Bearer {self._config.rancher_token}"
         }
 
-        filters: dict = source.filters if source.filters else dict()
+        filters: dict = source.rancher.filters if source.rancher.filters else dict()
         filters.update({'state': 'active'})
 
         url = f"{self._config.rancher_url}/v3/clusters"

@@ -1,5 +1,4 @@
-from data.datasource.rancher import RancherRepository
 from data.repository.enforcement import EnforcementRepository
 from data.repository.cluster import ClusterRepository
 
-__all__ = ['RancherRepository', 'EnforcementRepository', 'ClusterRepository']
+__all__ = ['EnforcementRepository', 'ClusterRepository']
