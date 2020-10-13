@@ -1,25 +1,19 @@
-from dataclasses import dataclass
 from typing import List
-
 import requests
-from injector import inject
 
-from helper.config import Config
 from data.datasource.datasource import ClusterDatasource
+from model.entities import RancherSource
 from model.cluster import Cluster
 
 
-@inject
-@dataclass
-class RancherRepository(ClusterDatasource):
-    _config: Config
+class RancherDatasource(ClusterDatasource):
 
-    def get_clusters(self, **params: dict) -> List[Cluster]:
+    def get_clusters(self, source: RancherSource) -> List[Cluster]:
         headers = {
             "Authorization": f"Bearer {self._config.rancher_token}"
         }
 
-        filters: dict = params.get('filters') if params.get('filters') else dict()
+        filters: dict = source.filters if source.filters else dict()
         filters.update({'state': 'active'})
 
         url = f"{self._config.rancher_url}/v3/clusters"
