@@ -23,8 +23,6 @@ class ClusterGroupController(BaseController):
 
         clusters_list = cluster_datasource.get_clusters(cluster_group.source)
 
-        logger.info(f"new clusters %s", clusters_list)
-
         for cluster in clusters_list:
             self._cluster_monitor.register(cluster)
             enforcements_list = self._enforcement_repository.list_installed_enforcements(cluster_name=cluster.name)
