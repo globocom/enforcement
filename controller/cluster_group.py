@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import kopf
 from controller.base_controller import BaseController
 from data.datasource.locator import ClusterDataSourceLocator
-from model.entities import ClusterGroup
+from model.entities import ClusterGroup, ClusterGroupStatus
 from model.cluster_monitor import ClusterMonitor
 from data.repository.enforcement import EnforcementRepository
 
@@ -36,6 +36,9 @@ class ClusterGroupController(BaseController):
                     self._enforcement_repository.create_enforcement(cluster.name, enforcement)
                 elif enforcement != installed_enforcements_names[enforcement.name]:
                     self._enforcement_repository.update_enforcement(cluster.name, enforcement)
+
+        status = ClusterGroupStatus(clusters=[cluster.name for cluster in clusters_list])
+        return status.dict()
 
     def register(self):
         self.register_method(kopf.on.create, self.create, self.KIND)

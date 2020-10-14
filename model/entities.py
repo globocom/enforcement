@@ -1,10 +1,8 @@
-from dataclasses import dataclass
 from pydantic import BaseModel
 from typing import Dict, Any, List
 
 
-@dataclass
-class Cluster:
+class Cluster(BaseModel):
     name: str
     token: str
     url: str
@@ -36,6 +34,11 @@ class Enforcement(BaseModel):
 class ClusterGroup(BaseModel):
     enforcements: List[Enforcement]
     source: EnforcementSource
+
+
+class ClusterGroupStatus(BaseModel):
+    clusters: List[str]
+
 
 
 
