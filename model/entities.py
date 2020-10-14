@@ -12,7 +12,7 @@ class Cluster:
 
 
 class Helm(BaseModel):
-    parameters: Dict[str, Any] = None
+    parameters: Dict[str, str] = None
 
 
 class RancherSource(BaseModel):
@@ -28,7 +28,8 @@ class EnforcementSource(BaseModel):
 class Enforcement(BaseModel):
     name: str
     repo: str
-    path: str
+    path: str = None
+    namespace: str = "default"
     helm: Helm = None
 
 

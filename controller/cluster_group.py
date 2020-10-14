@@ -6,6 +6,7 @@ from controller.base_controller import BaseController
 from data.datasource.locator import ClusterDataSourceLocator
 from model.entities import ClusterGroup
 from model.cluster_monitor import ClusterMonitor
+from data.repository.enforcement import EnforcementRepository
 
 
 @inject
@@ -13,6 +14,7 @@ from model.cluster_monitor import ClusterMonitor
 class ClusterGroupController(BaseController):
     _datasource_locator: ClusterDataSourceLocator
     _cluster_monitor: ClusterMonitor
+    _enforcement_repository: EnforcementRepository
     KIND: ClassVar[str] = 'clustergroups'
 
     def create(self, spec: dict, name: str, namespace: str, body: dict, logger, **kwargs):
@@ -21,9 +23,19 @@ class ClusterGroupController(BaseController):
 
         clusters_list = cluster_datasource.get_clusters(cluster_group.source)
 
-        new_clusters = self._cluster_monitor.detect_new_clusters(clusters_list)
+        logger.info(f"new clusters %s", clusters_list)
 
-        logger.info(f"new clusters %s", new_clusters)
+        for cluster in clusters_list:
+            self._cluster_monitor.register(cluster)
+            enforcements_list = self._enforcement_repository.list_installed_enforcements(cluster_name=cluster.name)
+            installed_enforcements_names = {
+                enforcement.name: enforcement for enforcement in enforcements_list
+            }
+            for enforcement in cluster_group.enforcements:
+                if enforcement.name not in installed_enforcements_names:
+                    self._enforcement_repository.create_enforcement(cluster.name, enforcement)
+                elif enforcement != installed_enforcements_names[enforcement.name]:
+                    self._enforcement_repository.update_enforcement(cluster.name, enforcement)
 
     def register(self):
         self.register_method(kopf.on.create, self.create, self.KIND)
