@@ -20,7 +20,12 @@ class ClusterRepository:
 
     def list_clusters_info(self) -> List[Dict[str, str]]:
         argo_clusters: V1alpha1ClusterList = self._cluster_service.list()
-        info = [{"name": item.name, "url": item.server} for item in argo_clusters.items]
+
+        info = [
+            {"name": item.name, "url": item.server}
+            for item in argo_clusters.items if item.name != 'in-cluster'
+        ]
+
         return info
 
     def unregister_cluster(self, cluster: Cluster) -> None:

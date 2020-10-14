@@ -28,6 +28,7 @@ class EnforcementSource(BaseModel):
 class Enforcement(BaseModel):
     name: str
     repo: str
+    path: str
     helm: Helm = None
 
 
