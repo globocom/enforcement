@@ -1,7 +1,11 @@
 from injector import Module, provider, singleton
+
 from app.use_case.register_clusters import RegisterClustersUseCase
-from app.use_case.register_all_clusters import RegisterAllClustersUseCase
+from app.use_case.apply_rules import ApplyRulesUseCase
+from app.use_case.apply_enforcements import ApplyEnforcementsUseCase
+
 from app.data.repository.cluster import ClusterRepository
+from app.data.repository.enforcement import EnforcementRepository
 from app.data.datasource.locator import ClusterDataSourceLocator
 
 
@@ -13,11 +17,18 @@ class UseCaseModule(Module):
 
     @provider
     @singleton
-    def provider_register_all_clusters(
-            self, register_clusters: RegisterClustersUseCase, locator: ClusterDataSourceLocator
-    ) -> RegisterAllClustersUseCase:
-        return RegisterAllClustersUseCase(
+    def provider_apply_rules(
+            self, register_clusters: RegisterClustersUseCase, locator: ClusterDataSourceLocator,
+            applly_enforcements: ApplyEnforcementsUseCase
+    ) -> ApplyRulesUseCase:
+        return ApplyRulesUseCase(
             datasource_locator=locator,
-            register_clusters_use_case=register_clusters
+            register_clusters_use_case=register_clusters,
+            apply_enforcements_use_case=applly_enforcements
         )
+
+    @provider
+    @singleton
+    def provider_apply_enforcements(self, enforcement_repository: EnforcementRepository) -> ApplyEnforcementsUseCase:
+        return ApplyEnforcementsUseCase(enforcement_repository=enforcement_repository)
 

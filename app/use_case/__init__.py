@@ -1,3 +1,3 @@
-from app.use_case.register_all_clusters import RegisterAllClustersUseCase
+from app.use_case.apply_rules import ApplyRulesUseCase
 
-__all__ = ['RegisterAllClustersUseCase']
+__all__ = ['ApplyRulesUseCase']
