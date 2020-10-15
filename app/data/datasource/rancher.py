@@ -1,28 +1,28 @@
 from typing import List, Dict
 import requests
 
-from data.datasource.datasource import ClusterDatasource
-from model.entities import Cluster, EnforcementSource
+from app.data.datasource.datasource import ClusterDatasource
+from app.model.entities import Cluster
 
 
 class RancherDatasource(ClusterDatasource):
 
-    def get_clusters(self, source: EnforcementSource) -> List[Cluster]:
+    def get_clusters(self) -> List[Cluster]:
         headers = {
-            "Authorization": f"Bearer {self._config.rancher_token}"
+            "Authorization": f"Bearer {self.config.rancher_token}"
         }
 
-        filters: dict = source.rancher.filters if source.rancher.filters else dict()
+        filters: dict = self.source.rancher.filters if self.source.rancher.filters else dict()
         filters.update({'state': 'active'})
 
-        url = f"{self._config.rancher_url}/v3/clusters"
+        url = f"{self.config.rancher_url}/v3/clusters"
 
         with requests.get(
             url, verify=False, headers=headers, params=filters,
         ) as response:
             response.raise_for_status()
             return self._filter_and_map_clusters(
-                response.json()['data'], source.rancher.labels, source.rancher.ignore
+                response.json()['data'], self.source.rancher.labels, self.source.rancher.ignore
             )
 
     def _filter_and_map_clusters(self, clusters_list: List[Dict], labels: dict, ignore: List[str]) -> List[Cluster]:
@@ -46,8 +46,8 @@ class RancherDatasource(ClusterDatasource):
         return Cluster(
             name=cluster_map['name'],
             id=cluster_map['id'],
-            token=self._config.rancher_token,
-            url=f'{self._config.rancher_url}/k8s/clusters/{cluster_map["id"]}',
+            token=self.config.rancher_token,
+            url=f'{self.config.rancher_url}/k8s/clusters/{cluster_map["id"]}',
         )
 
 

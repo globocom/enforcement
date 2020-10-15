@@ -10,7 +10,7 @@ from argocd_client import (
 )
 from injector import inject
 
-from model.entities import Cluster
+from app.model.entities import Cluster
 
 
 @inject

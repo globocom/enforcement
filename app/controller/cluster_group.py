@@ -1,30 +1,31 @@
 from injector import inject
 from typing import ClassVar
-from dataclasses import dataclass
 import kopf
-from controller.base_controller import BaseController
-from data.datasource.locator import ClusterDataSourceLocator
-from model.entities import ClusterGroup, ClusterGroupStatus
-from model.cluster_monitor import ClusterMonitor
-from data.repository.enforcement import EnforcementRepository
+import attr
+
+from app.controller.base_controller import BaseController
+from app.data.datasource import ClusterDataSourceLocator
+from app.model.entities import ClusterGroup, ClusterGroupStatus
+from app.model.cluster_monitor import ClusterMonitor
+from app.data.repository import EnforcementRepository
+from app.use_case import RegisterAllClustersUseCase
 
 
 @inject
-@dataclass
+@attr.s(auto_attribs=True)
 class ClusterGroupController(BaseController):
     _datasource_locator: ClusterDataSourceLocator
     _cluster_monitor: ClusterMonitor
     _enforcement_repository: EnforcementRepository
+    _register_all_clusters_use_case: RegisterAllClustersUseCase
     KIND: ClassVar[str] = 'clustergroups'
 
     def create(self, spec: dict, name: str, namespace: str, body: dict, logger, **kwargs):
-        cluster_datasource = self._datasource_locator.locate(spec['source'])
         cluster_group = ClusterGroup(**spec)
 
-        clusters_list = cluster_datasource.get_clusters(cluster_group.source)
+        clusters_list = self._register_all_clusters_use_case.execute(cluster_group.source)
 
         for cluster in clusters_list:
-            self._cluster_monitor.register(cluster)
             enforcements_list = self._enforcement_repository.list_installed_enforcements(cluster_name=cluster.name)
             installed_enforcements_names = {
                 enforcement.name: enforcement for enforcement in enforcements_list

@@ -1,10 +1,8 @@
 from injector import Injector
 from typing import List
 
-from di.argo_module import ArgoModule
-
-from controller.base_controller import BaseController
-from controller.cluster_group import ClusterGroupController
+from app.di import ArgoModule, UseCaseModule
+from app.controller import BaseController, ClusterGroupController
 
 
 def register_controllers(controllers: List[BaseController]):
@@ -13,7 +11,8 @@ def register_controllers(controllers: List[BaseController]):
 
 
 injector = Injector([
-    ArgoModule()
+    UseCaseModule(),
+    ArgoModule(),
 ])
 
 if __name__ == "main":

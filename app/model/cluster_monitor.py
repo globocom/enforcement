@@ -3,17 +3,15 @@ from typing import List, Dict
 
 from injector import inject
 
-from data import ClusterRepository
-from helper import Config
-from model.entities import Cluster
-from model.cluster_factory import ClusterFactory
+from app.data.repository import ClusterRepository
+from app.helper.config import Config
+from app.model.entities import Cluster
 
 
 @inject
 @dataclass
 class ClusterMonitor:
     _cluster_repository: ClusterRepository
-    _cluster_factory: ClusterFactory
     _config: Config
 
     def detect_new_clusters(self, rancher_clusters: List[Cluster]) -> List[Cluster]:

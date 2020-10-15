@@ -16,8 +16,8 @@ from argocd_client import (
     V1alpha1HelmParameter
 )
 
-from model.entities import Enforcement, Helm
-from helper.logger import logger
+from app.model.entities import Enforcement, Helm
+from app.helper.logger import logger
 
 
 @inject

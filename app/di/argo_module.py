@@ -9,7 +9,7 @@ from argocd_client.api_client import ApiClient
 from argocd_client.configuration import Configuration
 from argocd_client.api.cluster_service_api import ClusterServiceApi
 
-from helper import Config
+from app.helper.config import Config
 
 
 class ArgoModule(Module):
