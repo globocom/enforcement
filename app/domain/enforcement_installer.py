@@ -35,14 +35,3 @@ class EnforcementInstaller:
     def _make_enforcement_name(cls, cluster: Cluster, enforcement: Enforcement) -> str:
         return f"{cluster.name}-{enforcement.name}"
 
-
-@attr.s(auto_attribs=True)
-class EnforcementInstallerBuilder:
-    _enforcement_repository: EnforcementRepository
-
-    def build(self, cluster_group: ClusterGroup, enforcements: List[Enforcement]) -> EnforcementInstaller:
-        return EnforcementInstaller(
-            enforcement_repository=self._enforcement_repository,
-            cluster_group=cluster_group,
-            enforcements=enforcements
-        )

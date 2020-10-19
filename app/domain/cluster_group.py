@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List, Dict
 import attr
 
@@ -22,40 +24,17 @@ class ClusterGroup:
         for cluster in self._clusters:
             self._cluster_repository.unregister_cluster(cluster)
 
-    def detect_new_clusters(self) -> List[Cluster]:
-        monitored_clusters_info = self._cluster_repository.list_clusters_info()
-        monitored_clusters_info_names = {cluster['name'] for cluster in monitored_clusters_info}
-
-        return list(
+    def __sub__(self, other: ClusterGroup) -> ClusterGroup:
+        cluster_names = {cluster.name: cluster for cluster in other.clusters}
+        result_clusters = list(
             filter(
-                lambda cluster: cluster.name not in monitored_clusters_info_names,
+                lambda cluster: cluster.name not in cluster_names,
                 self._clusters
             )
         )
 
-    def detect_deleted_clusters(self) -> List[Cluster]:
-        clusters_map: Dict[str, Cluster] = {cluster.name: cluster for cluster in self._clusters}
-        argo_clusters_info = self._cluster_repository.list_clusters_info()
-        return list(
-            map(
-                lambda info: clusters_map[info['name']],
-                filter(
-                    lambda info: info['name'] not in clusters_map,
-                    argo_clusters_info
-                )
-            )
-        )
+        return ClusterGroup(cluster_repository=self._cluster_repository, clusters=result_clusters)
 
-
-@attr.s(auto_attribs=True)
-class ClusterGroupBuilder:
-    _cluster_repository: ClusterRepository
-
-    def build(self, clusters: List[Cluster]) -> ClusterGroup:
-        return ClusterGroup(
-            clusters=clusters,
-            cluster_repository=self._cluster_repository
-        )
 
 
 
