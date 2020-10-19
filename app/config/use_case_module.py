@@ -21,15 +21,15 @@ class UseCaseModule(Module):
             source_locator=locator
         )
 
-    # @provider
-    # @singleton
-    # def provider_sync_rules(
-    #         self, detect_new_clusters: DetectNewClustersUseCase, apply_enforcements: ApplyEnforcementsUseCase,
-    #         locator: SourceLocatorImpl
-    # ) -> SyncRulesUseCase:
-    #     return SyncRulesUseCase(
-    #         datasource_locator=locator,
-    #         apply_enforcements_use_case=apply_enforcements,
-    #         detect_new_clusters_use_case=detect_new_clusters
-    #     )
+    @provider
+    @singleton
+    def provider_sync_rules(
+            self, cg_builder: ClusterGroupBuilder, locator: SourceLocator,
+            ei_builder: EnforcementInstallerBuilder
+    ) -> SyncRulesUseCase:
+        return SyncRulesUseCase(
+            cluster_group_builder=cg_builder,
+            enforcements_installer_builder=ei_builder,
+            source_locator=locator
+        )
 
