@@ -1,0 +1,21 @@
+
+from app.infra.config import Config
+from app.domain.repositories import SourceRepository
+from app.domain.source_locator import SourceLocator
+from app.data.source.definition.register import SourceRegister
+from app.domain.entities import EnforcementSource
+
+
+class SourceLocatorImpl(SourceLocator):
+
+    def __init__(self, config_helper: Config):
+        self._config_helper = config_helper
+
+    def locate(self, source: EnforcementSource) -> SourceRepository:
+        source_name = list(source.__dict__.keys())[0]
+        datasource_class = SourceRegister.find_source(source_name)
+
+        if not datasource_class:
+            raise Exception("Source not defined")
+
+        return datasource_class(config=self._config_helper, source=source)

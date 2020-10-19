@@ -105,8 +105,8 @@ spec:
     name: {{ .Values.spec.destination.name }}
   project: default
   source:
-    path: applicationpath # customize the path within the Git repository that contains your application's package.
-    repoURL: https://github.com/yourusername/yourrepository # customize with the URL of your Git repository
+    path: applicationpath # customize the path within the Git argo that contains your application's package.
+    repoURL: https://github.com/yourusername/yourrepository # customize with the URL of your Git argo
     targetRevision: {{ .Values.spec.source.targetRevision }}
   syncPolicy:
     automated: 
