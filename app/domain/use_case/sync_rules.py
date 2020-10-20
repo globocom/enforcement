@@ -22,6 +22,13 @@ class SyncRulesUseCase:
         current_cluster_group = ClusterGroup(clusters=current_clusters, cluster_repository=self._cluster_repository)
 
         deleted_clusters = current_cluster_group - source_cluster_group
+        enforcement_uninstall = EnforcementInstaller(
+            enforcement_repository=self._enforcement_repository,
+            cluster_group=deleted_clusters,
+            enforcements=cluster_rule.enforcements
+        )
+
+        enforcement_uninstall.uninstall()
         deleted_clusters.unregister()
 
         new_clusters = source_cluster_group - current_cluster_group

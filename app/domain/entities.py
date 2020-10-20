@@ -4,8 +4,8 @@ from typing import Dict, List
 
 class Cluster(BaseModel):
     name: str
-    token: str
     url: str
+    token: str
     id: str
 
 
@@ -37,7 +37,7 @@ class ClusterRule(BaseModel):
 
 
 class ClusterRuleStatus(BaseModel):
-    clusters: List[str]
+    clusters: List[dict]
 
 
 
