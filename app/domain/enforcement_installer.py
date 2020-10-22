@@ -17,15 +17,20 @@ class EnforcementInstaller:
             installed_enforcements = self._enforcement_repository.list_installed_enforcements(cluster_name=cluster.name)
             installed_enforcements_names = self._get_enforcements_name(installed_enforcements)
             for enforcement in self._enforcements:
-                enforcement.name = self._make_enforcement_name(cluster, enforcement)
-                if enforcement.name not in installed_enforcements_names:
-                    self._enforcement_repository.create_enforcement(cluster.name, enforcement)
+                instance_name = self._make_enforcement_name(cluster, enforcement)
+                if instance_name not in installed_enforcements_names:
+                    self._enforcement_repository.create_enforcement(cluster.name, instance_name, enforcement)
+                else:
+                    self._enforcement_repository.update_enforcement(cluster.name, instance_name, enforcement)
 
     def uninstall(self):
         for cluster in self._cluster_group.clusters:
+            installed_enforcements = self._enforcement_repository.list_installed_enforcements(cluster_name=cluster.name)
+            installed_enforcements_names = self._get_enforcements_name(installed_enforcements)
             for enforcement in self._enforcements:
-                enforcement.name = self._make_enforcement_name(cluster, enforcement)
-                self._enforcement_repository.remove_enforcement(enforcement)
+                instance_name = self._make_enforcement_name(cluster, enforcement)
+                if instance_name in installed_enforcements_names:
+                    self._enforcement_repository.remove_enforcement(instance_name)
 
     @classmethod
     def _get_enforcements_name(cls, enforcements: List[Enforcement]):

@@ -24,18 +24,18 @@ from app.infra.logger import logger
 class ApplicationService(EnforcementRepository):
     _application_service: ApplicationServiceApi
 
-    def create_enforcement(self, cluster_name: str, enforcement: Enforcement) -> None:
-        application = self._make_application_by_enforcement(cluster_name, enforcement)
+    def create_enforcement(self, cluster_name: str, instance_name: str, enforcement: Enforcement) -> None:
+        application = self._make_application_by_enforcement(cluster_name, instance_name, enforcement)
         self._application_service.create_mixin9(application)
 
-    def update_enforcement(self, cluster_name: str, enforcement: Enforcement) -> None:
-        application = self._make_application_by_enforcement(cluster_name, enforcement)
+    def update_enforcement(self, cluster_name: str, instance_name: str, enforcement: Enforcement) -> None:
+        application = self._make_application_by_enforcement(cluster_name, instance_name, enforcement)
         self._application_service.update_mixin9(application.metadata.name, application)
 
-    def remove_enforcement(self, enforcement: Enforcement) -> None:
+    def remove_enforcement(self, enforcement_name: str) -> None:
         application = V1alpha1Application(
             metadata=V1ObjectMeta(
-               name=enforcement.name
+               name=enforcement_name
             )
         )
 
@@ -62,7 +62,8 @@ class ApplicationService(EnforcementRepository):
         separator = ","
         return separator.join(list_labels)
 
-    def _make_application_by_enforcement(self, cluster_name: str, enforcement: Enforcement) -> V1alpha1Application:
+    def _make_application_by_enforcement(self, cluster_name: str, instance_name: str,
+                                         enforcement: Enforcement) -> V1alpha1Application:
         source = V1alpha1ApplicationSource(path=enforcement.path, repo_url=enforcement.repo)
 
         if enforcement.helm:
@@ -78,7 +79,7 @@ class ApplicationService(EnforcementRepository):
 
         return V1alpha1Application(
             metadata=V1ObjectMeta(
-               name=f"{enforcement.name}",
+               name=f"{instance_name}",
                labels={"cluster_name": cluster_name},
             ),
             spec=V1alpha1ApplicationSpec(

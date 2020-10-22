@@ -2,7 +2,7 @@ from injector import Module, provider, singleton
 
 from app.domain.source_locator import SourceLocator
 from app.domain.repositories import ClusterRepository, EnforcementRepository
-from app.domain.use_case import ApplyRulesUseCase, SyncRulesUseCase
+from app.domain.use_case import ApplyRulesUseCase, SyncRulesUseCase, UpdateRulesUseCase
 
 
 class UseCaseModule(Module):
@@ -29,5 +29,14 @@ class UseCaseModule(Module):
             cluster_repository=cluster_repo,
             enforcement_repository=enforcement_repo,
             source_locator=locator
+        )
+
+    @provider
+    @singleton
+    def provider_update_rules(self, enforcement_repo: EnforcementRepository,
+                              cluster_repo: ClusterRepository) -> UpdateRulesUseCase:
+        return UpdateRulesUseCase(
+            enforcement_repository=enforcement_repo,
+            cluster_repository=cluster_repo
         )
 

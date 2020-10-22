@@ -14,13 +14,13 @@ class ClusterRepository:
 
 
 class EnforcementRepository:
-    def create_enforcement(self, cluster_name: str, enforcement: Enforcement) -> None:
+    def create_enforcement(self, cluster_name: str, instance_name: str, enforcement: Enforcement) -> None:
         raise Exception("Not implemented")
 
-    def update_enforcement(self, cluster_name: str, enforcement: Enforcement) -> None:
+    def update_enforcement(self, cluster_name: str, instance_name: str, enforcement: Enforcement) -> None:
         raise Exception("Not implemented")
 
-    def remove_enforcement(self, enforcement: Enforcement) -> None:
+    def remove_enforcement(self, enforcement_name: str) -> None:
         raise Exception("Not implemented")
 
     def list_installed_enforcements(self, **filters: Any) -> List[Enforcement]:
