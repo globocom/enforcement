@@ -2,13 +2,10 @@
 ## Introduction
 Enforcement is an open source project focused on the management and simultaneous deployment of applications and policies across multiple clusters through GitOps.
 \
-\
 Enforcement allows users to manage many clusters as easily as one. Users can deploy packages (resource collection) to clusters created from a central Kubernetes service (Rancher, GKE, EKS, etc.) and control deployments by specifying rules, which define a filter to select a group of clusters and the packages that should be installed in that group.
 \
-\
 When Enforcement detects the creation of a cluster in the central Kubernetes service, it checks whether the cluster fits into any specified rule, if there is any match, the packages configured in the rule are automatically installed in the cluster.
-
-
+\
 \
 The packages include not just application deployment manifests, but anything that can be described as a feature of Kubernetes.
 
