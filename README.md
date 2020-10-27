@@ -2,7 +2,9 @@
 ## Introduction
 Enforcement is an open source project focused on the management and simultaneous deployment of applications and policies across multiple clusters through GitOps.
 \
+\
 Enforcement allows users to manage many clusters as easily as one. Users can deploy packages (resource collection) to clusters created from a central Kubernetes service (Rancher, GKE, EKS, etc.) and control deployments by specifying rules, which define a filter to select a group of clusters and the packages that should be installed in that group.
+\
 \
 When Enforcement detects the creation of a cluster in the central Kubernetes service, it checks whether the cluster fits into any specified rule, if there is any match, the packages configured in the rule are automatically installed in the cluster.
 \
@@ -11,7 +13,13 @@ The packages include not just application deployment manifests, but anything tha
 
 ## How does it work?
 
-The Enforcement service lists all the clusters orchestrated by Rancher through its API Rest. After obtaining all the clusters, the service configures all of them on the ArgoCD and requests the installation of the standard applications present in the configured Git repository. ArgoCD installs all applications on the configured clusters and guarantees that they will always be installed.
+Enforcement works as a Kubernetes Operator, which observes the creation of ClusterRule objects. These objects define rules that specify a set of clusters and the packages they are to receive.
+\
+\
+When Enforcement detects the creation of a cluster in the central Kubernetes service, it registers the cluster and asks ArgoCD to install the packages configured for the cluster.
+\
+\
+ArgoCD installs all packages in the cluster and ensures that they are always present.
 
 \
 ![alt text](https://raw.githubusercontent.com/globocom/enforcement-service/master/architecture.png)
