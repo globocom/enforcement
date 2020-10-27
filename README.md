@@ -46,8 +46,6 @@ Run the application.
 ```shell
 kopf run main.py
 ```
-It is also possible to run the application through Docker.
-\
 Build the Docker image. 
 ```shell
 docker build -t enforcement . 
@@ -63,58 +61,41 @@ Enforcement uses the environment variables described in the table below.
 | ARGO_USERNAME              | admin                                         | Argo Username            |
 | ARGO_PASSWORD              | password                                      | Argo Password            | 
 
-## Enforcement Core Repository
-The Enforcement Service allows you to configure a repository containing applications that must be installed in all clusters created by Rancher. This can be useful if you want to install certain packages that need to be present in all clusters.
-For example, you may want to install CNI Calico or FluentD daemonset for log collection whenever a new cluster is created. 
+## Supported central Kubernetes services
+Enforcement aims to detect the creation of clusters in several services of managed Kubernetes and cluster orchestration. Currently, the only Kubernetes service to be covered is Rancher. We are developing support for EKS, GKE and AKS.
+
+## Creating a ClusterRule
+See a complete example of creating ClusterRule for clusters created through Rancher.
 \
 \
-The Enforcement Core Repository uses the ArgoCD [App Of Apps](https://argoproj.github.io/argo-cd/operator-manual/cluster-bootstrapping/) standard for configuring standard applications.
-The standard repository should be structured as follows:
-
-```
-.
-├── standard
-|   ├── Chart.yaml
-|   └── values.yaml
-|   ├── templates
-|   |   ├── application1.yaml
-|   |   └── application2.yaml
-|   |   └── ...
-
-```
-The `values.yaml` file should look like the one described below:
+The enforcements field defines all packages that will be installed in the clusters that match the criteria established within the source.rancher field. 
 
 ```yaml
-spec:
-  destination:
-    name: in-cluster
-  source:
-    targetRevision: HEAD
-```
-Files within the `templates` directory can have any name. The contents of each file should look like the one shown below:
-
-```yaml
-apiVersion: argoproj.io/v1alpha1
-kind: Application
+apiVersion: enforcement.globo.com/v1beta1
+kind: ClusterRule
 metadata:
-  name: {{ .Values.spec.destination.name }}-application-name # concatene the variable .Values.spec.destination.name with the name of your application
-  namespace: argocd
-  labels: 
-    cluster: {{ .Values.spec.destination.name }}
-  finalizers:
-  - resources-finalizer.argocd.argoproj.io
+  name: dev-rules
 spec:
-  destination:
-    namespace: default
-    name: {{ .Values.spec.destination.name }}
-  project: default
+  enforcements:
+    - name: helm-guestbook
+      repo: https://github.com/argoproj/argocd-example-apps
+      path: helm-guestbook
+      namespace: default
+      helm:
+        parameters:
+          replicaCount: 1
+    - name: guestbook
+      repo: https://github.com/argoproj/argocd-example-apps
+      path: guestbook
   source:
-    path: applicationpath # customize the path within the Git argo that contains your application's package.
-    repoURL: https://github.com/yourusername/yourrepository # customize with the URL of your Git argo
-    targetRevision: {{ .Values.spec.source.targetRevision }}
-  syncPolicy:
-    automated: 
-      selfHeal: true
-      prune: true
+    rancher:
+      filters:
+        driver: googleKubernetesEngine
+      labels:
+        cattle.io/creator: "norman"
+      ignore:
+        - cluster1
+        - cluster2
+        - cluster3
 ```
-You can get a complete example of an Enforcement Core Repository [here](https://github.com/globocom/enforcement-core-example.git). 
+The rancher.filters, rancher.labels and rancher.ignore fields are specific to Rancher. Other Kubernetes services may have other values. You can get all the examples of ClusterRules objects [here](https://github.com/globocom/enforcement-service/examples).
