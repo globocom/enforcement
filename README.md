@@ -22,7 +22,7 @@ When Enforcement detects the creation of a cluster in the central Kubernetes ser
 ArgoCD installs all packages in the cluster and ensures that they are always present.
 
 \
-![alt text](https://raw.githubusercontent.com/globocom/enforcement-service/master/architecture.png)
+![alt text](https://raw.githubusercontent.com/globocom/enforcement-service/operator/architecture.png)
 
 ## Installation 
 
@@ -44,7 +44,7 @@ pipenv shell
 ```
 Run the application. 
 ```shell
-python main.py
+kopf run main.py
 ```
 It is also possible to run the application through Docker.
 \
@@ -52,25 +52,16 @@ Build the Docker image.
 ```shell
 docker build -t enforcement . 
 ```
-Run container. 
-```shell
-docker container run --env VARIABLE1=value --env VARIABLE2=value enforcement
-```
-
 ## Configuration 
 Enforcement uses the environment variables described in the table below. 
 
 | Environment Variable |      Example     |          Description         |
 |:--------------------:|:----------------:|:----------------------------:|
 | RANCHER_URL                | https://myrancherurl.domain.com               | Rancher URL         |
-| RANCHER_TOKEN              | token-q5bhr:xtcd5lbzlg6mhnvncwbrk55zvmh       | Rancher API Key configured without scope |
-| IGNORE_CLUSTERS            | "cluster1, cluster2, cluster3"                | Name of clusters orchestrated by Rancher that should be ignored by Enforcement     |
+| RANCHER_TOKEN              | token-q5bhr:xtcd5lbzlg6mhnvncwbrk55zvmh       | Rancher API Key configured without scope |   
 | ARGO_URL                   | https://myargourl.domain.com                  | Argo URL          |
 | ARGO_USERNAME              | admin                                         | Argo Username            |
-| ARGO_PASSWORD              | password                                      | Argo Password
-| ENFORCEMENT_CORE_REPO      | https://github.com/globocom/enforcement-core-example.git | Git repository that contains the standard packages that must be installed in all clusters created by Rancher. | 
-| ENFORCEMENT_CORE_PATH      | standard                                      | Path within the Git repository configured at ENFORCEMENT_CORE_REPO that contains the standard packages| 
-| ENFORCEMENT_NAME           | standard                                      | Name of the standard application created in Argo for each cluster created by Rancher|
+| ARGO_PASSWORD              | password                                      | Argo Password            | 
 
 ## Enforcement Core Repository
 The Enforcement Service allows you to configure a repository containing applications that must be installed in all clusters created by Rancher. This can be useful if you want to install certain packages that need to be present in all clusters.
