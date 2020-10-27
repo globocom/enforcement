@@ -98,4 +98,4 @@ spec:
         - cluster2
         - cluster3
 ```
-The rancher.filters, rancher.labels and rancher.ignore fields are specific to Rancher. Other Kubernetes services may have other values. You can get all the examples of ClusterRules objects [here](https://github.com/globocom/enforcement-service/examples).
+The rancher.filters, rancher.labels and rancher.ignore fields are specific to Rancher. Other Kubernetes services may have other values. You can get all the examples of ClusterRules objects [here](https://github.com/globocom/enforcement-service/tree/master/examples).
