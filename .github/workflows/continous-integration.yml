@@ -1,4 +1,4 @@
-name: test
+name: CI
 
 on: [push, pull_request]
 
@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7, 3.8]
+        python-version: [3.8]
 
     steps:
     - name: Checkout
@@ -22,7 +22,8 @@ jobs:
       uses: dschep/install-pipenv-action@v1
 
     - name: Install dependencies
-      run: pipenv --python ${{ matrix.python_version }} sync -d
+      run: pipenv sync -d
+      
 
     - name: Run static type tests
       run: pipenv run mypy ./**/*.py
