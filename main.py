@@ -1,12 +1,23 @@
 from injector import Injector
+from typing import List
 
-from di.argo_module import ArgoModule
-from app.watcher import EnforcementWatcher
+from app.config import DataModule, UseCaseModule
+from app.entrypoint.operator import BaseController, ClusterRuleController
+
+
+def register_controllers(controllers: List[BaseController]):
+    for controller in controllers:
+        controller.register()
+
 
 injector = Injector([
-    ArgoModule()
+    UseCaseModule(),
+    DataModule(),
 ])
 
-if __name__ == "__main__":
-    watcher = injector.get(EnforcementWatcher)
-    watcher.run()
+if __name__ == "main":
+    all_controllers: List[BaseController] = [
+        injector.get(ClusterRuleController),
+    ]
+    register_controllers(all_controllers)
+

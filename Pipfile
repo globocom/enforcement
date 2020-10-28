@@ -10,6 +10,8 @@ mypy = "*"
 argocd-client = {editable = true,git = "https://github.com/globocom/argocd-client.git"}
 injector = "*"
 requests = "*"
+kopf = "*"
+pydantic = "*"
 
 [requires]
 python_version = "3.8"

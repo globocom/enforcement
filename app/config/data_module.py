@@ -9,10 +9,17 @@ from argocd_client.api_client import ApiClient
 from argocd_client.configuration import Configuration
 from argocd_client.api.cluster_service_api import ClusterServiceApi
 
-from helper import Config
+from app.infra.config import Config
+
+from app.domain.repositories import ClusterRepository, EnforcementRepository
+from app.domain.source_locator import SourceLocator
+
+from app.data.argo.cluster import ClusterService
+from app.data.argo.application import ApplicationService
+from app.data.source.definition.locator import SourceLocatorImpl
 
 
-class ArgoModule(Module):
+class DataModule(Module):
 
     @provider
     @singleton
@@ -57,3 +64,18 @@ class ArgoModule(Module):
     @singleton
     def provide_application_service(self, api_client: ApiClient) -> ApplicationServiceApi:
         return ApplicationServiceApi(api_client)
+
+    @provider
+    @singleton
+    def provide_cluster_repository(self, cluster_service: ClusterServiceApi) -> ClusterRepository:
+        return ClusterService(cluster_service=cluster_service)
+
+    @provider
+    @singleton
+    def provide_enforcement_repository(self, application_service: ApplicationServiceApi) -> EnforcementRepository:
+        return ApplicationService(application_service=application_service)
+
+    @provider
+    @singleton
+    def provide_source_locator(self, config: Config) -> SourceLocator:
+        return SourceLocatorImpl(config_helper=config)
