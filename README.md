@@ -3,10 +3,10 @@
 Enforcement is an open source project focused on the management and simultaneous deployment of applications and policies across multiple clusters through GitOps.
 \
 \
-Enforcement allows users to manage many clusters as easily as one. Users can deploy packages (resource collection) to clusters created from a central Kubernetes service (Rancher, GKE, EKS, etc.) and control deployments by specifying rules, which define a filter to select a group of clusters and the packages that should be installed in that group.
+Enforcement allows users to manage many clusters as easily as one. Users can deploy packages (resource collection) to clusters created from a cluster source (Rancher, GKE, EKS, etc.) and control deployments by specifying rules, which define a filter to select a group of clusters and the packages that should be installed in that group.
 \
 \
-When Enforcement detects the creation of a cluster in the central Kubernetes service, it checks whether the cluster fits into any specified rule, if there is any match, the packages configured in the rule are automatically installed in the cluster.
+When Enforcement detects the creation of a cluster in the cluster source, it checks whether the cluster fits into any specified rule, if there is any match, the packages configured in the rule are automatically installed in the cluster.
 \
 \
 The packages include not just application deployment manifests, but anything that can be described as a feature of Kubernetes.
@@ -16,7 +16,7 @@ The packages include not just application deployment manifests, but anything tha
 Enforcement works as a Kubernetes Operator, which observes the creation of ClusterRule objects. These objects define rules that specify a set of clusters and the packages they are to receive.
 \
 \
-When Enforcement detects the creation of a cluster in the central Kubernetes service, it registers the cluster and asks ArgoCD to install the packages configured for the cluster.
+When Enforcement detects the creation of a cluster in cluster source, it registers the cluster and asks ArgoCD to install the packages configured for the cluster.
 \
 \
 ArgoCD installs all packages in the cluster and ensures that they are always present.
@@ -61,8 +61,8 @@ Enforcement uses the environment variables described in the table below.
 | ARGO_USERNAME              | admin                                         | Argo Username            |
 | ARGO_PASSWORD              | password                                      | Argo Password            | 
 
-## Supported central Kubernetes services
-Enforcement aims to detect the creation of clusters in several services of managed Kubernetes and cluster orchestration. Currently, the only Kubernetes service to be covered is Rancher. We are developing support for EKS, GKE and AKS.
+## Supported cluster sources
+Enforcement aims to detect the creation of clusters in several services of managed Kubernetes and cluster orchestration. Currently, the only cluster source supported is Rancher. We are developing support for EKS, GKE and AKS.
 
 ## Creating a ClusterRule
 See a complete example of creating ClusterRule for clusters created through Rancher.
@@ -98,4 +98,4 @@ spec:
         - cluster2
         - cluster3
 ```
-The rancher.filters, rancher.labels and rancher.ignore fields are specific to Rancher. Other Kubernetes services may have other values. You can get all the examples of ClusterRules objects [here](https://github.com/globocom/enforcement-service/tree/master/examples).
+The rancher.filters, rancher.labels and rancher.ignore fields are specific to Rancher. Other cluster sources may have other values. You can get all the examples of ClusterRules objects [here](https://github.com/globocom/enforcement-service/tree/master/examples).
