@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7]
+        python-version: [3.7, 3.8]
 
     steps:
     - name: Checkout
@@ -22,7 +22,10 @@ jobs:
       uses: dschep/install-pipenv-action@v1
 
     - name: Install dependencies
-      run: pipenv --python 3.7 sync -d
+      run: pipenv --python ${{ matrix.python-version }} sync -d
+      with:
+        python-version: ${{ matrix.python-version }}
+
 
     - name: Run static type tests
       run: pipenv run mypy ./**/*.py
