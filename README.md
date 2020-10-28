@@ -22,7 +22,7 @@ When Enforcement detects the creation of a cluster in cluster source, it registe
 ArgoCD installs all packages in the cluster and ensures that they are always present.
 
 \
-![alt text](https://raw.githubusercontent.com/globocom/enforcement-service/master/enforcement-operator.png)
+![alt text](https://raw.githubusercontent.com/globocom/enforcement-service/master/architecture.png)
 
 ## Installation 
 
