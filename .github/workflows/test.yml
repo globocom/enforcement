@@ -22,10 +22,8 @@ jobs:
       uses: dschep/install-pipenv-action@v1
 
     - name: Install dependencies
-      run: pipenv --python ${{ matrix.python-version }} sync -d
-      with:
-        python-version: ${{ matrix.python-version }}
-
+      run: pipenv --python sync -d
+      
 
     - name: Run static type tests
       run: pipenv run mypy ./**/*.py
