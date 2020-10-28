@@ -22,7 +22,7 @@ When Enforcement detects the creation of a cluster in the central Kubernetes ser
 ArgoCD installs all packages in the cluster and ensures that they are always present.
 
 \
-![alt text](https://raw.githubusercontent.com/globocom/enforcement-service/operator/enforcement-operator.png)
+![alt text](https://raw.githubusercontent.com/globocom/enforcement-service/master/enforcement-operator.png)
 
 ## Installation 
 
