@@ -1,5 +1,5 @@
 from typing import List, Dict, Any
-from app.domain.entities import Cluster, Enforcement
+from app.domain.entities import Cluster, Enforcement, Project
 
 
 class ClusterRepository:
@@ -30,3 +30,11 @@ class EnforcementRepository:
 class SourceRepository:
     def get_clusters(self) -> List[Cluster]:
         raise Exception('Not implement')
+
+
+class ProjectRepository:
+    def create_project(self,  project: Project) -> None:
+        raise Exception("Not implemented")
+
+    def remove_project(self,  project: Project) -> None:
+        raise Exception("Not implemented")

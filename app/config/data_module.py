@@ -3,6 +3,7 @@ from argocd_client import (
     SessionSessionCreateRequest,
     SessionSessionResponse,
     ApplicationServiceApi,
+    ProjectServiceApi
 )
 from argocd_client.api import SessionServiceApi
 from argocd_client.api_client import ApiClient
@@ -11,12 +12,14 @@ from argocd_client.api.cluster_service_api import ClusterServiceApi
 
 from app.infra.config import Config
 
-from app.domain.repositories import ClusterRepository, EnforcementRepository
+from app.domain.repositories import ClusterRepository, EnforcementRepository, ProjectRepository
 from app.domain.source_locator import SourceLocator
 
 from app.data.argo.cluster import ClusterService
 from app.data.argo.application import ApplicationService
 from app.data.source.definition.locator import SourceLocatorImpl
+
+from app.data.argo.project import ProjectService
 
 
 class DataModule(Module):
@@ -79,3 +82,13 @@ class DataModule(Module):
     @singleton
     def provide_source_locator(self, config: Config) -> SourceLocator:
         return SourceLocatorImpl(config_helper=config)
+
+    @provider
+    @singleton
+    def provide_project_service(self, api_client: ApiClient) -> ProjectServiceApi:
+        return ProjectServiceApi(api_client)
+
+    @provider
+    @singleton
+    def provide_project_repositoru(self, project_service: ProjectServiceApi) -> ProjectRepository:
+        return ProjectService(project_service=project_service)
