@@ -90,5 +90,5 @@ class DataModule(Module):
 
     @provider
     @singleton
-    def provide_project_repositoru(self, project_service: ProjectServiceApi) -> ProjectRepository:
+    def provide_project_repository(self, project_service: ProjectServiceApi) -> ProjectRepository:
         return ProjectService(project_service=project_service)

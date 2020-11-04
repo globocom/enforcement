@@ -4,13 +4,6 @@ metadata:
   name: dev-rule #Rule name
 spec:
   enforcements: #List of packages that will be installed in the filtered clusters
-    - name: helm-guestbook #Name
-      repo: https://github.com/argoproj/argocd-example-apps #Git repository
-      path: helm-guestbook #Package folder within the repository
-      namespace: default #Package installation namespace. The default installation namespace is default
-      helm:
-        parameters: #Enter parameters for Helm packages
-          replicaCount: 1
     - name: guestbook #Name
       repo: https://github.com/argoproj/argocd-example-apps #Git repository
       path: guestbook #Package folder within the repository
@@ -20,11 +13,9 @@ spec:
         cattle.io/creator: "norman"
       ignore: #Ignore clusters that have the names listed below.
         - local
-        - csccm-fe
-        - argocd-acs
         - acs-lb-chart
         - argocd-dev
-
+        - csccm-fe
 
 
 
