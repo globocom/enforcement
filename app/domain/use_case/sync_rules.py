@@ -19,8 +19,8 @@ class SyncRulesUseCase:
         source_repository = self._source_locator.locate(cluster_rule.source)
         source_clusters = source_repository.get_clusters()
 
-        source_cluster_group = self._cluster_group_builder(clusters=source_clusters)
-        current_cluster_group = self._cluster_group_builder(clusters=current_clusters)
+        source_cluster_group = self._cluster_group_builder.build(clusters=source_clusters)
+        current_cluster_group = self._cluster_group_builder.build(clusters=current_clusters)
 
         deleted_clusters = current_cluster_group - source_cluster_group
         enforcement_uninstall = EnforcementInstaller(
