@@ -38,7 +38,7 @@ class ClusterGroup:
         )
 
         return ClusterGroup(cluster_repository=self._cluster_repository
-                            , project_repository=self._project_repository,
+                            ,project_repository=self._project_repository,
                             clusters=result_clusters)
 
 

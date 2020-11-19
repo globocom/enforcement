@@ -1,4 +1,3 @@
-from argocd_client.models import v1_object_meta
 import attr
 
 from argocd_client import (
@@ -19,23 +18,31 @@ class ProjectService(ProjectRepository):
     _project_service: ProjectServiceApi
  
     def create_project(self,  cluster: Cluster) -> None:
-        project = V1alpha1AppProject(
-            metadata=V1ObjectMeta(
-                name=cluster.name,
-                generate_name=cluster.name
-            ),
-            spec=V1alpha1AppProjectSpec(
-                destinations=[V1alpha1ApplicationDestination(
-                    server=cluster.url,
-                    namespace='default',
-                    name=cluster.name
-                )],
-                source_repos=['*']
-            ),
-            status=V1alpha1AppProjectStatus()
-        )
-       
-        self._project_service.create_mixin6(project)
+
+        body = {
+            'project': {
+                'metadata': {
+                    'name': cluster.name
+                },
+                'spec': {
+                    'destinations': [{'server': cluster.url, 'namespace': 'default'}],
+                    'sourceRepos': ['*'],
+                    'clusterResourceBlacklist': [],
+                    'clusterResourceWhitelist': [],
+                    'namespaceResourceBlacklist': [],
+                    'namespaceResourceWhitelist': [],
+                    'orphanedResources': None,
+                    'roles': [],
+                    'signatureKeys': [],
+                    'syncWindows': []
+                }
+            }
+        }
+            
+
+        self._project_service.create_mixin6(body)
 
     def remove_project(self,  project_name: str) -> None:
         self._project_service.delete_mixin6(name=project_name)
+
+
