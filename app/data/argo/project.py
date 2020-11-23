@@ -25,7 +25,7 @@ class ProjectService(ProjectRepository):
                     'name': cluster.name
                 },
                 'spec': {
-                    'destinations': [{'server': cluster.url, 'namespace': 'default'}],
+                    'destinations': [{'server': cluster.url, 'namespace': '*'}],
                     'sourceRepos': ['*'],
                     'clusterResourceBlacklist': [],
                     'clusterResourceWhitelist': [],
