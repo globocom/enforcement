@@ -1,9 +1,6 @@
 import attr
 
-from argocd_client import (
-    ProjectServiceApi
-)
-
+from argocd_client import ProjectServiceApi
 from app.domain.entities import Cluster
 from app.domain.repositories import ProjectRepository
 
