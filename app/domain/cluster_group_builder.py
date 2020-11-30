@@ -5,6 +5,7 @@ from app.domain.entities import Cluster
 from app.domain.cluster_group import ClusterGroup
 from app.domain.repositories import ClusterRepository, ProjectRepository
 
+
 @attr.s(auto_attribs=True)
 class ClusterGroupBuilder:
     _cluster_repository: ClusterRepository

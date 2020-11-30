@@ -1,12 +1,7 @@
 import attr
 
 from argocd_client import (
-    ProjectServiceApi,
-    V1alpha1AppProject,
-    V1ObjectMeta,
-    V1alpha1AppProjectSpec,
-    V1alpha1AppProjectStatus,
-    V1alpha1ApplicationDestination
+    ProjectServiceApi
 )
 
 from app.domain.entities import Cluster
