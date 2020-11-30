@@ -38,8 +38,3 @@ class ClusterRule(BaseModel):
 
 class ClusterRuleStatus(BaseModel):
     clusters: List[dict]
-
-
-
-
-

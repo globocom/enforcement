@@ -1,9 +1,9 @@
 import attr
 from typing import List
 
-from app.domain.repositories import EnforcementRepository, ClusterRepository
+from app.domain.repositories import EnforcementRepository
 from app.domain.entities import Cluster, Enforcement
-from app.domain.cluster_group import ClusterGroup
+from app.domain.cluster_group_builder import ClusterGroupBuilder
 from app.domain.enforcement_installer import EnforcementInstaller
 from app.domain.enforcement_change_detector import EnforcementChangeDetector
 
@@ -11,7 +11,7 @@ from app.domain.enforcement_change_detector import EnforcementChangeDetector
 @attr.s(auto_attribs=True)
 class UpdateRulesUseCase:
     _enforcement_repository: EnforcementRepository
-    _cluster_repository: ClusterRepository
+    _cluster_group_builder: ClusterGroupBuilder
 
     def execute(self, clusters: List[Cluster], old_enforcements: List[Enforcement],
                 new_enforcements: List[Enforcement]):
@@ -31,8 +31,7 @@ class UpdateRulesUseCase:
         if not change_enforcements:
             return
 
-        cluster_group_change_enfocement = ClusterGroup(
-            cluster_repository=self._cluster_repository,
+        cluster_group_change_enfocement = self._cluster_group_builder.build(
             clusters=clusters
         )
 
@@ -50,8 +49,7 @@ class UpdateRulesUseCase:
         if not added_enforcements:
             return
 
-        cluster_group_remove_enfocement = ClusterGroup(
-            cluster_repository=self._cluster_repository,
+        cluster_group_remove_enfocement = self._cluster_group_builder.build(
             clusters=clusters
         )
 
@@ -69,8 +67,7 @@ class UpdateRulesUseCase:
         if not removed_enforcements:
             return
 
-        cluster_group_remove_enfocement = ClusterGroup(
-            cluster_repository=self._cluster_repository,
+        cluster_group_remove_enfocement = self._cluster_group_builder.build(
             clusters=clusters
         )
 

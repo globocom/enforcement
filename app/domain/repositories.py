@@ -30,3 +30,11 @@ class EnforcementRepository:
 class SourceRepository:
     def get_clusters(self) -> List[Cluster]:
         raise Exception('Not implement')
+
+
+class ProjectRepository:
+    def create_project(self,  cluster: Cluster) -> None:
+        raise Exception("Not implemented")
+
+    def remove_project(self,  project_name: str) -> None:
+        raise Exception("Not implemented")
