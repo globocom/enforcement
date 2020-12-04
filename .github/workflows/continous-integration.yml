@@ -25,7 +25,7 @@ jobs:
       run: pipenv sync -d
       
     - name: Run unit tests
-      run: python -m unittests -v
+      run: pipenv run -m unittests -v
 
 
   
