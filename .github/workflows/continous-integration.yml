@@ -24,6 +24,8 @@ jobs:
     - name: Install dependencies
       run: pipenv sync -d
       
+    - name: Run unit tests
+      run: python -m unittests -v
 
-    - name: Run static type tests
-      run: pipenv run mypy ./**/*.py
+
+  
