@@ -78,4 +78,3 @@ class UpdateRulesUseCase:
         )
 
         enforcement_installer.uninstall()
-
