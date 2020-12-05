@@ -1,12 +1,13 @@
-from app.domain.cluster_group import ClusterGroup
+from typing import List
 from unittest import TestCase
 from unittest.mock import MagicMock
-from typing import List
-from app.domain.use_case import ApplyRulesUseCase
-from app.domain.source_locator import SourceLocator
-from app.domain.repositories import EnforcementRepository, ClusterRepository, ProjectRepository, SourceRepository
+
+from app.domain.cluster_group import ClusterGroup
 from app.domain.cluster_group_builder import ClusterGroupBuilder
 from app.domain.entities import ClusterRule, Cluster, EnforcementSource
+from app.domain.repositories import EnforcementRepository, ClusterRepository, ProjectRepository, SourceRepository
+from app.domain.source_locator import SourceLocator
+from app.domain.use_case import ApplyRulesUseCase
 
 
 class ApplyRulesTestCase(TestCase):
@@ -35,7 +36,7 @@ class ApplyRulesTestCase(TestCase):
 
         apply_rules: ApplyRulesUseCase = ApplyRulesUseCase(
             source_locator=self.source_locator,
-            enforcement_repository=self.enforcement_repository ,
+            enforcement_repository=self.enforcement_repository,
             cluster_group_builder=self.cluster_group_builder
         )
 

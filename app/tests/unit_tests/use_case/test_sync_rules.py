@@ -1,12 +1,13 @@
-from app.domain.cluster_group import ClusterGroup
+from typing import List
 from unittest import TestCase
 from unittest.mock import MagicMock
-from typing import List
-from app.domain.use_case import SyncRulesUseCase
-from app.domain.source_locator import SourceLocator
-from app.domain.repositories import EnforcementRepository, ClusterRepository, ProjectRepository, SourceRepository
+
+from app.domain.cluster_group import ClusterGroup
 from app.domain.cluster_group_builder import ClusterGroupBuilder
 from app.domain.entities import ClusterRule, Cluster, EnforcementSource
+from app.domain.repositories import EnforcementRepository, ClusterRepository, ProjectRepository, SourceRepository
+from app.domain.source_locator import SourceLocator
+from app.domain.use_case import SyncRulesUseCase
 
 
 class SyncRulesTestCase(TestCase):
@@ -27,7 +28,6 @@ class SyncRulesTestCase(TestCase):
             project_repository=self.project_repository
         )
         self.cluster_rule = ClusterRule(enforcements=[], source=EnforcementSource())
-
 
     def test_execute(self):
         self.source_locator.locate = MagicMock(return_value=self.source_repository)

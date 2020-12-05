@@ -1,11 +1,12 @@
-from injector import inject
 from typing import ClassVar, List
-import kopf
-import attr
 
-from app.entrypoint.operator.base_controller import BaseController
+import attr
+import kopf
+from injector import inject
+
 from app.domain.entities import ClusterRule, ClusterRuleStatus, Cluster, Enforcement
 from app.domain.use_case import ApplyRulesUseCase, SyncRulesUseCase, UpdateRulesUseCase
+from app.entrypoint.operator.base_controller import BaseController
 
 
 @inject
@@ -81,6 +82,3 @@ class ClusterRuleController(BaseController):
     def _restore_status(cls, status: dict) -> ClusterRuleStatus:
         current_status = status.get('sync') or status.get('create')
         return ClusterRuleStatus(**current_status)
-
-
-

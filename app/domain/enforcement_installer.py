@@ -1,5 +1,6 @@
-import attr
 from typing import List
+
+import attr
 
 from app.domain.cluster_group import ClusterGroup
 from app.domain.entities import Enforcement, Cluster
@@ -39,4 +40,3 @@ class EnforcementInstaller:
     @classmethod
     def _make_enforcement_name(cls, cluster: Cluster, enforcement: Enforcement) -> str:
         return f"{cluster.name}-{enforcement.name}"
-

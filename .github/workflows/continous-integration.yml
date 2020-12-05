@@ -1,31 +1,31 @@
 name: CI
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8]
+        python-version: [ 3.8 ]
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Setup pipenv
-      uses: dschep/install-pipenv-action@v1
+      - name: Setup pipenv
+        uses: dschep/install-pipenv-action@v1
 
-    - name: Install dependencies
-      run: pipenv sync -d
-      
-    - name: Run unit tests
-      run: pipenv run -m unittests -v
+      - name: Install dependencies
+        run: pipenv sync -d
+
+      - name: Run unit tests
+        run: pipenv run -m unittests -v
 
 
   

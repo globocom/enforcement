@@ -1,22 +1,26 @@
-import attr
 from typing import List
 
-from app.domain.repositories import EnforcementRepository
-from app.domain.entities import Cluster, Enforcement
+import attr
+
 from app.domain.cluster_group_builder import ClusterGroupBuilder
-from app.domain.enforcement_installer import EnforcementInstaller
 from app.domain.enforcement_change_detector import EnforcementChangeDetector
+from app.domain.enforcement_change_detector_builder import EnforcementChangeDetectorBuilder
+from app.domain.enforcement_installer_builder import EnforcementInstallerBuilder
+from app.domain.entities import Cluster, Enforcement
+from app.domain.repositories import EnforcementRepository
 
 
 @attr.s(auto_attribs=True)
 class UpdateRulesUseCase:
     _enforcement_repository: EnforcementRepository
     _cluster_group_builder: ClusterGroupBuilder
+    _enforcement_installer_builder: EnforcementInstallerBuilder
+    _enforcement_change_detector_builder: EnforcementChangeDetectorBuilder
 
     def execute(self, clusters: List[Cluster], old_enforcements: List[Enforcement],
                 new_enforcements: List[Enforcement]):
 
-        change_detector = EnforcementChangeDetector(
+        change_detector = self._enforcement_change_detector_builder.build(
             new_enforcements_list=new_enforcements,
             old_enforcements_list=old_enforcements
         )
@@ -35,8 +39,7 @@ class UpdateRulesUseCase:
             clusters=clusters
         )
 
-        enforcement_installer = EnforcementInstaller(
-            enforcement_repository=self._enforcement_repository,
+        enforcement_installer = self._enforcement_installer_builder.build(
             cluster_group=cluster_group_change_enfocement,
             enforcements=change_enforcements
         )
@@ -53,8 +56,7 @@ class UpdateRulesUseCase:
             clusters=clusters
         )
 
-        enforcement_installer = EnforcementInstaller(
-            enforcement_repository=self._enforcement_repository,
+        enforcement_installer = self._enforcement_installer_builder.build(
             cluster_group=cluster_group_remove_enfocement,
             enforcements=added_enforcements
         )
@@ -71,8 +73,7 @@ class UpdateRulesUseCase:
             clusters=clusters
         )
 
-        enforcement_installer = EnforcementInstaller(
-            enforcement_repository=self._enforcement_repository,
+        enforcement_installer = self._enforcement_installer_builder.build(
             cluster_group=cluster_group_remove_enfocement,
             enforcements=removed_enforcements
         )

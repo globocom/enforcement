@@ -1,7 +1,8 @@
-from injector import Injector
 from typing import List
 
-from app.config import DataModule, UseCaseModule,  DomainModule
+from injector import Injector
+
+from app.config import DataModule, UseCaseModule, DomainModule
 from app.entrypoint.operator import BaseController, ClusterRuleController
 
 
@@ -21,4 +22,3 @@ if __name__ == "main":
         injector.get(ClusterRuleController),
     ]
     register_controllers(all_controllers)
-

@@ -7,7 +7,7 @@ verify_ssl = true
 mypy = "*"
 
 [packages]
-argocd-client = {editable = true,git = "https://github.com/globocom/argocd-client.git"}
+argocd-client = { editable = true, git = "https://github.com/globocom/argocd-client.git" }
 injector = "*"
 requests = "*"
 kopf = "*"
