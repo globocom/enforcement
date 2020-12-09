@@ -37,7 +37,7 @@ class UpdateRulesTestCase(TestCase):
         )
 
         self.cluster_rule = ClusterRule(
-            enforcements=[], source=EnforcementSource())
+            enforcements=[self.enforcement], source=EnforcementSource())
 
         self.enforcement_installer_builder = EnforcementInstallerBuilder(
             enforcement_repository=self.enforcement_repository
