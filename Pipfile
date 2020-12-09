@@ -12,6 +12,7 @@ injector = "*"
 requests = "*"
 kopf = "*"
 pydantic = "*"
+coverage = "*"
 
 [requires]
 python_version = "3.8"

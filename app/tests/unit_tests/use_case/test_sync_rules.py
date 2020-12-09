@@ -4,7 +4,9 @@ from unittest.mock import MagicMock
 
 from app.domain.cluster_group import ClusterGroup
 from app.domain.cluster_group_builder import ClusterGroupBuilder
-from app.domain.entities import ClusterRule, Cluster, EnforcementSource
+from app.domain.enforcement_installer_builder import EnforcementInstallerBuilder
+from app.domain.enforcement_installer import EnforcementInstaller
+from app.domain.entities import ClusterRule, Cluster, EnforcementSource, Enforcement
 from app.domain.repositories import EnforcementRepository, ClusterRepository, ProjectRepository, SourceRepository
 from app.domain.source_locator import SourceLocator
 from app.domain.use_case import SyncRulesUseCase
@@ -17,8 +19,10 @@ class SyncRulesTestCase(TestCase):
         self.cluster_repository = ClusterRepository()
         self.project_repository = ProjectRepository()
         self.enforcement_repository = EnforcementRepository()
+        self.enforcement = Enforcement(name='test', repo='somewhere')
 
-        self.cluster = Cluster(name='test', url='test', token='test', id='test')
+        self.cluster = Cluster(name='test', url='test',
+                               token='test', id='test')
         self.cluster_group = ClusterGroup(clusters=[self.cluster],
                                           cluster_repository=self.cluster_repository,
                                           project_repository=self.project_repository
@@ -27,20 +31,41 @@ class SyncRulesTestCase(TestCase):
             cluster_repository=self.cluster_repository,
             project_repository=self.project_repository
         )
-        self.cluster_rule = ClusterRule(enforcements=[], source=EnforcementSource())
+        self.cluster_rule = ClusterRule(
+            enforcements=[], source=EnforcementSource())
+
+        self.enforcement_installer_builder = EnforcementInstallerBuilder(
+            enforcement_repository=self.enforcement_repository
+        )
+
+        self.enforcement_installer = EnforcementInstaller(
+            enforcements=[self.enforcement],
+            cluster_group=self.cluster_group,
+            enforcement_repository=self.enforcement_repository
+        )
 
     def test_execute(self):
-        self.source_locator.locate = MagicMock(return_value=self.source_repository)
-        self.source_repository.get_clusters = MagicMock(return_value=[self.cluster])
-        self.cluster_group_builder.build = MagicMock(return_value=self.cluster_group)
-        self.enforcement_repository.list_installed_enforcements = MagicMock(return_value=[])
+        self.source_locator.locate = MagicMock(
+            return_value=self.source_repository)
+        self.source_repository.get_clusters = MagicMock(
+            return_value=[self.cluster])
+        self.cluster_group_builder.build = MagicMock(
+            return_value=self.cluster_group)
+        self.cluster_group.unregister = MagicMock(return_value=None)
+        self.cluster_group.register = MagicMock(return_value=None)
+        self.enforcement_installer_builder.build = MagicMock(
+            return_value=self.enforcement_installer)
+        self.enforcement_installer.uninstall = MagicMock(retun_value=None)
+        self.enforcement_installer.install = MagicMock(retun_value=None)
 
         sync_rules: SyncRulesUseCase = SyncRulesUseCase(
             source_locator=self.source_locator,
             enforcement_repository=self.enforcement_repository,
-            cluster_group_builder=self.cluster_group_builder
+            cluster_group_builder=self.cluster_group_builder,
+            enforcement_installer_builder=self.enforcement_installer_builder
         )
 
-        cluster: List[Cluster] = sync_rules.execute(self.cluster_rule, self.cluster)
+        cluster: List[Cluster] = sync_rules.execute(
+            self.cluster_rule, self.cluster)
 
         self.assertEqual(1, len(cluster))
