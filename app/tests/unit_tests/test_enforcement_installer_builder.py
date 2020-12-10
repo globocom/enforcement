@@ -1,9 +1,10 @@
 from unittest import TestCase
+
 from app.domain.cluster_group import ClusterGroup
 from app.domain.enforcement_installer import EnforcementInstaller
 from app.domain.enforcement_installer_builder import EnforcementInstallerBuilder
-from app.domain.repositories import EnforcementRepository, ClusterRepository, ProjectRepository
 from app.domain.entities import Enforcement, Cluster
+from app.domain.repositories import EnforcementRepository, ClusterRepository, ProjectRepository
 
 
 class EnforcementInstallerBuilderTestCase(TestCase):
@@ -25,7 +26,7 @@ class EnforcementInstallerBuilderTestCase(TestCase):
             enforcement_repository=self.enforcement_repository
         )
 
-    def test_build(self):
+    def test_build(self) -> None:
         enforcement_installer_builder = EnforcementInstallerBuilder(
             enforcement_repository=self.enforcement_repository
         )

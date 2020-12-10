@@ -1,8 +1,9 @@
 from unittest import TestCase
+
 from app.domain.cluster_group import ClusterGroup
 from app.domain.cluster_group_builder import ClusterGroupBuilder
-from app.domain.repositories import ClusterRepository, ProjectRepository
 from app.domain.entities import Cluster
+from app.domain.repositories import ClusterRepository, ProjectRepository
 
 
 class ClusterGroupBuilderTestCase(TestCase):
@@ -17,7 +18,7 @@ class ClusterGroupBuilderTestCase(TestCase):
             project_repository=self.project_repository
         )
 
-    def test_build(self):
+    def test_build(self) -> None:
         cluster_group_builder = ClusterGroupBuilder(
             cluster_repository=self.cluster_repository,
             project_repository=self.project_repository

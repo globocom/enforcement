@@ -1,13 +1,12 @@
-from typing import List
 from unittest import TestCase
 from unittest.mock import MagicMock
 
 from app.domain.cluster_group import ClusterGroup
 from app.domain.cluster_group_builder import ClusterGroupBuilder
 from app.domain.enforcement_change_detector import EnforcementChangeDetector
-from app.domain.enforcement_installer_builder import EnforcementInstallerBuilder
-from app.domain.enforcement_installer import EnforcementInstaller
 from app.domain.enforcement_change_detector_builder import EnforcementChangeDetectorBuilder
+from app.domain.enforcement_installer import EnforcementInstaller
+from app.domain.enforcement_installer_builder import EnforcementInstallerBuilder
 from app.domain.entities import ClusterRule, Cluster, EnforcementSource, Enforcement
 from app.domain.repositories import EnforcementRepository, ClusterRepository, ProjectRepository, SourceRepository
 from app.domain.source_locator import SourceLocator
@@ -55,7 +54,7 @@ class UpdateRulesTestCase(TestCase):
             new_enforcements_list=[self.new_enforcement]
         )
 
-    def test_execute(self):
+    def test_execute(self) -> None:
         self.enforcement_change_detector_builder.build = MagicMock(
             return_value=self.enforcement_change_detector)
         self.cluster_group_builder.build = MagicMock(

@@ -4,8 +4,8 @@ from unittest.mock import MagicMock
 
 from app.domain.cluster_group import ClusterGroup
 from app.domain.cluster_group_builder import ClusterGroupBuilder
-from app.domain.enforcement_installer_builder import EnforcementInstallerBuilder
 from app.domain.enforcement_installer import EnforcementInstaller
+from app.domain.enforcement_installer_builder import EnforcementInstallerBuilder
 from app.domain.entities import ClusterRule, Cluster, EnforcementSource, Enforcement
 from app.domain.repositories import EnforcementRepository, ClusterRepository, ProjectRepository, SourceRepository
 from app.domain.source_locator import SourceLocator
@@ -44,7 +44,7 @@ class SyncRulesTestCase(TestCase):
             enforcement_repository=self.enforcement_repository
         )
 
-    def test_execute(self):
+    def test_execute(self) -> None:
         self.source_locator.locate = MagicMock(
             return_value=self.source_repository)
         self.source_repository.get_clusters = MagicMock(

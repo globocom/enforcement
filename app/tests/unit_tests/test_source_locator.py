@@ -1,9 +1,9 @@
 from unittest import TestCase
 from unittest.mock import MagicMock
 
-from app.domain.source_locator import SourceLocator
 from app.domain.entities import EnforcementSource, RancherSource
 from app.domain.repositories import SourceRepository
+from app.domain.source_locator import SourceLocator
 
 
 class SourceLocatorTestCase(TestCase):
@@ -14,7 +14,7 @@ class SourceLocatorTestCase(TestCase):
             rancher=self.rancher_source
         )
 
-    def test_locate(self):
+    def test_locate(self) -> None:
         source_locator: SourceLocator = SourceLocator()
         source_locator.locate = MagicMock(return_value=self.source_repository)
 
