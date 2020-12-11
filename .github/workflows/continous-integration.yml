@@ -24,19 +24,9 @@ jobs:
       - name: Install dependencies
         run: pipenv sync -d
 
+      - name: Run static type tests
+        run: pipenv run mypy ./**/*.py
+
       - name: Run unit tests
-        run: coverage run -m unittest discover --v
-
-    
-  coveralls_finish:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-    - name: Coveralls Finished
-      uses: AndreMiras/coveralls-python-action@develop
-      with:
-        parallel-finished: true    
-
-
-
+        run: pipenv run -m unittest -v
   
