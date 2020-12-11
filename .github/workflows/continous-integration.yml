@@ -28,5 +28,5 @@ jobs:
         run: pipenv run mypy ./**/*.py
 
       - name: Run unit tests
-        run: pipenv run -m unittest -v
+        run: python run -m unittest -v
   
