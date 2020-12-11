@@ -45,7 +45,7 @@ class ApplyRulesTestCase(TestCase):
             enforcement_repository=self.enforcement_repository
         )
 
-    def test_execute_with_clusters(self) -> None:
+    def test_execute(self) -> None:
         self.source_locator.locate = MagicMock(
             return_value=self.source_repository)
         self.source_repository.get_clusters = MagicMock(
