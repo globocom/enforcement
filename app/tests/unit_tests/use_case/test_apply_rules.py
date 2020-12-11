@@ -57,13 +57,13 @@ class ApplyRulesTestCase(TestCase):
             return_value=self.enforcement_installer)
         self.enforcement_installer.install = MagicMock(retun_value=None)
 
-        apply_rules: ApplyRulesUseCase = ApplyRulesUseCase(
+        apply_rules = ApplyRulesUseCase(
             source_locator=self.source_locator,
             enforcement_repository=self.enforcement_repository,
             cluster_group_builder=self.cluster_group_builder,
             enforcement_installer_builder=self.enforcement_installer_builder
         )
 
-        cluster: List[Cluster] = apply_rules.execute(self.cluster_rule)
+        cluster = apply_rules.execute(self.cluster_rule)
 
         self.assertEqual(1, len(cluster))

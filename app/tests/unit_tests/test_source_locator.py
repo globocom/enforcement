@@ -15,10 +15,10 @@ class SourceLocatorTestCase(TestCase):
         )
 
     def test_locate(self) -> None:
-        source_locator: SourceLocator = SourceLocator()
+        source_locator = SourceLocator()
         source_locator.locate = MagicMock(return_value=self.source_repository)
 
-        source_repository: SourceRepository = source_locator.locate(
+        source_repository = source_locator.locate(
             self.enforcement_source)
 
         self.assertTrue(type(source_repository) is SourceRepository)

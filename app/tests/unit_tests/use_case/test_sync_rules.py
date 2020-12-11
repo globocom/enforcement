@@ -58,7 +58,7 @@ class SyncRulesTestCase(TestCase):
         self.enforcement_installer.uninstall = MagicMock(retun_value=None)
         self.enforcement_installer.install = MagicMock(retun_value=None)
 
-        sync_rules: SyncRulesUseCase = SyncRulesUseCase(
+        sync_rules = SyncRulesUseCase(
             source_locator=self.source_locator,
             enforcement_repository=self.enforcement_repository,
             cluster_group_builder=self.cluster_group_builder,
