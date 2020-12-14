@@ -8,15 +8,12 @@ from app.domain.enforcement_change_detector_builder import EnforcementChangeDete
 from app.domain.enforcement_installer import EnforcementInstaller
 from app.domain.enforcement_installer_builder import EnforcementInstallerBuilder
 from app.domain.entities import ClusterRule, Cluster, EnforcementSource, Enforcement
-from app.domain.repositories import EnforcementRepository, ClusterRepository, ProjectRepository, SourceRepository
-from app.domain.source_locator import SourceLocator
+from app.domain.repositories import EnforcementRepository, ClusterRepository, ProjectRepository
 from app.domain.use_case import UpdateRulesUseCase
 
 
 class UpdateRulesTestCase(TestCase):
     def setUp(self) -> None:
-        self.source_locator = SourceLocator()
-        self.source_repository = SourceRepository()
         self.cluster_repository = ClusterRepository()
         self.project_repository = ProjectRepository()
         self.enforcement_repository = EnforcementRepository()
@@ -59,8 +56,6 @@ class UpdateRulesTestCase(TestCase):
             return_value=self.enforcement_change_detector)
         self.cluster_group_builder.build = MagicMock(
             return_value=self.cluster_group)
-        self.cluster_group.unregister = MagicMock(return_value=None)
-        self.cluster_group.register = MagicMock(return_value=None)
         self.enforcement_installer_builder.build = MagicMock(
             return_value=self.enforcement_installer)
         self.enforcement_installer.uninstall = MagicMock(retun_value=None)
@@ -75,6 +70,13 @@ class UpdateRulesTestCase(TestCase):
 
         update_rules_use_case.execute(
             clusters=[self.cluster],
-            old_enforcements=self.old_enforcement,
-            new_enforcements=self.new_enforcement
+            old_enforcements=[self.old_enforcement],
+            new_enforcements=[self.new_enforcement]
         )
+
+        self.assertTrue(self.enforcement_change_detector_builder.build.called)
+        self.assertTrue(self.cluster_group_builder.build.called)
+        self.assertTrue(self.enforcement_installer_builder.build.called)
+        self.assertTrue(self.enforcement_installer.uninstall.called)
+        self.assertTrue(self.enforcement_installer.install.called)
+            

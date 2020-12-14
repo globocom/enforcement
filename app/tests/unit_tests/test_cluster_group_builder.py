@@ -29,3 +29,15 @@ class ClusterGroupBuilderTestCase(TestCase):
         ])
 
         self.assertEqual(self.cluster_group, cluster_group)
+
+
+    def test_build_throws_exception(self) -> None:
+        cluster_group_builder = ClusterGroupBuilder(
+            cluster_repository=self.cluster_repository,
+            project_repository=self.project_repository
+        )
+
+        with self.assertRaises(Exception) as context:
+            cluster_group_builder.build()
+
+        self.assertTrue('required positional argument' in str(context.exception))

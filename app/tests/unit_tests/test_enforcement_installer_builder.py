@@ -37,3 +37,13 @@ class EnforcementInstallerBuilderTestCase(TestCase):
         )
 
         self.assertEqual(self.enforcement_installer, enforcement_installer)
+
+    def test_build_throws_exception(self) -> None:
+        enforcement_installer_builder = EnforcementInstallerBuilder(
+            enforcement_repository=self.enforcement_repository
+        )
+        
+        with self.assertRaises(Exception) as context:
+            enforcement_installer_builder.build()
+
+        self.assertTrue('required positional argument' in str(context.exception))

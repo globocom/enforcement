@@ -20,3 +20,11 @@ class EnforcementChangeDetectorBuilderTestCase(TestCase):
             new_enforcements_list=[self.enforcement])
         self.assertEqual(self.enforcement_installer,
                          enforcement_change_detector)
+
+    def test_build_throws_exception(self) -> None:
+        enforcement_change_detector_builder = EnforcementChangeDetectorBuilder()
+        
+        with self.assertRaises(Exception) as context:
+            enforcement_change_detector_builder.build()
+
+        self.assertTrue('required positional argument' in str(context.exception))
