@@ -21,7 +21,7 @@ class EnforcementChangeDetectorBuilderTestCase(TestCase):
         self.assertEqual(self.enforcement_installer,
                          enforcement_change_detector)
 
-    def test_build_throws_exception(self) -> None:
+    def test_build_throws_exception_required_argument(self) -> None:
         enforcement_change_detector_builder = EnforcementChangeDetectorBuilder()
         
         with self.assertRaises(Exception) as context:

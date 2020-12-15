@@ -8,9 +8,9 @@ from app.domain.source_locator import SourceLocator
 
 class SourceLocatorTestCase(TestCase):
     def setUp(self) -> None:
-        self.source_repository: SourceRepository = SourceRepository()
-        self.rancher_source: RancherSource = RancherSource()
-        self.enforcement_source: EnforcementSource = EnforcementSource(
+        self.source_repository = SourceRepository()
+        self.rancher_source = RancherSource()
+        self.enforcement_source = EnforcementSource(
             rancher=self.rancher_source
         )
 
@@ -22,3 +22,12 @@ class SourceLocatorTestCase(TestCase):
             self.enforcement_source)
 
         self.assertTrue(type(source_repository) is SourceRepository)
+
+
+    def test_throws_exception_required_argument(self) -> None:
+        source_locator = SourceLocator()
+
+        with self.assertRaises(Exception) as context:
+            source_locator.locate()
+
+        self.assertTrue('required positional argument' in str(context.exception))

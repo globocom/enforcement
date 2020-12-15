@@ -31,7 +31,7 @@ class ClusterGroupBuilderTestCase(TestCase):
         self.assertEqual(self.cluster_group, cluster_group)
 
 
-    def test_build_throws_exception(self) -> None:
+    def test_build_throws_exception_required_argument(self) -> None:
         cluster_group_builder = ClusterGroupBuilder(
             cluster_repository=self.cluster_repository,
             project_repository=self.project_repository

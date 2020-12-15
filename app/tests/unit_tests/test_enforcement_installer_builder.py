@@ -38,7 +38,7 @@ class EnforcementInstallerBuilderTestCase(TestCase):
 
         self.assertEqual(self.enforcement_installer, enforcement_installer)
 
-    def test_build_throws_exception(self) -> None:
+    def test_build_throws_exception_required_argument(self) -> None:
         enforcement_installer_builder = EnforcementInstallerBuilder(
             enforcement_repository=self.enforcement_repository
         )
