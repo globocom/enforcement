@@ -28,6 +28,8 @@ jobs:
         run: pipenv run mypy ./**/*.py
 
       - name: Run unit tests
-        uses: onichandame/python-test-action@master
+        run: 
+          pwd
+          python -m unittest -v
         
   
