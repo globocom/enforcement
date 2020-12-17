@@ -4,10 +4,10 @@ on: [ push, pull_request ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     strategy:
       matrix:
-        python-version: [ 3.8 ]
+        python-version: [3.8]
 
     steps:
       - name: Checkout
@@ -26,4 +26,9 @@ jobs:
 
       - name: Run static type tests
         run: pipenv run mypy ./**/*.py
-  
+      
+      - name: Run tests
+        run: make tests dir=app/test
+      
+      - name: Run coverage
+        run: make coverage
