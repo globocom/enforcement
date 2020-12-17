@@ -27,9 +27,6 @@ jobs:
       - name: Run static type tests
         run: pipenv run mypy ./**/*.py
               
-      - name: Enable virtualenv
-        run: pipenv shell
-
       - name: Run tests
         run: make test dir=app/test
       
