@@ -26,8 +26,7 @@ jobs:
 
       - name: Run static type tests
         run: pipenv run mypy ./**/*.py
-              
-      - name: Run tests and coverage
-        run: | 
+      
+      - name: Run tests
+        run:  
           make test dir=app/test
-          make coverage
