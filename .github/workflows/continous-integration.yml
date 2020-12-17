@@ -28,7 +28,7 @@ jobs:
         run: pipenv run mypy ./**/*.py
       
       - name: Run tests
-        run: make tests dir=app/test
+        run: make test dir=app/test
       
       - name: Run coverage
         run: make coverage
