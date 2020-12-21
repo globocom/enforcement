@@ -106,7 +106,7 @@ The rancher.filters, rancher.labels and rancher.ignore fields are specific to Ra
 
 To run the tests without coverage you may call: 
   ```shell
-  make test 
+  make test
   ```
 
 To run the tests with coverage you may call: 
@@ -114,7 +114,7 @@ To run the tests with coverage you may call:
   make coverage 
   ```
 
-To genereate the html you may call or if you prefer json or xml you can put as well: 
+To generate the html you may call: 
   ```shell
-  make generate file=html 
+  make generate
   ```  
