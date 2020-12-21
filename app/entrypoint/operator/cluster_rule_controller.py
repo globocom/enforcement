@@ -44,12 +44,12 @@ class ClusterRuleController(BaseController):
             for cluster in current_status.clusters
         ]
         cluster_rule = ClusterRule(**spec)
-        current_clusters = self._sync_rules_use_case.execute(cluster_rule, current_clusters)
+        response = self._sync_rules_use_case.execute(cluster_rule, current_clusters)
 
-        #new_status = ClusterRuleController._make_status(current_clusters)
+        new_status = ClusterRuleController._make_status(response)
 
-        #if new_status != current_status.dict():
-            #return new_status
+        if new_status != current_status.dict():
+            return new_status
 
     def create(self, spec: dict, **kwargs):
         cluster_rule = ClusterRule(**spec)
