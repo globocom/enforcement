@@ -1,6 +1,13 @@
 from app.domain.use_case.apply_rules import ApplyRulesUseCase
 from app.domain.use_case.sync_rules import SyncRulesUseCase
 from app.domain.use_case.update_rules import UpdateRulesUseCase
-from app.domain.use_case.responses import RulesResponse
+from app.domain.use_case.responses import RulesResponse, UpdateRulesResponse, SyncRulesResponse
 
-__all__ = ['ApplyRulesUseCase', 'SyncRulesUseCase', 'UpdateRulesUseCase', 'RulesResponse']
+__all__ = [
+    'ApplyRulesUseCase',
+    'SyncRulesUseCase',
+    'UpdateRulesUseCase',
+    'RulesResponse',
+    'SyncRulesResponse',
+    'UpdateRulesResponse'
+]

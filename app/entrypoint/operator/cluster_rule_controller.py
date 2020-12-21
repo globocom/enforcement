@@ -4,8 +4,10 @@ import kopf
 import attr
 
 from app.entrypoint.operator.base_controller import BaseController
-from app.domain.entities import ClusterRule, ClusterRuleStatus, Cluster, Enforcement
-from app.domain.use_case import ApplyRulesUseCase, SyncRulesUseCase, UpdateRulesUseCase, RulesResponse
+from app.domain.entities import ClusterRule, ClusterRuleStatus, SyncClusterRuleStatus, UpdateClusterRuleStatus,\
+    Cluster, Enforcement
+from app.domain.use_case import ApplyRulesUseCase, SyncRulesUseCase, UpdateRulesUseCase, RulesResponse, \
+    UpdateRulesResponse, SyncRulesResponse
 
 
 @inject
@@ -29,11 +31,13 @@ class ClusterRuleController(BaseController):
             for cluster in current_status.clusters
         ]
 
-        self._update_rules_use_case.execute(
+        response = self._update_rules_use_case.execute(
             clusters=current_clusters,
             old_enforcements=old_enforcement_list,
             new_enforcements=new_enforcement_list,
         )
+
+        return ClusterRuleController._make_update_status(response)
 
     def sync(self, name: str, spec: dict, status: dict, logger, **kwargs):
         logger.debug(f"sync clusters for %s", name)
@@ -46,7 +50,7 @@ class ClusterRuleController(BaseController):
         cluster_rule = ClusterRule(**spec)
         response = self._sync_rules_use_case.execute(cluster_rule, current_clusters)
 
-        new_status = ClusterRuleController._make_status(response)
+        new_status = ClusterRuleController._make_sync_status(response)
 
         if new_status != current_status.dict():
             return new_status
@@ -55,7 +59,7 @@ class ClusterRuleController(BaseController):
         cluster_rule = ClusterRule(**spec)
         response = self._apply_rules_use_case.execute(cluster_rule)
 
-        return ClusterRuleController._make_status(response)
+        return ClusterRuleController._make_create_status(response)
 
     def register(self):
         self.register_method(kopf.on.create, self.create, self.KIND, id='create')
@@ -69,7 +73,7 @@ class ClusterRuleController(BaseController):
         return [Enforcement(**enforcement_map) for enforcement_map in enforcement_map_list]
 
     @classmethod
-    def _make_status(cls, response: RulesResponse) -> dict:
+    def _make_create_status(cls, response: RulesResponse) -> dict:
         status = ClusterRuleStatus(
             install_errors=[
                 enforcement.name for enforcement in response.install_errors
@@ -79,6 +83,21 @@ class ClusterRuleController(BaseController):
             ]
         )
         return status.dict()
+
+    @classmethod
+    def _make_sync_status(cls, response: SyncRulesResponse) -> dict:
+        return SyncClusterRuleStatus(
+            clusters=[
+                {"name": cluster.name, "url": cluster.url} for cluster in response.clusters
+            ]
+        ).dict()
+
+    @classmethod
+    def _make_update_status(cls, response: UpdateRulesResponse) -> dict:
+        return UpdateClusterRuleStatus(
+            install_errors=[enforcement.name for enforcement in response.install_errors],
+            update_errors=[enforcement.name for enforcement in response.update_errors]
+        ).dict()
 
     @classmethod
     def _restore_status(cls, status: dict) -> ClusterRuleStatus:

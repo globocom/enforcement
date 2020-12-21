@@ -7,6 +7,8 @@ from app.domain.cluster_group_builder import ClusterGroupBuilder
 from app.domain.enforcement_installer import EnforcementInstaller
 from app.domain.enforcement_change_detector import EnforcementChangeDetector
 
+from app.domain.use_case.responses import UpdateRulesResponse
+
 
 @attr.s(auto_attribs=True)
 class UpdateRulesUseCase:
@@ -14,7 +16,7 @@ class UpdateRulesUseCase:
     _cluster_group_builder: ClusterGroupBuilder
 
     def execute(self, clusters: List[Cluster], old_enforcements: List[Enforcement],
-                new_enforcements: List[Enforcement]):
+                new_enforcements: List[Enforcement]) -> UpdateRulesResponse:
 
         change_detector = EnforcementChangeDetector(
             new_enforcements_list=new_enforcements,
@@ -22,14 +24,20 @@ class UpdateRulesUseCase:
         )
 
         self._uninstall_removed_enforcements(change_detector, clusters)
-        self._install_added_enforcements(change_detector, clusters)
-        self._update_change_enforcements(change_detector, clusters)
+        add_errors = self._install_added_enforcements(change_detector, clusters)
+        update_errors = self._update_change_enforcements(change_detector, clusters)
 
-    def _update_change_enforcements(self, change_detector: EnforcementChangeDetector, clusters: List[Cluster]):
+        return UpdateRulesResponse(
+            install_errors=add_errors,
+            update_errors=update_errors
+        )
+
+    def _update_change_enforcements(self, change_detector: EnforcementChangeDetector,
+                                    clusters: List[Cluster]) -> List[Enforcement]:
         change_enforcements = change_detector.detect_change_enforcements()
 
         if not change_enforcements:
-            return
+            return []
 
         cluster_group_change_enfocement = self._cluster_group_builder.build(
             clusters=clusters
@@ -41,13 +49,14 @@ class UpdateRulesUseCase:
             enforcements=change_enforcements
         )
 
-        enforcement_installer.install()
+        return enforcement_installer.install()
 
-    def _install_added_enforcements(self, change_detector: EnforcementChangeDetector, clusters: List[Cluster]):
+    def _install_added_enforcements(self, change_detector: EnforcementChangeDetector,
+                                    clusters: List[Cluster]) -> List[Enforcement]:
         added_enforcements = change_detector.detect_new_enforcements()
 
         if not added_enforcements:
-            return
+            return []
 
         cluster_group_remove_enfocement = self._cluster_group_builder.build(
             clusters=clusters
@@ -59,7 +68,7 @@ class UpdateRulesUseCase:
             enforcements=added_enforcements
         )
 
-        enforcement_installer.install()
+        return enforcement_installer.install()
 
     def _uninstall_removed_enforcements(self, change_detector: EnforcementChangeDetector, clusters: List[Cluster]):
         removed_enforcements = change_detector.detect_removed_enforcements()
