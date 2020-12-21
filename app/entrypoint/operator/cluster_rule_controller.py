@@ -5,7 +5,7 @@ import attr
 
 from app.entrypoint.operator.base_controller import BaseController
 from app.domain.entities import ClusterRule, ClusterRuleStatus, Cluster, Enforcement
-from app.domain.use_case import ApplyRulesUseCase, SyncRulesUseCase, UpdateRulesUseCase
+from app.domain.use_case import ApplyRulesUseCase, SyncRulesUseCase, UpdateRulesUseCase, RulesResponse
 
 
 @inject
@@ -46,16 +46,16 @@ class ClusterRuleController(BaseController):
         cluster_rule = ClusterRule(**spec)
         current_clusters = self._sync_rules_use_case.execute(cluster_rule, current_clusters)
 
-        new_status = ClusterRuleController._make_status(current_clusters)
+        #new_status = ClusterRuleController._make_status(current_clusters)
 
-        if new_status != current_status.dict():
-            return new_status
+        #if new_status != current_status.dict():
+            #return new_status
 
     def create(self, spec: dict, **kwargs):
         cluster_rule = ClusterRule(**spec)
-        clusters_list = self._apply_rules_use_case.execute(cluster_rule)
+        response = self._apply_rules_use_case.execute(cluster_rule)
 
-        return ClusterRuleController._make_status(clusters_list)
+        return ClusterRuleController._make_status(response)
 
     def register(self):
         self.register_method(kopf.on.create, self.create, self.KIND, id='create')
@@ -69,10 +69,13 @@ class ClusterRuleController(BaseController):
         return [Enforcement(**enforcement_map) for enforcement_map in enforcement_map_list]
 
     @classmethod
-    def _make_status(cls, clusters: List[Cluster]) -> dict:
+    def _make_status(cls, response: RulesResponse) -> dict:
         status = ClusterRuleStatus(
+            install_errors=[
+                enforcement.name for enforcement in response.install_errors
+            ],
             clusters=[
-                {"name": cluster.name, "url": cluster.url} for cluster in clusters
+                {"name": cluster.name, "url": cluster.url} for cluster in response.clusters
             ]
         )
         return status.dict()

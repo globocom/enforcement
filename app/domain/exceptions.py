@@ -1,0 +1,5 @@
+
+
+class EnforcementInvalidException(Exception):
+    pass
+

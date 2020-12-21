@@ -4,6 +4,7 @@ from app.domain.entities import ClusterRule, Cluster
 from app.domain.source_locator import SourceLocator
 from app.domain.repositories import EnforcementRepository
 from app.domain.cluster_group_builder import ClusterGroupBuilder
+from app.domain.use_case.responses import RulesResponse
 
 from app.domain.enforcement_installer import EnforcementInstaller
 
@@ -14,7 +15,7 @@ class ApplyRulesUseCase:
     _enforcement_repository: EnforcementRepository
     _cluster_group_builder: ClusterGroupBuilder
 
-    def execute(self, cluster_rule: ClusterRule) -> List[Cluster]:
+    def execute(self, cluster_rule: ClusterRule) -> RulesResponse:
         source = self._source_locator.locate(cluster_rule.source)
         clusters = source.get_clusters()
         cluster_group = self._cluster_group_builder.build(clusters=clusters)
@@ -25,7 +26,12 @@ class ApplyRulesUseCase:
             enforcements=cluster_rule.enforcements,
             cluster_group=cluster_group
         )
-        enforcement_installer.install()
 
-        return cluster_group.clusters
+        enforcement_errors = enforcement_installer.install()
+        response = RulesResponse(
+            clusters=clusters,
+            install_errors=enforcement_errors
+        )
+
+        return response
 

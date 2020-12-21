@@ -12,11 +12,13 @@ from argocd_client import (
     V1alpha1ApplicationList,
     V1alpha1ApplicationSource,
     V1alpha1ApplicationSourceHelm,
-    V1alpha1HelmParameter
+    V1alpha1HelmParameter,
+    ApiException
 )
 
 from app.domain.entities import Enforcement, Helm
 from app.domain.repositories import EnforcementRepository
+from app.domain.exceptions import EnforcementInvalidException
 from app.infra.logger import logger
 
 
@@ -26,11 +28,23 @@ class ApplicationService(EnforcementRepository):
 
     def create_enforcement(self, cluster_name: str, instance_name: str, enforcement: Enforcement) -> None:
         application = self._make_application_by_enforcement(cluster_name, instance_name, enforcement)
-        self._application_service.create_mixin9(application)
+
+        try:
+            self._application_service.create_mixin9(application)
+        except ApiException as e:
+            if e.status == 400:
+                raise EnforcementInvalidException(e.__str__())
+            raise e
 
     def update_enforcement(self, cluster_name: str, instance_name: str, enforcement: Enforcement) -> None:
         application = self._make_application_by_enforcement(cluster_name, instance_name, enforcement)
-        self._application_service.update_mixin9(application.metadata.name, application)
+
+        try:
+            self._application_service.update_mixin9(application.metadata.name, application)
+        except ApiException as e:
+            if e.status == 400:
+                raise EnforcementInvalidException(e.__str__())
+            raise e
 
     def remove_enforcement(self, enforcement_name: str) -> None:
         application = V1alpha1Application(
