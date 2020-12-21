@@ -1,5 +1,3 @@
-build:
-	docker build -t enforcement .
 test:
 	pipenv run coverage run -m unittest discover -s $(dir) -v
 coverage:

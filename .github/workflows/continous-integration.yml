@@ -1,4 +1,4 @@
-name: CI
+name: build
 
 on: [ push, pull_request ]
 
@@ -30,8 +30,3 @@ jobs:
       - name: Run tests
         run:  
           make test dir=app/test
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: coverage
-          path: enforcement/.coverage
