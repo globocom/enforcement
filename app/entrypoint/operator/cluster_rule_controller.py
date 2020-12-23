@@ -62,9 +62,14 @@ class ClusterRuleController(BaseController):
         return ClusterRuleController._make_create_status(response)
 
     def register(self):
-        self.register_method(kopf.on.create, self.create, self.KIND, id='create')
-        self.register_method(kopf.on.field, self.update, self.KIND, id='update', field='spec.enforcements')
-        self.register_method(kopf.on.timer, self.sync, self.KIND, id='sync', interval=6, initial_delay=15, idle=10)
+        retries_params = {"backoff": 10, "retries": 10}
+        self.register_method(kopf.on.create, self.create, self.KIND, id='create', **retries_params)
+
+        self.register_method(kopf.on.field, self.update, self.KIND, id='update',
+                             field='spec.enforcements', **retries_params)
+
+        self.register_method(kopf.on.timer, self.sync, self.KIND, id='sync', interval=6,
+                             initial_delay=15, idle=10)
 
     @classmethod
     def _make_enforcement_list(cls, enforcement_map_list) -> List[Enforcement]:
