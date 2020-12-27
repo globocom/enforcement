@@ -18,6 +18,9 @@ class UpdateRulesUseCase:
     def execute(self, clusters: List[Cluster], old_enforcements: List[Enforcement],
                 new_enforcements: List[Enforcement]) -> UpdateRulesResponse:
 
+        if not clusters:
+            return UpdateRulesResponse(install_errors=[], update_errors=[])
+
         change_detector = EnforcementChangeDetector(
             new_enforcements_list=new_enforcements,
             old_enforcements_list=old_enforcements

@@ -62,14 +62,14 @@ class ClusterRuleController(BaseController):
         return ClusterRuleController._make_create_status(response)
 
     def register(self):
-        retries_params = {"backoff": 10, "retries": 10}
-        self.register_method(kopf.on.create, self.create, self.KIND, id='create', **retries_params)
+
+        self.register_method(kopf.on.create, self.create, self.KIND, id='create', errors=kopf.ErrorsMode.PERMANENT)
 
         self.register_method(kopf.on.field, self.update, self.KIND, id='update',
-                             field='spec.enforcements', **retries_params)
+                             field='spec.enforcements', errors=kopf.ErrorsMode.PERMANENT)
 
         self.register_method(kopf.on.timer, self.sync, self.KIND, id='sync', interval=6,
-                             initial_delay=15, idle=10)
+                             initial_delay=20, idle=15, errors=kopf.ErrorsMode.PERMANENT)
 
     @classmethod
     def _make_enforcement_list(cls, enforcement_map_list) -> List[Enforcement]:
@@ -107,7 +107,7 @@ class ClusterRuleController(BaseController):
     @classmethod
     def _restore_status(cls, status: dict) -> ClusterRuleStatus:
         current_status = status.get('sync') or status.get('create')
-        return ClusterRuleStatus(**current_status)
+        return ClusterRuleStatus(**current_status) if current_status else ClusterRuleStatus()
 
 
 

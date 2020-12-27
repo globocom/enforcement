@@ -37,7 +37,7 @@ class ClusterRule(BaseModel):
 
 
 class ClusterRuleStatus(BaseModel):
-    clusters: List[dict]
+    clusters: List[dict] = []
     install_errors: List[str] = []
 
 
