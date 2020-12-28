@@ -7,7 +7,7 @@ from app.domain.repositories import EnforcementRepository
 from app.domain.cluster_group_builder import ClusterGroupBuilder
 from app.domain.enforcement_installer import EnforcementInstaller
 
-from app.domain.use_case.responses import SyncRulesResponse
+from app.domain.use_case.responses import RulesResponse
 
 
 @attr.s(auto_attribs=True)
@@ -16,7 +16,7 @@ class SyncRulesUseCase:
     _enforcement_repository: EnforcementRepository
     _cluster_group_builder: ClusterGroupBuilder
 
-    def execute(self, cluster_rule: ClusterRule, current_clusters: List[Cluster]) -> SyncRulesResponse:
+    def execute(self, cluster_rule: ClusterRule, current_clusters: List[Cluster]) -> RulesResponse:
         source_repository = self._source_locator.locate(cluster_rule.source)
         source_clusters = source_repository.get_clusters()
 
@@ -44,7 +44,7 @@ class SyncRulesUseCase:
 
         enforcement_installer.install()
 
-        return SyncRulesResponse(
+        return RulesResponse(
             clusters=source_clusters
         )
 

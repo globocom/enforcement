@@ -17,6 +17,7 @@ class ClusterRuleController(BaseController):
     _sync_rules_use_case: SyncRulesUseCase
     _update_rules_use_case: UpdateRulesUseCase
     KIND: ClassVar[str] = 'clusterrules'
+    ID: ClassVar[str] = "sync/spec.enforcements"
 
     def update(self, old: List[dict], new: List[dict], status: dict, **kwargs):
         if not old:
@@ -56,6 +57,7 @@ class ClusterRuleController(BaseController):
             return new_status
 
     def create(self, spec: dict, **kwargs):
+
         cluster_rule = ClusterRule(**spec)
         response = self._apply_rules_use_case.execute(cluster_rule)
 
@@ -63,13 +65,14 @@ class ClusterRuleController(BaseController):
 
     def register(self):
 
-        self.register_method(kopf.on.create, self.create, self.KIND, id='create', errors=kopf.ErrorsMode.PERMANENT)
+        self.register_method(kopf.on.create, self.create, self.KIND, id=ClusterRuleController.ID,
+                             errors=kopf.ErrorsMode.PERMANENT)
 
-        self.register_method(kopf.on.field, self.update, self.KIND, id='update',
-                             field='spec.enforcements', errors=kopf.ErrorsMode.PERMANENT)
+        self.register_method(kopf.on.field, self.update, self.KIND, id='sync',
+                             field='spec.enforcements', errors=kopf.ErrorsMode.TEMPORARY, backoff=10)
 
-        self.register_method(kopf.on.timer, self.sync, self.KIND, id='sync', interval=6,
-                             initial_delay=20, idle=15, errors=kopf.ErrorsMode.PERMANENT)
+        self.register_method(kopf.on.timer, self.sync, self.KIND, id=ClusterRuleController.ID,
+                             interval=6, initial_delay=20, idle=15, errors=kopf.ErrorsMode.PERMANENT)
 
     @classmethod
     def _make_enforcement_list(cls, enforcement_map_list) -> List[Enforcement]:
@@ -106,7 +109,7 @@ class ClusterRuleController(BaseController):
 
     @classmethod
     def _restore_status(cls, status: dict) -> ClusterRuleStatus:
-        current_status = status.get('sync') or status.get('create')
+        current_status = status.get(ClusterRuleController.ID)
         return ClusterRuleStatus(**current_status) if current_status else ClusterRuleStatus()
 
 

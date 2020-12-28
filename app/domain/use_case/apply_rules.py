@@ -1,6 +1,6 @@
 import attr
 from typing import List
-from app.domain.entities import ClusterRule, Cluster
+from app.domain.entities import ClusterRule
 from app.domain.source_locator import SourceLocator
 from app.domain.repositories import EnforcementRepository
 from app.domain.cluster_group_builder import ClusterGroupBuilder

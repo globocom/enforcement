@@ -7,7 +7,7 @@ from app.domain.cluster_group_builder import ClusterGroupBuilder
 from app.domain.enforcement_installer import EnforcementInstaller
 from app.domain.enforcement_change_detector import EnforcementChangeDetector
 
-from app.domain.use_case.responses import UpdateRulesResponse
+from app.domain.use_case.responses import RulesResponse
 
 
 @attr.s(auto_attribs=True)
@@ -16,10 +16,10 @@ class UpdateRulesUseCase:
     _cluster_group_builder: ClusterGroupBuilder
 
     def execute(self, clusters: List[Cluster], old_enforcements: List[Enforcement],
-                new_enforcements: List[Enforcement]) -> UpdateRulesResponse:
+                new_enforcements: List[Enforcement]) -> RulesResponse:
 
         if not clusters:
-            return UpdateRulesResponse(install_errors=[], update_errors=[])
+            return RulesResponse(install_errors=[], update_errors=[])
 
         change_detector = EnforcementChangeDetector(
             new_enforcements_list=new_enforcements,
@@ -30,7 +30,7 @@ class UpdateRulesUseCase:
         add_errors = self._install_added_enforcements(change_detector, clusters)
         update_errors = self._update_change_enforcements(change_detector, clusters)
 
-        return UpdateRulesResponse(
+        return RulesResponse(
             install_errors=add_errors,
             update_errors=update_errors
         )
