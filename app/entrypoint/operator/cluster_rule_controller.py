@@ -4,10 +4,8 @@ import kopf
 import attr
 
 from app.entrypoint.operator.base_controller import BaseController
-from app.domain.entities import ClusterRule, ClusterRuleStatus, SyncClusterRuleStatus, UpdateClusterRuleStatus,\
-    Cluster, Enforcement
-from app.domain.use_case import ApplyRulesUseCase, SyncRulesUseCase, UpdateRulesUseCase, RulesResponse, \
-    UpdateRulesResponse, SyncRulesResponse
+from app.domain.entities import ClusterRule, ClusterRuleStatus, Cluster, Enforcement
+from app.domain.use_case import ApplyRulesUseCase, SyncRulesUseCase, UpdateRulesUseCase, RulesResponse
 
 
 @inject

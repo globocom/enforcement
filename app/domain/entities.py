@@ -40,12 +40,3 @@ class ClusterRuleStatus(BaseModel):
     clusters: List[dict] = []
     install_errors: List[str] = []
 
-
-class SyncClusterRuleStatus(BaseModel):
-    clusters: List[dict]
-
-
-class UpdateClusterRuleStatus(BaseModel):
-    install_errors: List[str]
-    update_errors: List[str]
-
