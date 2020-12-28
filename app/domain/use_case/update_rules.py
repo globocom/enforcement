@@ -31,8 +31,7 @@ class UpdateRulesUseCase:
         update_errors = self._update_change_enforcements(change_detector, clusters)
 
         return RulesResponse(
-            install_errors=add_errors,
-            update_errors=update_errors
+            install_errors=add_errors + update_errors
         )
 
     def _update_change_enforcements(self, change_detector: EnforcementChangeDetector,
