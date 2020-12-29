@@ -12,6 +12,7 @@ injector = "*"
 requests = "*"
 kopf = "*"
 pydantic = "*"
+kubernetes = "*"
 
 [requires]
 python_version = "3.8"

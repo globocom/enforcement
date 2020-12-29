@@ -6,7 +6,7 @@ import attr
 from app.entrypoint.operator.base_controller import BaseController
 from app.domain.entities import ClusterRule, ClusterRuleStatus, Cluster, Enforcement
 from app.domain.use_case import ApplyRulesUseCase, SyncRulesUseCase, UpdateRulesUseCase
-
+from app.entrypoint.operator.kubernetes_helper import KubernetesHelper
 
 @inject
 @attr.s(auto_attribs=True)
@@ -36,6 +36,11 @@ class ClusterRuleController(BaseController):
         )
 
     def sync(self, name: str, spec: dict, status: dict, logger, **kwargs):
+        teste = KubernetesHelper()
+        teste.api = KubernetesHelper.get_kubernetes_api()
+        result = teste.get_namespaced_secret(spec.get('source').get('rancher').get('secretName'), 'default')
+        print(result)
+
         logger.debug(f"sync clusters for %s", name)
 
         current_status = ClusterRuleController._restore_status(status)
@@ -52,6 +57,11 @@ class ClusterRuleController(BaseController):
             return new_status
 
     def create(self, spec: dict, **kwargs):
+        teste = KubernetesHelper()
+        teste.api = KubernetesHelper.get_kubernetes_api()
+        result = teste.get_namespaced_secret(spec.get('source').get('rancher').get('secretName'), 'default')
+        print(result)
+
         cluster_rule = ClusterRule(**spec)
         clusters_list = self._apply_rules_use_case.execute(cluster_rule)
 
@@ -61,6 +71,7 @@ class ClusterRuleController(BaseController):
         self.register_method(kopf.on.create, self.create, self.KIND, id='create')
         self.register_method(kopf.on.field, self.update, self.KIND, id='update', field='spec.enforcements')
         self.register_method(kopf.on.timer, self.sync, self.KIND, id='sync', interval=6, initial_delay=15, idle=10)
+
 
     @classmethod
     def _make_enforcement_list(cls, enforcement_map_list) -> List[Enforcement]:
