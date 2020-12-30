@@ -16,6 +16,10 @@ class ClusterRuleController(BaseController):
     _update_rules_use_case: UpdateRulesUseCase
     KIND: ClassVar[str] = 'clusterrules'
     ID: ClassVar[str] = "sync/spec.enforcements"
+    BACKOFF: ClassVar[int] = 10
+    SYNC_INTERVAL: ClassVar[int] = 6
+    SYNC_INITIAL_DELAY: ClassVar[int] = 20
+    SYNC_IDLE: ClassVar[int] = 15
 
     def update(self, old: List[dict], new: List[dict], status: dict, **kwargs):
         if not old:
@@ -85,10 +89,11 @@ class ClusterRuleController(BaseController):
     def register(self):
 
         self.register_method(kopf.on.create, self.create, self.KIND, id=ClusterRuleController.ID,
-                             errors=kopf.ErrorsMode.TEMPORARY, backoff=10)
+                             errors=kopf.ErrorsMode.TEMPORARY, backoff=ClusterRuleController.BACKOFF)
 
         self.register_method(kopf.on.field, self.update, self.KIND, id='sync',
-                             field='spec.enforcements', errors=kopf.ErrorsMode.TEMPORARY, backoff=10)
+                             field='spec.enforcements', errors=kopf.ErrorsMode.TEMPORARY,
+                             backoff=ClusterRuleController.BACKOFF)
 
         self.register_method(kopf.on.timer, self.sync, self.KIND, id=ClusterRuleController.ID,
                              interval=6, initial_delay=20, idle=15, errors=kopf.ErrorsMode.PERMANENT)
