@@ -12,9 +12,6 @@ class Cluster(BaseModel):
 class Helm(BaseModel):
     parameters: Dict[str, str] = None
 
-class SecretSource(BaseModel):
-    password: str = None
-    url: str = None
 
 class RancherSource(BaseModel):
     filters: Dict[str, str] = None
