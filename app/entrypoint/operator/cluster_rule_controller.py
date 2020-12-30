@@ -6,7 +6,7 @@ import attr
 from app.entrypoint.operator.base_controller import BaseController
 from app.domain.entities import ClusterRule, ClusterRuleStatus, Cluster, Enforcement
 from app.domain.use_case import ApplyRulesUseCase, SyncRulesUseCase, UpdateRulesUseCase
-from app.entrypoint.operator.kubernetes_helper import KubernetesHelper
+from app.infra.kubernetes_helper import KubernetesHelper
 
 @inject
 @attr.s(auto_attribs=True)
@@ -14,6 +14,7 @@ class ClusterRuleController(BaseController):
     _apply_rules_use_case: ApplyRulesUseCase
     _sync_rules_use_case: SyncRulesUseCase
     _update_rules_use_case: UpdateRulesUseCase
+    _kubernetes_helper: KubernetesHelper
     KIND: ClassVar[str] = 'clusterrules'
 
     def update(self, old: List[dict], new: List[dict], status: dict, **kwargs):
@@ -36,9 +37,7 @@ class ClusterRuleController(BaseController):
         )
 
     def sync(self, name: str, spec: dict, status: dict, logger, **kwargs):
-        teste = KubernetesHelper()
-        teste.api = KubernetesHelper.get_kubernetes_api()
-        result = teste.get_namespaced_secret(spec.get('source').get('rancher').get('secretName'), 'default')
+        result = self._kubernetes_helper.get_secret_and_decode(spec.get('source').get('rancher').get('secretName'), 'default')
         print(result)
 
         logger.debug(f"sync clusters for %s", name)
@@ -57,9 +56,7 @@ class ClusterRuleController(BaseController):
             return new_status
 
     def create(self, spec: dict, **kwargs):
-        teste = KubernetesHelper()
-        teste.api = KubernetesHelper.get_kubernetes_api()
-        result = teste.get_namespaced_secret(spec.get('source').get('rancher').get('secretName'), 'default')
+        result = self._kubernetes_helper.get_secret_and_decode(spec.get('source').get('rancher').get('secretName'), 'default')
         print(result)
 
         cluster_rule = ClusterRule(**spec)
