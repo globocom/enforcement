@@ -36,19 +36,39 @@ class ClusterRuleController(BaseController):
             new_enforcements=new_enforcement_list,
         )
 
+        enforcements_change = [
+            enforcement.name for enforcement in response.removed_enforcements + response.changed_enforcements
+        ]
+
+        response.install_errors = response.install_errors + list(
+            map(
+                lambda name: Enforcement(name=name, repo=""),
+                filter(
+                    lambda enforcement_name: enforcement_name not in enforcements_change,
+                    current_status.install_errors,
+                )
+            )
+        )
+
+        response.clusters = current_clusters
+
         return ClusterRuleController._make_status(response)
 
     def sync(self, name: str, spec: dict, status: dict, logger, **kwargs):
         logger.debug(f"sync clusters for %s", name)
 
         current_status = ClusterRuleController._restore_status(status)
+
+        if not current_status:
+            return
+
         current_clusters = [
             Cluster(name=cluster['name'], url=cluster['url'], id='', token='')
             for cluster in current_status.clusters
         ]
         cluster_rule = ClusterRule(**spec)
         response = self._sync_rules_use_case.execute(cluster_rule, current_clusters)
-        response.install_errors = current_status.install_errors
+        response.install_errors = [Enforcement(name=name, repo="") for name in current_status.install_errors]
 
         new_status = ClusterRuleController._make_status(response)
 
@@ -65,7 +85,7 @@ class ClusterRuleController(BaseController):
     def register(self):
 
         self.register_method(kopf.on.create, self.create, self.KIND, id=ClusterRuleController.ID,
-                             errors=kopf.ErrorsMode.PERMANENT)
+                             errors=kopf.ErrorsMode.TEMPORARY, backoff=10)
 
         self.register_method(kopf.on.field, self.update, self.KIND, id='sync',
                              field='spec.enforcements', errors=kopf.ErrorsMode.TEMPORARY, backoff=10)
@@ -94,7 +114,7 @@ class ClusterRuleController(BaseController):
     @classmethod
     def _restore_status(cls, status: dict) -> ClusterRuleStatus:
         current_status = status.get(ClusterRuleController.ID)
-        return ClusterRuleStatus(**current_status) if current_status else ClusterRuleStatus()
+        return ClusterRuleStatus(**current_status) if current_status else None
 
 
 

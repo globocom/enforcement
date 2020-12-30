@@ -45,7 +45,7 @@ class SyncRulesUseCase:
         enforcement_installer.install()
 
         return RulesResponse(
-            clusters=source_clusters
+            clusters=source_clusters,
         )
 
 
