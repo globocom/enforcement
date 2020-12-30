@@ -28,9 +28,9 @@ class ProjectService(ProjectRepository):
                     'signatureKeys': [],
                     'syncWindows': []
                 }
-            }
+            },
+            "upsert": True
         }
-            
 
         self._project_service.create_mixin6(body)
 

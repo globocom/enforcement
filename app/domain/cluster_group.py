@@ -13,7 +13,6 @@ class ClusterGroup:
     _cluster_repository: ClusterRepository
     _project_repository: ProjectRepository
 
-
     @property
     def clusters(self):
         return self._clusters

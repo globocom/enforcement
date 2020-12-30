@@ -18,7 +18,7 @@ class RancherDatasource(BaseSource):
         url = f"{self.config.rancher_url}/v3/clusters"
 
         with requests.get(
-            url, verify=False, headers=headers, params=filters,
+            url, verify=False, headers=headers, params=filters, timeout=5,
         ) as response:
             response.raise_for_status()
             return self._filter_and_map_clusters(
