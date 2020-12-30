@@ -104,7 +104,7 @@ class ApplicationService(EnforcementRepository):
                 source=source,
                 sync_policy=V1alpha1SyncPolicy(
                     automated=V1alpha1SyncPolicyAutomated(
-                        prune=False,
+                        prune=True,
                         self_heal=True,
                     )
                 )
