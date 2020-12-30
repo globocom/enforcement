@@ -118,8 +118,10 @@ class ClusterRuleController(BaseController):
 
     @classmethod
     def _restore_status(cls, status: dict) -> ClusterRuleStatus:
-        current_status = status.get(ClusterRuleController.ID)
-        return ClusterRuleStatus(**current_status) if current_status else None
+        current_status: dict = status.get(ClusterRuleController.ID)
+
+        return ClusterRuleStatus(**current_status) \
+            if current_status and current_status.get("clusters") else None
 
 
 
