@@ -24,3 +24,4 @@ spec:
         - cluster1
         - cluster2
         - cluster3
+      secretName: "rancher-secret"

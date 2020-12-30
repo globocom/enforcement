@@ -12,11 +12,15 @@ class Cluster(BaseModel):
 class Helm(BaseModel):
     parameters: Dict[str, str] = None
 
+class SecretSource(BaseModel):
+    password: str = None
+    url: str = None
 
 class RancherSource(BaseModel):
     filters: Dict[str, str] = None
     labels: Dict[str, str] = None
     ignore: List[str] = None
+    secretName: str= None
 
 
 class EnforcementSource(BaseModel):
@@ -38,3 +42,4 @@ class ClusterRule(BaseModel):
 
 class ClusterRuleStatus(BaseModel):
     clusters: List[dict]
+

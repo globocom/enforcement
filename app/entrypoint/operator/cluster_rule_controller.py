@@ -37,9 +37,6 @@ class ClusterRuleController(BaseController):
         )
 
     def sync(self, name: str, spec: dict, status: dict, logger, **kwargs):
-        result = self._kubernetes_helper.get_secret_and_decode(spec.get('source').get('rancher').get('secretName'), 'default')
-        print(result)
-
         logger.debug(f"sync clusters for %s", name)
 
         current_status = ClusterRuleController._restore_status(status)
@@ -48,6 +45,8 @@ class ClusterRuleController(BaseController):
             for cluster in current_status.clusters
         ]
         cluster_rule = ClusterRule(**spec)
+        self._kubernetes_helper.get_secret_and_return_decoded(cluster_rule.source)
+        
         current_clusters = self._sync_rules_use_case.execute(cluster_rule, current_clusters)
 
         new_status = ClusterRuleController._make_status(current_clusters)
@@ -56,10 +55,9 @@ class ClusterRuleController(BaseController):
             return new_status
 
     def create(self, spec: dict, **kwargs):
-        result = self._kubernetes_helper.get_secret_and_decode(spec.get('source').get('rancher').get('secretName'), 'default')
-        print(result)
-
         cluster_rule = ClusterRule(**spec)
+        self._kubernetes_helper.get_secret_and_return_decoded(cluster_rule.source)
+
         clusters_list = self._apply_rules_use_case.execute(cluster_rule)
 
         return ClusterRuleController._make_status(clusters_list)
