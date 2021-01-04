@@ -109,12 +109,12 @@ To run the tests without coverage you may call:
   make test
   ```
 
-To run the tests with coverage you may call: 
+To run the tests with coverage you may call and before called make test: 
   ```shell
   make coverage 
   ```
 
-To generate the html you may call: 
+To generate the html you may call and called make test and make coverage before: 
   ```shell
   make generate
   ```  

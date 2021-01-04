@@ -1,6 +1,8 @@
-test-project:
+all: tests coverage generate
+
+tests:
 	pipenv run coverage run -m unittest discover -s test -v
-coverage:
+coverage: tests
 	pipenv run coverage report -m 
-generate:
+generate: coverage
 	pipenv run coverage html
