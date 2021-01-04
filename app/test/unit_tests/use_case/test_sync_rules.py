@@ -64,10 +64,11 @@ class SyncRulesTestCase(TestCase):
             enforcement_installer_builder=self.enforcement_installer_builder
         )
 
-        cluster: List[Cluster] = sync_rules.execute(
+        response = sync_rules.execute(
             self.cluster_rule, self.cluster)
 
-        self.assertEqual(1, len(cluster))
+        self.assertEqual(1, len(response.clusters))
+        self.assertEqual(0, len(response.install_errors))
         self.assertTrue(self.source_locator.locate.called)
         self.assertTrue(self.source_repository.get_clusters.called)
         self.assertTrue(self.cluster_group_builder.build.called)

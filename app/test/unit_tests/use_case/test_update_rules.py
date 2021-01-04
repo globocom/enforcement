@@ -67,12 +67,14 @@ class UpdateRulesTestCase(TestCase):
             enforcement_change_detector_builder=self.enforcement_change_detector_builder
         )
 
-        update_rules_use_case.execute(
+        response = update_rules_use_case.execute(
             clusters=[self.cluster],
             old_enforcements=[self.old_enforcement],
             new_enforcements=[self.new_enforcement]
         )
 
+        self.assertEqual(0, len(response.clusters))
+        self.assertEqual(0, len(response.install_errors))
         self.assertTrue(self.enforcement_change_detector_builder.build.called)
         self.assertTrue(self.cluster_group_builder.build.called)
         self.assertTrue(self.enforcement_installer_builder.build.called)

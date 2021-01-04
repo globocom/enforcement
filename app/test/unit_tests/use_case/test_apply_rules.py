@@ -63,9 +63,10 @@ class ApplyRulesTestCase(TestCase):
             enforcement_installer_builder=self.enforcement_installer_builder
         )
 
-        cluster = apply_rules.execute(self.cluster_rule)
+        response = apply_rules.execute(self.cluster_rule)
 
-        self.assertEqual(1, len(cluster))
+        self.assertEqual(1, len(response.clusters))
+        self.assertEqual(0, len(response.install_errors))
         self.assertTrue(self.source_locator.locate.called)
         self.assertTrue(self.source_repository.get_clusters.called)
         self.assertTrue(self.cluster_group_builder.build.called)
