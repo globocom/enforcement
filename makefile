@@ -1,5 +1,5 @@
-test:
-	pipenv run coverage run -m unittest discover -s app/test -v
+test-project:
+	pipenv run coverage run -m unittest discover -s test -v
 coverage:
 	pipenv run coverage report -m 
 generate:
