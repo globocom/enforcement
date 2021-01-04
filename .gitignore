@@ -143,3 +143,5 @@ config.ini
 crd
 
 .vscode/
+
+Pipfile.lock

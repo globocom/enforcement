@@ -62,7 +62,6 @@ class UpdateRulesTestCase(TestCase):
         self.enforcement_installer.install = MagicMock(retun_value=None)
 
         update_rules_use_case = UpdateRulesUseCase(
-            enforcement_repository=self.enforcement_repository,
             cluster_group_builder=self.cluster_group_builder,
             enforcement_installer_builder=self.enforcement_installer_builder,
             enforcement_change_detector_builder=self.enforcement_change_detector_builder

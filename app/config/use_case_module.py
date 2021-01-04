@@ -13,11 +13,10 @@ class UseCaseModule(Module):
     @provider
     @singleton
     def provider_apply_rules(
-            self, locator: SourceLocator, enforcement_repo: EnforcementRepository,
+            self, locator: SourceLocator,
             cluster_group_builder: ClusterGroupBuilder, enforcement_installer_builder: EnforcementInstallerBuilder
     ) -> ApplyRulesUseCase:
         return ApplyRulesUseCase(
-            enforcement_repository=enforcement_repo,
             source_locator=locator,
             cluster_group_builder=cluster_group_builder,
             enforcement_installer_builder=enforcement_installer_builder
@@ -26,11 +25,10 @@ class UseCaseModule(Module):
     @provider
     @singleton
     def provider_sync_rules(
-            self, locator: SourceLocator, enforcement_repo: EnforcementRepository,
+            self, locator: SourceLocator,
             cluster_group_builder: ClusterGroupBuilder, enforcement_installer_builder: EnforcementInstallerBuilder
     ) -> SyncRulesUseCase:
         return SyncRulesUseCase(
-            enforcement_repository=enforcement_repo,
             cluster_group_builder=cluster_group_builder,
             source_locator=locator,
             enforcement_installer_builder=enforcement_installer_builder
@@ -38,12 +36,11 @@ class UseCaseModule(Module):
 
     @provider
     @singleton
-    def provider_update_rules(self, enforcement_repo: EnforcementRepository,
+    def provider_update_rules(self,
                               cluster_group_builder: ClusterGroupBuilder,
                               enforcement_installer_builder: EnforcementInstallerBuilder,
                               enforcement_change_detector_builder: EnforcementChangeDetectorBuilder) -> UpdateRulesUseCase:
         return UpdateRulesUseCase(
-            enforcement_repository=enforcement_repo,
             cluster_group_builder=cluster_group_builder,
             enforcement_installer_builder=enforcement_installer_builder,
             enforcement_change_detector_builder=enforcement_change_detector_builder

@@ -19,7 +19,7 @@ class RancherDatasource(BaseSource):
         url = f"{self.config.rancher_url}/v3/clusters"
 
         with requests.get(
-                url, verify=False, headers=headers, params=filters,
+            url, verify=False, headers=headers, params=filters, timeout=5,
         ) as response:
             response.raise_for_status()
             return self._filter_and_map_clusters(
@@ -28,13 +28,13 @@ class RancherDatasource(BaseSource):
 
     def _filter_and_map_clusters(self, clusters_list: List[Dict], labels: dict, ignore: List[str]) -> List[Cluster]:
         return list(
-            map(
-                self._build_cluster,
-                filter(
-                    lambda cluster_map: self._filter_cluster(cluster_map, labels, ignore),
-                    clusters_list
-                )
-            )
+                    map(
+                        self._build_cluster,
+                        filter(
+                            lambda cluster_map: self._filter_cluster(cluster_map, labels, ignore),
+                            clusters_list
+                        )
+                    )
         )
 
     def _filter_cluster(self, cluster_map: dict, labels: dict, ignore: List[str]) -> bool:
@@ -50,3 +50,6 @@ class RancherDatasource(BaseSource):
             token=self.config.rancher_token,
             url=f'{self.config.rancher_url}/k8s/clusters/{cluster_map["id"]}',
         )
+
+
+

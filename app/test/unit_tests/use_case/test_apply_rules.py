@@ -59,7 +59,6 @@ class ApplyRulesTestCase(TestCase):
 
         apply_rules = ApplyRulesUseCase(
             source_locator=self.source_locator,
-            enforcement_repository=self.enforcement_repository,
             cluster_group_builder=self.cluster_group_builder,
             enforcement_installer_builder=self.enforcement_installer_builder
         )

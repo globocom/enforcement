@@ -1,22 +1,21 @@
-from typing import List
-
 import attr
+from typing import List
 
 from app.domain.cluster_group_builder import ClusterGroupBuilder
 from app.domain.enforcement_installer_builder import EnforcementInstallerBuilder
 from app.domain.entities import ClusterRule, Cluster
-from app.domain.repositories import EnforcementRepository
 from app.domain.source_locator import SourceLocator
+
+from app.domain.use_case.responses import RulesResponse
 
 
 @attr.s(auto_attribs=True)
 class SyncRulesUseCase:
     _source_locator: SourceLocator
-    _enforcement_repository: EnforcementRepository
     _cluster_group_builder: ClusterGroupBuilder
     _enforcement_installer_builder: EnforcementInstallerBuilder
 
-    def execute(self, cluster_rule: ClusterRule, current_clusters: List[Cluster]) -> List[Cluster]:
+    def execute(self, cluster_rule: ClusterRule, current_clusters: List[Cluster]) -> RulesResponse:
         source_repository = self._source_locator.locate(cluster_rule.source)
         source_clusters = source_repository.get_clusters()
 
@@ -41,4 +40,10 @@ class SyncRulesUseCase:
         )
 
         enforcement_installer.install()
-        return source_clusters
+
+        return RulesResponse(
+            clusters=source_clusters,
+        )
+
+
+
