@@ -1,4 +1,4 @@
-all: tests coverage generate
+all-tests: tests coverage generate
 
 tests:
 	pipenv run coverage run -m unittest discover -s test -v
