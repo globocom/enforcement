@@ -1,3 +1,5 @@
+[![Actions Status](https://github.com/globocom/enforcement/workflows/build/badge.svg)](https://github.com/{owner}/{repo}/actions)
+
 # Enforcement
 ## Introduction
 Enforcement is an open source project focused on the management and simultaneous deployment of applications and policies across multiple clusters through GitOps.
@@ -99,3 +101,20 @@ spec:
         - cluster3
 ```
 The rancher.filters, rancher.labels and rancher.ignore fields are specific to Rancher. Other cluster sources may have other values. You can get all the examples of ClusterRules objects [here](https://github.com/globocom/enforcement-service/tree/master/examples).
+
+## HOW TO TEST
+
+To run the tests without coverage you may call: 
+  ```shell
+  make test
+  ```
+
+To run the tests with coverage you may call and before called make test: 
+  ```shell
+  make coverage 
+  ```
+
+To generate the html you may call and called make test and make coverage before: 
+  ```shell
+  make generate
+  ```  

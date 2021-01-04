@@ -141,4 +141,7 @@ cython_debug/
 config.ini
 
 crd
+
 .vscode/
+
+Pipfile.lock

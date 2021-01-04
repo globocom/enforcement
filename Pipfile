@@ -5,13 +5,15 @@ verify_ssl = true
 
 [dev-packages]
 mypy = "*"
+pylint = "*"
 
 [packages]
-argocd-client = {editable = true,git = "https://github.com/globocom/argocd-client.git"}
+argocd-client = { editable = true, git = "https://github.com/globocom/argocd-client.git" }
 injector = "*"
 requests = "*"
 kopf = "==0.28.1"
 pydantic = "*"
+coverage = "*"
 
 [requires]
 python_version = "3.8"

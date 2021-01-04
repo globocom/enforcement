@@ -1,4 +1,5 @@
 from typing import List, Dict
+
 import requests
 
 from app.data.source.definition.base import BaseSource

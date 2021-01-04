@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import List
+
 import attr
 
 from app.domain.entities import Cluster
@@ -37,11 +38,5 @@ class ClusterGroup:
         )
 
         return ClusterGroup(cluster_repository=self._cluster_repository
-                            ,project_repository=self._project_repository,
+                            , project_repository=self._project_repository,
                             clusters=result_clusters)
-
-
-
-
-
-

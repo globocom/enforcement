@@ -1,6 +1,6 @@
 from typing import Dict, List, Any
-import attr
 
+import attr
 from argocd_client import (
     V1alpha1ApplicationDestination,
     V1alpha1Application,
@@ -49,7 +49,7 @@ class ApplicationService(EnforcementRepository):
     def remove_enforcement(self, enforcement_name: str) -> None:
         application = V1alpha1Application(
             metadata=V1ObjectMeta(
-               name=enforcement_name
+                name=enforcement_name
             )
         )
 
@@ -82,19 +82,19 @@ class ApplicationService(EnforcementRepository):
 
         if enforcement.helm:
             source.helm = V1alpha1ApplicationSourceHelm(
-                    parameters=[
-                        V1alpha1HelmParameter(
-                            name=key,
-                            value=value
-                        )
-                        for key, value in enforcement.helm.parameters.items()
-                    ] if enforcement.helm.parameters else []
+                parameters=[
+                    V1alpha1HelmParameter(
+                        name=key,
+                        value=value
+                    )
+                    for key, value in enforcement.helm.parameters.items()
+                ] if enforcement.helm.parameters else []
             )
 
         return V1alpha1Application(
             metadata=V1ObjectMeta(
-               name=f"{instance_name}",
-               labels={"cluster_name": cluster_name},
+                name=f"{instance_name}",
+                labels={"cluster_name": cluster_name},
             ),
             spec=V1alpha1ApplicationSpec(
                 destination=V1alpha1ApplicationDestination(

@@ -1,7 +1,8 @@
-from injector import inject
 from typing import ClassVar, List
-import kopf
+
 import attr
+import kopf
+from injector import inject
 
 from app.entrypoint.operator.base_controller import BaseController
 from app.domain.entities import ClusterRule, ClusterRuleStatus, Cluster, Enforcement
