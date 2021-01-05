@@ -1,9 +1,8 @@
-
-from app.infra.config import Config
-from app.domain.repositories import SourceRepository
-from app.domain.source_locator import SourceLocator
 from app.data.source.definition.register import SourceRegister
 from app.domain.entities import EnforcementSource
+from app.domain.repositories import SourceRepository
+from app.domain.source_locator import SourceLocator
+from app.infra.config import Config
 
 
 class SourceLocatorImpl(SourceLocator):

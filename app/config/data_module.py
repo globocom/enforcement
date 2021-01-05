@@ -1,4 +1,3 @@
-from injector import Module, provider, singleton
 from argocd_client import (
     SessionSessionCreateRequest,
     SessionSessionResponse,
@@ -6,20 +5,18 @@ from argocd_client import (
     ProjectServiceApi
 )
 from argocd_client.api import SessionServiceApi
+from argocd_client.api.cluster_service_api import ClusterServiceApi
 from argocd_client.api_client import ApiClient
 from argocd_client.configuration import Configuration
-from argocd_client.api.cluster_service_api import ClusterServiceApi
+from injector import Module, provider, singleton
 
-from app.infra.config import Config
-
+from app.data.argo.application import ApplicationService
+from app.data.argo.cluster import ClusterService
+from app.data.argo.project import ProjectService
+from app.data.source.definition.locator import SourceLocatorImpl
 from app.domain.repositories import ClusterRepository, EnforcementRepository, ProjectRepository
 from app.domain.source_locator import SourceLocator
-
-from app.data.argo.cluster import ClusterService
-from app.data.argo.application import ApplicationService
-from app.data.source.definition.locator import SourceLocatorImpl
-
-from app.data.argo.project import ProjectService
+from app.infra.config import Config
 
 
 class DataModule(Module):
@@ -92,5 +89,3 @@ class DataModule(Module):
     @singleton
     def provide_project_repository(self, project_service: ProjectServiceApi) -> ProjectRepository:
         return ProjectService(project_service=project_service)
-
-    
