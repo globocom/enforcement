@@ -1,5 +1,7 @@
 from typing import List
 
+from injector import Injector
+
 from app.config import DataModule, UseCaseModule,  DomainModule, InfraModule
 from app.entrypoint.operator import BaseController, ClusterRuleController
 

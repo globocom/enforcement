@@ -5,10 +5,10 @@ import requests
 from app.data.source.definition.base import BaseSource
 from app.domain.entities import Cluster
 
-
 class RancherDatasource(BaseSource):
 
     def get_clusters(self) -> List[Cluster]:
+        secret_decoded = self.kubernetes_helper.get_secret_and_return_decoded(self.source)
         headers = {
             "Authorization": f"Bearer {self.config.rancher_token}"
         }

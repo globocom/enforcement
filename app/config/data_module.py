@@ -17,6 +17,7 @@ from app.data.source.definition.locator import SourceLocatorImpl
 from app.domain.repositories import ClusterRepository, EnforcementRepository, ProjectRepository
 from app.domain.source_locator import SourceLocator
 from app.infra.config import Config
+from app.infra.kubernetes_helper import KubernetesHelper
 
 
 class DataModule(Module):
@@ -77,8 +78,8 @@ class DataModule(Module):
 
     @provider
     @singleton
-    def provide_source_locator(self, config: Config) -> SourceLocator:
-        return SourceLocatorImpl(config_helper=config)
+    def provide_source_locator(self, config: Config, kubernetes_helper: KubernetesHelper) -> SourceLocator:
+        return SourceLocatorImpl(config_helper=config, kubernetes_helper=kubernetes_helper)
 
     @provider
     @singleton
