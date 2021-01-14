@@ -13,5 +13,5 @@ class InfraModule(Module):
     @provider
     @singleton
     def provide_core_v1_api(self) -> CoreV1Api:
-        config.load_kube_config()
+        config.load_incluster_config()
         return CoreV1Api()

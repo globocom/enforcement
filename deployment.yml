@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: enforcement
+  namespace: argocd
+  labels:
+    app: enforcement
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: enforcement
+  template:
+    metadata:
+      labels:
+        app: enforcement
+    spec:
+      containers:
+      - args:
+        - run
+        - main.py
+        - --namespace=argocd
+        - --quiet
+        command:
+        - kopf
+        env:
+        - name: ARGO_URL
+          value: https://localhost
+        - name: ARGO_USERNAME
+          value: admin
+        - name: ARGO_PASSWORD
+          value: admin
+        image: cavalerosi/enforcement:latest
+        imagePullPolicy: IfNotPresent
+        name: enforcement

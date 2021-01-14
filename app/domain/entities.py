@@ -18,11 +18,11 @@ class RancherSource(BaseModel):
     filters: Dict[str, str] = None
     labels: Dict[str, str] = None
     ignore: List[str] = None
-    secretName: str= None
 
 
 class EnforcementSource(BaseModel):
     rancher: RancherSource = None
+    secretName: str= None
 
 
 class Enforcement(BaseModel):

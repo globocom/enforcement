@@ -10,12 +10,14 @@ from kubernetes.client import CoreV1Api, V1Secret
 class KubernetesHelper:
     _core_api: CoreV1Api
 
-    def _get_namespaced_secret(self, secret_name: str, namespace: str) -> V1Secret:
-        return self._core_api.read_namespaced_secret(secret_name, namespace)
+    def _get_secret(self, secret_name: str) -> V1Secret:
+        secrets = self._core_api.list_secret_for_all_namespaces()
+        return [secret for secret in secrets.items
+                if secret.metadata.name == secret_name][0]
 
     def _decode_secret(self, secret: V1Secret) -> Dict[str, str]:
-        return {k: base64.b64decode(v).decode() for k, v in secret._data.items()}
+        return {k: base64.b64decode(v).decode() for k, v in secret.data.items()}
 
-    def get_secret_and_return_decoded(self, source: EnforcementSource) -> Dict[str, str]:
-        secret = self._get_namespaced_secret(source.rancher.secretName, 'default')
+    def get_secret_and_return_decoded(self, source: EnforcementSource, source_name: str) -> Dict[str, str]:
+        secret = self._get_secret(source.secretName)
         return self._decode_secret(secret)
