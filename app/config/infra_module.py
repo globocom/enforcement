@@ -2,6 +2,8 @@ from injector import Module, provider, singleton
 from app.infra.kubernetes_helper import KubernetesHelper
 from kubernetes import config
 from kubernetes.client import CoreV1Api
+from kubernetes.config.config_exception import ConfigException
+
 
 class InfraModule(Module):
     
@@ -13,5 +15,11 @@ class InfraModule(Module):
     @provider
     @singleton
     def provide_core_v1_api(self) -> CoreV1Api:
-        config.load_incluster_config()
+        self._load_config()
         return CoreV1Api()
+    
+    def _load_config(self):
+        try:
+            config.load_incluster_config()
+        except ConfigException:
+            config.load_kube_config()

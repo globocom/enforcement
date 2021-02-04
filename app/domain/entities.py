@@ -22,7 +22,7 @@ class RancherSource(BaseModel):
 
 class EnforcementSource(BaseModel):
     rancher: RancherSource = None
-    secretName: str= None
+    secretName: str = None
 
 
 class Enforcement(BaseModel):

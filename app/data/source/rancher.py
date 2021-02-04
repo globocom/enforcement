@@ -8,8 +8,12 @@ from app.domain.entities import Cluster
 class RancherDatasource(BaseSource):
     def get_clusters(self) -> List[Cluster]:
         secret_decoded = self.kubernetes_helper.get_secret_and_return_decoded(self.source, 'rancher')
-        self.config.rancher_token = secret_decoded.get('password')
+        self.config.rancher_token = secret_decoded.get('token')
         self.config.rancher_url = secret_decoded.get('url')
+
+        print(self.config.rancher_token)
+        print(self.config.rancher_url)
+
 
         headers = {
             "Authorization": f"Bearer {self.config.rancher_token}"
