@@ -23,4 +23,5 @@ class SourceLocatorImpl(SourceLocator):
         if not datasource_class:
             raise Exception("Source not defined")
 
-        return datasource_class(config=self._config_helper, source=source, kubernetes_helper=self._kubernetes_helper, secret=self._secret)
+        return datasource_class(config=self._config_helper, source=source, kubernetes_helper=self._kubernetes_helper,
+                                secret=self._secret)
