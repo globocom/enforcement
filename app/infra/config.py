@@ -8,7 +8,7 @@ class Config:
     @inject
     def __init__(self) -> None:
         config = configparser.ConfigParser()
-        config.read("config.ini")
+        config.read("example-config.ini")
         self._config = config
 
     @property
