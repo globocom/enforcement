@@ -17,8 +17,9 @@ class InfraModule(Module):
     def provide_core_v1_api(self) -> CoreV1Api:
         self._load_config()
         return CoreV1Api()
-    
-    def _load_config(self):
+
+    @classmethod
+    def _load_config(cls):
         try:
             config.load_incluster_config()
         except ConfigException:

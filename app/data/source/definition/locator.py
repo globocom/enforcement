@@ -16,7 +16,7 @@ class SourceLocatorImpl(SourceLocator):
     def locate(self, source: EnforcementSource) -> SourceRepository:
         source_name = list(source.__dict__.keys())[0]
         datasource_class = SourceRegister.find_source(source_name)
-        secret_name = source.secretName if  source.secretName is not None else source_name
+        secret_name = source.secretName if source.secretName is not None else source_name
 
         self._secret = self._kubernetes_helper.get_secret(secret_name)
 

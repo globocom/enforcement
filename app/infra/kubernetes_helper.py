@@ -2,7 +2,8 @@ import base64
 import attr
 
 from typing import Dict
-from app.domain.entities import EnforcementSource, Secret
+from app.domain.entities import Secret
+from app.domain.exceptions import SecretNotFound
 from kubernetes.client import CoreV1Api, V1Secret
 
 
@@ -12,10 +13,15 @@ class KubernetesHelper:
 
     def _get_secret_from_api(self, secret_name: str) -> V1Secret:
         secrets = self._core_api.list_secret_for_all_namespaces()
-        return [secret for secret in secrets.items
-                if secret.metadata.name == secret_name][0]
+        secret = [secret for secret in secrets.items if secret.metadata.name == secret_name]
 
-    def _decode_secret(self, secret: V1Secret) -> Dict[str, str]:
+        if not secret:
+            raise SecretNotFound("Secret not found!")
+
+        return secret[0]
+
+    @classmethod
+    def _decode_secret(cls, secret: V1Secret) -> Dict[str, str]:
         return {k: base64.b64decode(v).decode() for k, v in secret.data.items()}
 
     def get_secret(self, secret_name: str) -> Secret:

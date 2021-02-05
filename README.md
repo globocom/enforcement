@@ -60,18 +60,13 @@ sources(rancher, gke, eks) . You can see the examples below.
 ### Creating an environment variables
  Environment Variable |      Example     |          Description         |
 |:--------------------:|:----------------:|:----------------------------:|
-| RANCHER_URL                | https://myrancherurl.domain.com               | Rancher URL         |
-| RANCHER_TOKEN              | token-q5bhr:xtcd5lbzlg6mhnvncwbrk55zvmh       | Rancher API Key configured without scope |   
-| ARGO_URL                   | https://myargourl.domain.com                  | Argo URL          |
+ | ARGO_URL                   | https://myargourl.domain.com                  | Argo URL          |
 | ARGO_USERNAME              | admin                                         | Argo Username            |
 | ARGO_PASSWORD              | password                                      | Argo Password            |
 
+
 ### Creating a config.ini
 ```ini
-[rancher]
-url = https://rancher.test.com
-token = j95bmfrfsnh77jvtrqgjxj7pwfd
-
 [argo]
 url = localhost
 username = admin

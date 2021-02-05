@@ -73,7 +73,8 @@ class ClusterRuleController(BaseController):
             Cluster(name=cluster['name'], url=cluster['url'], id='', token='')
             for cluster in current_status.clusters
         ]
-        cluster_rule = ClusterRule(**spec)        
+        cluster_rule = ClusterRule(**spec)
+
         response = self._sync_rules_use_case.execute(cluster_rule, current_clusters)
         response.install_errors = [Enforcement(name=name, repo="") for name in current_status.install_errors]
 
@@ -86,6 +87,7 @@ class ClusterRuleController(BaseController):
         logger.debug(f"create rules for %s", name)
 
         cluster_rule = ClusterRule(**spec)
+
         response = self._apply_rules_use_case.execute(cluster_rule)
 
         return ClusterRuleController._make_status(response)
@@ -101,7 +103,6 @@ class ClusterRuleController(BaseController):
 
         self.register_method(kopf.on.timer, self.sync, self.KIND, id=ClusterRuleController.ID,
                              interval=6, initial_delay=20, idle=15, errors=kopf.ErrorsMode.PERMANENT)
-
 
     @classmethod
     def _make_enforcement_list(cls, enforcement_map_list) -> List[Enforcement]:
@@ -127,6 +128,3 @@ class ClusterRuleController(BaseController):
 
         return ClusterRuleStatus(**current_status) \
             if current_status and current_status.get("clusters") else None
-
-
-
