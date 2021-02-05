@@ -8,18 +8,14 @@ from app.domain.entities import Cluster
 
 class RancherDatasource(BaseSource):
     def get_clusters(self) -> List[Cluster]:
-        secret_decoded = self.kubernetes_helper.get_secret_and_return_decoded(self.source, 'rancher')
-        self.config.rancher_token = secret_decoded.get('token')
-        self.config.rancher_url = secret_decoded.get('url')
-
         headers = {
-            "Authorization": f"Bearer {self.config.rancher_token}"
+            "Authorization": f"Bearer {self.secret.token}"
         }
 
         filters: dict = self.source.rancher.filters if self.source.rancher.filters else dict()
         filters.update({'state': 'active'})
 
-        url = f"{self.config.rancher_url}/v3/clusters"
+        url = f"{self.secret.url}/v3/clusters"
 
         with requests.get(
             url, verify=False, headers=headers, params=filters, timeout=5,
@@ -50,8 +46,8 @@ class RancherDatasource(BaseSource):
         return Cluster(
             name=cluster_map['name'],
             id=cluster_map['id'],
-            token=self.config.rancher_token,
-            url=f'{self.config.rancher_url}/k8s/clusters/{cluster_map["id"]}',
+            token=self.secret.token,
+            url=f'{self.secret.url}/k8s/clusters/{cluster_map["id"]}',
         )
 
 

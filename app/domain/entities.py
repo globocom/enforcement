@@ -42,3 +42,7 @@ class ClusterRuleStatus(BaseModel):
     clusters: List[dict] = []
     install_errors: List[str] = []
 
+
+class Secret(BaseModel):
+    token: str
+    url: str
