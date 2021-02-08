@@ -4,7 +4,7 @@ from app.domain.repositories import SourceRepository
 from app.domain.source_locator import SourceLocator
 from app.infra.config import Config
 from app.infra.kubernetes_helper import KubernetesHelper
-from app.data.source.definition.utils import SourceUtils
+
 
 class SourceLocatorImpl(SourceLocator):
 
@@ -14,11 +14,11 @@ class SourceLocatorImpl(SourceLocator):
 
 
     def locate(self, source: EnforcementSource) -> SourceRepository:
-        source_name = SourceUtils.get_source_name(source)
+        source_name = list(source.__dict__.keys())[0]
         datasource_class = SourceRegister.find_source(source_name)
       
         if not datasource_class:
             raise Exception("Source not defined")
 
         return datasource_class(config=self._config_helper, source=source, kubernetes_helper=self._kubernetes_helper,
-            secret=None)
+            secret=None, source_name=source_name)
