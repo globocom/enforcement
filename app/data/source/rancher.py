@@ -8,6 +8,8 @@ from app.domain.entities import Cluster
 
 class RancherDatasource(BaseSource):
     def get_clusters(self) -> List[Cluster]:
+        self.get_secret()
+
         headers = {
             "Authorization": f"Bearer {self.secret.token}"
         }
