@@ -65,29 +65,6 @@ sources(rancher, gke, eks) . You can see the examples below.
 | ARGO_PASSWORD              | password                                      | Argo Password            |
 
 
-### Creating a config.ini
-```ini
-[argo]
-url = localhost
-username = admin
-password = admin
-```
-
-### Creating a Secret
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: rancher-secret
-type: Opaque
-stringData:
-  token: abc94943#434!
-  url: https://rancher.test.com
-``` 
-
-In this example of a secret for Rancher, we need to put two values that are the url and token however for other sources 
-it could be different. You can see others example of secret objects [here](https://github.com/globocom/enforcement-service/tree/master/examples/secrets). 
-
 ## Supported cluster sources
 Enforcement aims to detect the creation of clusters in several services of managed Kubernetes and cluster orchestration. Currently, the only cluster source supported is Rancher. We are developing support for EKS, GKE and AKS.
 
@@ -126,6 +103,27 @@ spec:
         - cluster3
 ```
 The rancher.filters, rancher.labels and rancher.ignore fields are specific to Rancher. Other cluster sources may have other values. You can get all the examples of ClusterRules objects [here](https://github.com/globocom/enforcement-service/tree/master/examples/sourcers).
+
+### Creating a Secret
+
+Enforcement obtains the credentials to connect to the cluster source through a secret that must be previously created.
+See an example of a secret created for the Rancher Cluster Source. 
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rancher-secret
+type: Opaque
+stringData:
+  token: abc94943#434!
+  url: https://rancher.test.com
+``` 
+
+In this example of a secret for Rancher, we need to put two values that are the url and token however for other sources 
+it could be different. You can see others example of secret objects [here](https://github.com/globocom/enforcement-service/tree/master/examples/secrets). 
+
+You can specify the name of the secret in the ***spec.source.secretName*** field of the object cluster. When no secret name is specified, Enforcement looks for a secret with the same name as the source cluster used.
 
 ## HOW TO TEST
 To run the tests without coverage you may call: 
