@@ -123,7 +123,7 @@ stringData:
 In this example of a secret for Rancher, we need to put two values that are the url and token however for other sources 
 it could be different. You can see others example of secret objects [here](https://github.com/globocom/enforcement-service/tree/master/examples/secrets). 
 
-You can specify the name of the secret in the ***spec.source.secretName*** field of the object cluster. When no secret name is specified, Enforcement looks for a secret with the same name as the source cluster used.
+You can specify the name of the secret in the ***spec.source.secretName*** field of the cluster source object. When no secret name is specified, Enforcement looks for a secret with the same name as the source cluster used.
 
 ## HOW TO TEST
 To run the tests without coverage you may call: 
