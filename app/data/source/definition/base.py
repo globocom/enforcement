@@ -14,8 +14,13 @@ class BaseSource(SourceRepository):
     kubernetes_helper: KubernetesHelper
     secret: Secret
 
-    def get_secret(self):
+
+    def get_secret(self) -> Secret:
         source_name = SourceUtils.get_source_name(self.source)
         secret_name = self.source.secretName if self.source.secretName is not None else source_name
 
-        self.secret = self.kubernetes_helper.get_secret(secret_name)
+        return self.kubernetes_helper.get_secret(secret_name)
+
+
+    def __attrs_post_init__(self):
+        self.secret = self.get_secret()
