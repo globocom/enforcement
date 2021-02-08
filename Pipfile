@@ -11,8 +11,9 @@ pylint = "*"
 argocd-client = { editable = true, git = "https://github.com/globocom/argocd-client.git" }
 injector = "*"
 requests = "*"
-kopf = "==0.28.1"
+kopf = "*"
 pydantic = "*"
+kubernetes = "*"
 coverage = "*"
 
 [requires]

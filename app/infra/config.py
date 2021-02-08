@@ -12,14 +12,6 @@ class Config:
         self._config = config
 
     @property
-    def rancher_url(self) -> str:
-        return self._get_config_value('RANCHER_URL', 'rancher', 'url')
-
-    @property
-    def rancher_token(self) -> str:
-        return self._get_config_value('RANCHER_TOKEN', 'rancher', 'token')
-
-    @property
     def argo_url(self) -> str:
         return self._get_config_value('ARGO_URL', 'argo', 'url')
 

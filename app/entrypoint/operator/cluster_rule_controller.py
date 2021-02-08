@@ -74,6 +74,7 @@ class ClusterRuleController(BaseController):
             for cluster in current_status.clusters
         ]
         cluster_rule = ClusterRule(**spec)
+
         response = self._sync_rules_use_case.execute(cluster_rule, current_clusters)
         response.install_errors = [Enforcement(name=name, repo="") for name in current_status.install_errors]
 
@@ -86,6 +87,7 @@ class ClusterRuleController(BaseController):
         logger.debug(f"create rules for %s", name)
 
         cluster_rule = ClusterRule(**spec)
+
         response = self._apply_rules_use_case.execute(cluster_rule)
 
         return ClusterRuleController._make_status(response)
@@ -126,6 +128,3 @@ class ClusterRuleController(BaseController):
 
         return ClusterRuleStatus(**current_status) \
             if current_status and current_status.get("clusters") else None
-
-
-

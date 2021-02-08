@@ -22,6 +22,7 @@ class RancherSource(BaseModel):
 
 class EnforcementSource(BaseModel):
     rancher: RancherSource = None
+    secretName: str = None
 
 
 class Enforcement(BaseModel):
@@ -41,3 +42,7 @@ class ClusterRuleStatus(BaseModel):
     clusters: List[dict] = []
     install_errors: List[str] = []
 
+
+class Secret(BaseModel):
+    token: str
+    url: str
