@@ -125,7 +125,7 @@ class ClusterRuleController(BaseController):
         current_status: dict = status.get(ClusterRuleController.ID)
 
         return ClusterRuleStatus(**current_status) \
-            if current_status and current_status.get("clusters") else None
+            if current_status and "clusters" in current_status else None
 
 
 
