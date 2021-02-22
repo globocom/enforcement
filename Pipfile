@@ -4,16 +4,16 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-mypy = "*"
-pylint = "*"
+mypy = "==0.812"
+pylint = "==2.7.0"
 
 [packages]
 argocd-client = { editable = true, git = "https://github.com/globocom/argocd-client.git" }
-injector = "*"
-requests = "*"
+injector = "==0.18.4"
+requests = "==2.25.1"
 kopf = "==0.28.1"
-pydantic = "*"
-coverage = "*"
+pydantic = "==1.7.3"
+coverage = "==5.3.1"
 
 [requires]
 python_version = "3.8"
