@@ -126,6 +126,3 @@ class ClusterRuleController(BaseController):
 
         return ClusterRuleStatus(**current_status) \
             if current_status and "clusters" in current_status else None
-
-
-
