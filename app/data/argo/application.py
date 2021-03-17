@@ -62,14 +62,22 @@ class ApplicationService(EnforcementRepository):
             selector=labels
         )
 
+        return self._make_enforcements(application_list)
+
+    def list_project_apps(self, project_name: str):
+        application_list: V1alpha1ApplicationList = self._application_service.list_mixin9(
+            project=[project_name]
+        )
+
+        return self._make_enforcements(application_list)
+
+    def _make_enforcements(self, application_list: V1alpha1ApplicationList) -> List[Enforcement]:
         applications: List[V1alpha1Application] = application_list.items if application_list.items else []
 
-        enforcements = [
+        return [
             self._make_enforcement_by_application(application)
             for application in applications
         ]
-
-        return enforcements
 
     def _make_labels(self, labels: Dict[str, str]) -> str:
         list_labels = [f"{key}={value}" for key, value in list(labels.items())]

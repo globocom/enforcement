@@ -27,6 +27,9 @@ class EnforcementRepository:
     def list_installed_enforcements(self, **filters: Any) -> List[Enforcement]:
         raise Exception("Not implemented")
 
+    def list_project_apps(self, project_name: str):
+        raise Exception("Not implemented")
+
 
 class SourceRepository:
     def get_clusters(self) -> List[Cluster]:
