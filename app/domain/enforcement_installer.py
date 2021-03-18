@@ -42,6 +42,12 @@ class EnforcementInstaller:
                 if instance_name in installed_enforcements_names:
                     self._enforcement_repository.remove_enforcement(instance_name)
 
+    def uninstall_project_apps(self):
+        for cluster in self._cluster_group.clusters:
+            installed_enforcements = self._enforcement_repository.list_project_apps(project_name=cluster.name)
+            for enforcement in installed_enforcements:
+                self._enforcement_repository.remove_enforcement(enforcement.name)
+
     @classmethod
     def _get_enforcements_name(cls, enforcements: List[Enforcement]):
         return {enforcement.name: enforcement for enforcement in enforcements}

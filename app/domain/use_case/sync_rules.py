@@ -29,6 +29,7 @@ class SyncRulesUseCase:
         )
 
         enforcement_uninstall.uninstall()
+        enforcement_uninstall.uninstall_project_apps()
         deleted_clusters.unregister()
 
         new_clusters = source_cluster_group - current_cluster_group

@@ -4,13 +4,15 @@ from kubernetes import config
 from kubernetes.client import CoreV1Api
 from kubernetes.config.config_exception import ConfigException
 
+from app.infra.config import Config
+
 
 class InfraModule(Module):
     
     @provider
     @singleton
-    def provide_kubernetes_helper(self, core_api: CoreV1Api) -> KubernetesHelper:
-        return KubernetesHelper(core_api=core_api)
+    def provide_kubernetes_helper(self, core_api: CoreV1Api, config: Config) -> KubernetesHelper:
+        return KubernetesHelper(core_api=core_api, current_namespace=config.current_namespace)
 
     @provider
     @singleton
