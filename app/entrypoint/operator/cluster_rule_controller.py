@@ -8,19 +8,19 @@ from app.entrypoint.operator.base_controller import BaseController
 from app.domain.entities import ClusterRule, ClusterRuleStatus, Cluster, Enforcement
 from app.domain.use_case import ApplyRulesUseCase, SyncRulesUseCase, UpdateRulesUseCase, RulesResponse
 from app.infra.kubernetes_helper import KubernetesHelper
+from app.infra.config import Config
 
 
 @inject
 @attr.s(auto_attribs=True)
 class StatusManager:
     _kubernetes_helper: KubernetesHelper
-    GROUP: ClassVar[str] = "enforcement.globo.com"
-    VERSION: ClassVar[str] = "v1beta1"
+    _config: Config
 
     def get_status(self, kind: str, name: str) -> ClusterRuleStatus:
         status_dto = self._kubernetes_helper.get_custom_resource_status(
-            self.GROUP,
-            self.VERSION,
+            self._config.api_group,
+            self._config.api_version,
             kind,
             name
         )
@@ -32,8 +32,8 @@ class StatusManager:
 
         self._kubernetes_helper.update_custom_resource_status(
             status_dto,
-            self.GROUP,
-            self.VERSION,
+            self._config.api_group,
+            self._config.api_version,
             kind,
             name,
         )

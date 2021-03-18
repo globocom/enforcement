@@ -14,7 +14,7 @@ class KubernetesHelper:
     _current_namespace: str
 
     def _get_secret_from_api(self, secret_name: str) -> V1Secret:
-        secrets = self._core_api.list_secret_for_all_namespaces()
+        secrets = self._core_api.list_namespaced_secret(self._current_namespace)
         secret = [secret for secret in secrets.items if secret.metadata.name == secret_name]
 
         if not secret:
