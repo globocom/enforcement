@@ -28,16 +28,7 @@ class StatusManager:
         return ClusterRuleStatus(**status_dto) \
             if status_dto and 'clusters' in status_dto else None
 
-    def update_status(self, kind: str, name: str, response: RulesResponse):
-        status = ClusterRuleStatus(
-            install_errors=[
-                enforcement.name for enforcement in response.install_errors
-            ],
-            clusters=[
-                {"name": cluster.name, "url": cluster.url} for cluster in response.clusters
-            ]
-        )
-        status_dto = status.dict()
+    def update_status(self, kind: str, name: str, status_dto: dict):
 
         self._kubernetes_helper.update_custom_resource_status(
             status_dto,
@@ -46,6 +37,18 @@ class StatusManager:
             kind,
             name,
         )
+
+    @classmethod
+    def build_status(cls, response: RulesResponse) -> dict:
+        status = ClusterRuleStatus(
+            install_errors=[
+                enforcement.name for enforcement in response.install_errors
+            ],
+            clusters=[
+                {"name": cluster.name, "url": cluster.url} for cluster in response.clusters
+            ]
+        )
+        return status.dict()
 
 
 @inject
@@ -99,7 +102,11 @@ class ClusterRuleController(BaseController):
 
         response.clusters = current_clusters
 
-        self._status_manager.update_status(self.KIND, name, response)
+        self._status_manager.update_status(
+            self.KIND,
+            name,
+            self._status_manager.build_status(response)
+        )
 
     def sync(self, name: str, spec: dict, status: dict, logger, **kwargs):
         logger.debug(f"sync clusters for %s", name)
@@ -118,7 +125,14 @@ class ClusterRuleController(BaseController):
         response = self._sync_rules_use_case.execute(cluster_rule, current_clusters)
         response.install_errors = [Enforcement(name=name, repo="") for name in current_status.install_errors]
 
-        self._status_manager.update_status(self.KIND, name, response)
+        new_status = self._status_manager.build_status(response)
+
+        if current_status != new_status:
+            self._status_manager.update_status(
+                self.KIND,
+                name,
+                new_status
+            )
 
     def create(self, name, spec: dict, logger, **kwargs):
         logger.debug(f"create rules for %s", name)
@@ -127,18 +141,22 @@ class ClusterRuleController(BaseController):
 
         response = self._apply_rules_use_case.execute(cluster_rule)
 
-        self._status_manager.update_status(self.KIND, name, response)
+        self._status_manager.update_status(
+            self.KIND,
+            name,
+            self._status_manager.build_status(response)
+        )
 
     def register(self):
 
-        self.register_method(kopf.on.create, self.create, self.KIND, id=ClusterRuleController.ID,
+        self.register_method(kopf.on.create, self.create, self.KIND,
                              errors=kopf.ErrorsMode.TEMPORARY, backoff=ClusterRuleController.BACKOFF)
 
-        self.register_method(kopf.on.field, self.update, self.KIND, id='sync',
+        self.register_method(kopf.on.field, self.update, self.KIND,
                              field='spec.enforcements', errors=kopf.ErrorsMode.TEMPORARY,
                              backoff=ClusterRuleController.BACKOFF)
 
-        self.register_method(kopf.on.timer, self.sync, self.KIND, id=ClusterRuleController.ID,
+        self.register_method(kopf.on.timer, self.sync, self.KIND,
                              interval=6, initial_delay=20, idle=15, errors=kopf.ErrorsMode.PERMANENT)
 
     @classmethod
