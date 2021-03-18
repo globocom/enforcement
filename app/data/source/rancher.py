@@ -13,7 +13,9 @@ class RancherDatasource(BaseSource):
         }
 
         filters: dict = self.source.rancher.filters if self.source.rancher.filters else dict()
-        filters.update({'state': 'active'})
+
+        if filters.get('state'):
+            del filters['state']
 
         url = f"{self.secret.url}/v3/clusters"
 
@@ -37,6 +39,10 @@ class RancherDatasource(BaseSource):
         )
 
     def _filter_cluster(self, cluster_map: dict, labels: dict, ignore: List[str]) -> bool:
+
+        if cluster_map['state'] in ['provisioning', 'waiting']:
+            return False
+
         if ignore and cluster_map['name'] in ignore:
             return False
 
