@@ -55,8 +55,9 @@ class SyncRulesTestCase(TestCase):
         self.cluster_group.register = MagicMock(return_value=None)
         self.enforcement_installer_builder.build = MagicMock(
             return_value=self.enforcement_installer)
-        self.enforcement_installer.uninstall = MagicMock(retun_value=None)
-        self.enforcement_installer.install = MagicMock(retun_value=None)
+        self.enforcement_installer.uninstall = MagicMock(return_value=None)
+        self.enforcement_installer.install = MagicMock(return_value=None)
+        self.enforcement_installer.uninstall_project_apps = MagicMock(return_value=None)
 
         sync_rules = SyncRulesUseCase(
             source_locator=self.source_locator,
@@ -75,3 +76,4 @@ class SyncRulesTestCase(TestCase):
         self.assertTrue(self.enforcement_installer_builder.build.called)
         self.assertTrue(self.enforcement_installer.uninstall.called)
         self.assertTrue(self.enforcement_installer.install.called)
+        self.assertTrue(self.enforcement_installer.uninstall_project_apps.called)
