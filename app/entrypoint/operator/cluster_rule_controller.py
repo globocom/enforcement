@@ -12,11 +12,49 @@ from app.infra.kubernetes_helper import KubernetesHelper
 
 @inject
 @attr.s(auto_attribs=True)
+class StatusManager:
+    _kubernetes_helper: KubernetesHelper
+    GROUP: ClassVar[str] = "enforcement.globo.com"
+    VERSION: ClassVar[str] = "v1beta1"
+
+    def get_status(self, kind: str, name: str) -> ClusterRuleStatus:
+        status_dto = self._kubernetes_helper.get_custom_resource_status(
+            self.GROUP,
+            self.VERSION,
+            kind,
+            name
+        )
+
+        return ClusterRuleStatus(**status_dto) \
+            if status_dto and 'clusters' in status_dto else None
+
+    def update_status(self, kind: str, name: str, response: RulesResponse):
+        status = ClusterRuleStatus(
+            install_errors=[
+                enforcement.name for enforcement in response.install_errors
+            ],
+            clusters=[
+                {"name": cluster.name, "url": cluster.url} for cluster in response.clusters
+            ]
+        )
+        status_dto = status.dict()
+
+        self._kubernetes_helper.update_custom_resource_status(
+            status_dto,
+            self.GROUP,
+            self.VERSION,
+            kind,
+            name,
+        )
+
+
+@inject
+@attr.s(auto_attribs=True)
 class ClusterRuleController(BaseController):
     _apply_rules_use_case: ApplyRulesUseCase
     _sync_rules_use_case: SyncRulesUseCase
     _update_rules_use_case: UpdateRulesUseCase
-    _kubernetes_helper: KubernetesHelper
+    _status_manager: StatusManager
     KIND: ClassVar[str] = 'clusterrules'
     ID: ClassVar[str] = "sync/spec.enforcements"
     BACKOFF: ClassVar[int] = 10
@@ -32,7 +70,7 @@ class ClusterRuleController(BaseController):
 
         old_enforcement_list = ClusterRuleController._make_enforcement_list(old)
         new_enforcement_list = ClusterRuleController._make_enforcement_list(new)
-        current_status = ClusterRuleController._restore_status(status)
+        current_status = self._status_manager.get_status(self.KIND, name)
 
         current_clusters = [
             Cluster(name=cluster['name'], url=cluster['url'], id='', token='')
@@ -51,7 +89,7 @@ class ClusterRuleController(BaseController):
 
         response.install_errors = response.install_errors + list(
             map(
-                lambda name: Enforcement(name=name, repo=""),
+                lambda enf_name: Enforcement(name=enf_name, repo=""),
                 filter(
                     lambda enforcement_name: enforcement_name not in enforcements_change,
                     current_status.install_errors,
@@ -61,25 +99,12 @@ class ClusterRuleController(BaseController):
 
         response.clusters = current_clusters
 
-        return ClusterRuleController._make_status(response)
+        self._status_manager.update_status(self.KIND, name, response)
 
     def sync(self, name: str, spec: dict, status: dict, logger, **kwargs):
         logger.debug(f"sync clusters for %s", name)
 
-        new_version_status = self._kubernetes_helper.get_custom_resource_status(
-            'enforcement.globo.com',
-            'v1beta1',
-            self.KIND,
-            name
-        )
-
-        print("---------------")
-        print(new_version_status)
-        print("---------------")
-
-        return
-
-        current_status = ClusterRuleController._restore_status(status)
+        current_status = self._status_manager.get_status(self.KIND, name)
 
         if not current_status:
             return
@@ -93,10 +118,7 @@ class ClusterRuleController(BaseController):
         response = self._sync_rules_use_case.execute(cluster_rule, current_clusters)
         response.install_errors = [Enforcement(name=name, repo="") for name in current_status.install_errors]
 
-        new_status = ClusterRuleController._make_status(response)
-
-        if new_status != current_status.dict():
-            return new_status
+        self._status_manager.update_status(self.KIND, name, response)
 
     def create(self, name, spec: dict, logger, **kwargs):
         logger.debug(f"create rules for %s", name)
@@ -105,7 +127,7 @@ class ClusterRuleController(BaseController):
 
         response = self._apply_rules_use_case.execute(cluster_rule)
 
-        return ClusterRuleController._make_status(response)
+        self._status_manager.update_status(self.KIND, name, response)
 
     def register(self):
 
@@ -124,22 +146,3 @@ class ClusterRuleController(BaseController):
         if not enforcement_map_list:
             return []
         return [Enforcement(**enforcement_map) for enforcement_map in enforcement_map_list]
-
-    @classmethod
-    def _make_status(cls, response: RulesResponse) -> dict:
-        status = ClusterRuleStatus(
-            install_errors=[
-                enforcement.name for enforcement in response.install_errors
-            ],
-            clusters=[
-                {"name": cluster.name, "url": cluster.url} for cluster in response.clusters
-            ]
-        )
-        return status.dict()
-
-    @classmethod
-    def _restore_status(cls, status: dict) -> ClusterRuleStatus:
-        current_status: dict = status.get(ClusterRuleController.ID)
-
-        return ClusterRuleStatus(**current_status) \
-            if current_status and "clusters" in current_status else None
