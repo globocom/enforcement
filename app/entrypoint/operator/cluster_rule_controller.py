@@ -7,6 +7,7 @@ from injector import inject
 from app.entrypoint.operator.base_controller import BaseController
 from app.domain.entities import ClusterRule, ClusterRuleStatus, Cluster, Enforcement
 from app.domain.use_case import ApplyRulesUseCase, SyncRulesUseCase, UpdateRulesUseCase, RulesResponse
+from app.infra.kubernetes_helper import KubernetesHelper
 
 
 @inject
@@ -15,6 +16,7 @@ class ClusterRuleController(BaseController):
     _apply_rules_use_case: ApplyRulesUseCase
     _sync_rules_use_case: SyncRulesUseCase
     _update_rules_use_case: UpdateRulesUseCase
+    _kubernetes_helper: KubernetesHelper
     KIND: ClassVar[str] = 'clusterrules'
     ID: ClassVar[str] = "sync/spec.enforcements"
     BACKOFF: ClassVar[int] = 10
@@ -63,6 +65,19 @@ class ClusterRuleController(BaseController):
 
     def sync(self, name: str, spec: dict, status: dict, logger, **kwargs):
         logger.debug(f"sync clusters for %s", name)
+
+        new_version_status = self._kubernetes_helper.get_custom_resource_status(
+            'enforcement.globo.com',
+            'v1beta1',
+            self.KIND,
+            name
+        )
+
+        print("---------------")
+        print(new_version_status)
+        print("---------------")
+
+        return
 
         current_status = ClusterRuleController._restore_status(status)
 

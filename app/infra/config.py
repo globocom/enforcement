@@ -23,6 +23,10 @@ class Config:
     def argo_password(self) -> str:
         return self._get_config_value('ARGO_PASSWORD', 'argo', 'password')
 
+    @property
+    def current_namespace(self) -> str:
+        return self._get_config_value('OPERATOR_NAMESPACE', 'operator', 'namespace')
+
     def _get_config_value(
             self, environemnt_variable_name: str, config_name: str, config_attribute: str,
     ) -> str:
