@@ -4,7 +4,7 @@ import attr
 import kopf
 from injector import inject
 
-from app.entrypoint.operator.base_controller import BaseController
+from app.entrypoint.operator.controller.base_controller import BaseController
 from app.domain.entities import ClusterRule, ClusterRuleStatus, Cluster, Enforcement
 from app.domain.use_case import ApplyRulesUseCase, SyncRulesUseCase, UpdateRulesUseCase, RulesResponse
 from app.infra.kubernetes_helper import KubernetesHelper

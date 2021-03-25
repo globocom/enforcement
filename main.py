@@ -1,25 +1,17 @@
-from typing import List
-
 from injector import Injector
 
-from app.config import DataModule, UseCaseModule,  DomainModule, InfraModule
-from app.entrypoint.operator import BaseController, ClusterRuleController
-
-
-def register_controllers(controllers: List[BaseController]):
-    for controller in controllers:
-        controller.register()
+from app.config import DataModule, UseCaseModule,  DomainModule, InfraModule, OperatorModule
+from app.entrypoint.operator import OperatorEngine
 
 
 injector = Injector([
     UseCaseModule(),
     DataModule(),
     DomainModule(),
-    InfraModule()
+    InfraModule(),
+    OperatorModule(),
 ])
 
-if __name__ == "main":
-    all_controllers: List[BaseController] = [
-        injector.get(ClusterRuleController),
-    ]
-    register_controllers(all_controllers)
+if __name__ == "__main__":
+    engine: OperatorEngine = injector.get(OperatorEngine)
+    engine.start()
