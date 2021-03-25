@@ -8,6 +8,10 @@ from app.infra.config import Config
 
 
 class InfraModule(Module):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._load_config()
     
     @provider
     @singleton
@@ -17,7 +21,6 @@ class InfraModule(Module):
     @provider
     @singleton
     def provide_core_v1_api(self) -> CoreV1Api:
-        self._load_config()
         return CoreV1Api()
 
     @classmethod

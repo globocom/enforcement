@@ -5,6 +5,7 @@ from app.entrypoint.operator.watcher import Watcher
 from app.entrypoint.operator.engine import OperatorEngine
 from app.entrypoint.operator.event_processor import EventProcessor
 from app.entrypoint.operator.cache import Cache
+from app.infra.config import Config
 
 
 class OperatorModule(Module):
@@ -16,8 +17,8 @@ class OperatorModule(Module):
 
     @provider
     @singleton
-    def provide_watcher(self, event_queue: Queue, cache: Cache) -> Watcher:
-        return Watcher(event_queue=event_queue, cache=cache)
+    def provide_watcher(self, event_queue: Queue, cache: Cache, cfg: Config) -> Watcher:
+        return Watcher(event_queue=event_queue, cache=cache, config=cfg)
 
     @provider
     @singleton
