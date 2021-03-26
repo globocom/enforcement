@@ -46,3 +46,4 @@ class OperatorModule(Module):
     @singleton
     def provide_event_detector(self) -> EventDetector:
         return EventDetector()
+
