@@ -5,6 +5,7 @@ from kubernetes import watch
 from kubernetes.client import CustomObjectsApi
 
 from app.entrypoint.operator.cache import Cache
+from app.entrypoint.operator.event import EventDetector
 from app.infra.config import Config
 
 
@@ -12,6 +13,7 @@ from app.infra.config import Config
 class Watcher:
 
     _event_queue: Queue
+    _event_detector: EventDetector
     _cache: Cache
     _config: Config
 
@@ -33,6 +35,8 @@ class Watcher:
 
         for event in watch.Watch().stream(api.list_namespaced_custom_object, **self._watch_keys):
             print("Event: %s %s %s" % (event["type"], event["object"]["kind"], event['object']["metadata"]["name"]))
-
+            evt = self._event_detector.detect(event)
+            print(evt.type)
         print("Finalizando watcher")
+
 
