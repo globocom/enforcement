@@ -32,24 +32,32 @@ class DetectorRule:
 @attr.s(auto_attribs=True)
 class RemoveDetectorRule(DetectorRule):
     def detect(self, event_map: dict) -> Event:
-        if event_map["type"] == "REMOVED":
+        if event_map["type"] == "DELETED":
             return self.new_event(Type.REMOVE, event_map)
 
         return self.next_rule.detect(event_map)
 
 
 @attr.s(auto_attribs=True)
-class ChangeDetectorRule(DetectorRule):
+class CreateDetectorRule(DetectorRule):
     CREATE_ANNOTATION: ClassVar[str] = "enforcement.created"
 
     def detect(self, event_map: dict) -> Event:
         annotations = event_map["object"]["metadata"]["annotations"]
 
         if event_map["type"] == "ADDED":
-            if self.CREATE_ANNOTATION in annotations:
-                return self.new_event(Type.UPDATE, event_map)
-            else:
+            if self.CREATE_ANNOTATION not in annotations:
                 return self.new_event(Type.CREATE, event_map)
+
+        return self.next_rule.detect(event_map)
+
+
+@attr.s(auto_attribs=True)
+class OnlineUpdateDetectorRule(DetectorRule):
+
+    def detect(self, event_map: dict) -> Event:
+        if event_map["type"] == "MODIFIED":
+            return self.new_event(Type.UPDATE, event_map)
 
         return self.next_rule.detect(event_map)
 
@@ -63,10 +71,12 @@ class EventDetector:
 
     def __init__(self):
         remove_rule = RemoveDetectorRule()
-        change_rule = ChangeDetectorRule()
+        create_rule = CreateDetectorRule()
+        online_update_rule = OnlineUpdateDetectorRule()
 
-        remove_rule.add_next_rule(change_rule)
-        change_rule.add_next_rule(NotFoundDetectRule())
+        remove_rule.add_next_rule(online_update_rule)
+        online_update_rule.add_next_rule(create_rule)
+        create_rule.add_next_rule(NotFoundDetectRule())
 
         self._detectors_chain = remove_rule
 
