@@ -27,14 +27,6 @@ class Config:
     def current_namespace(self) -> str:
         return self._get_config_value('OPERATOR_NAMESPACE', 'operator', 'namespace')
 
-    @property
-    def api_group(self) -> str:
-        return self._get_config_value('OPERATOR_API_GROUP', 'operator', 'group')
-
-    @property
-    def api_version(self) -> str:
-        return self._get_config_value('OPERATOR_API_VERSION', 'operator', 'version')
-
     def _get_config_value(
             self, environemnt_variable_name: str, config_name: str, config_attribute: str,
     ) -> str:
