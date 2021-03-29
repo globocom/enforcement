@@ -2,7 +2,6 @@ from typing import ClassVar, List
 
 import attr
 import kopf
-from injector import inject
 
 from app.entrypoint.operator.controller.base_controller import BaseController
 from app.domain.entities import ClusterRule, ClusterRuleStatus, Cluster, Enforcement
@@ -11,7 +10,6 @@ from app.infra.kubernetes_helper import KubernetesHelper
 from app.infra.config import Config
 
 
-#@inject
 @attr.s(auto_attribs=True)
 class StatusManager:
     _kubernetes_helper: KubernetesHelper
@@ -51,19 +49,13 @@ class StatusManager:
         return status.dict()
 
 
-#@inject
 @attr.s(auto_attribs=True)
 class ClusterRuleController(BaseController):
     _apply_rules_use_case: ApplyRulesUseCase
     _sync_rules_use_case: SyncRulesUseCase
     _update_rules_use_case: UpdateRulesUseCase
     _status_manager: StatusManager
-    KIND: ClassVar[str] = 'clusterrules'
-    ID: ClassVar[str] = "sync/spec.enforcements"
-    BACKOFF: ClassVar[int] = 10
-    SYNC_INTERVAL: ClassVar[int] = 6
-    SYNC_INITIAL_DELAY: ClassVar[int] = 20
-    SYNC_IDLE: ClassVar[int] = 15
+    KIND: ClassVar[str] = "clusterrules"
 
     def update(self, name, old: List[dict], new: List[dict], status: dict, logger, **kwargs):
         if not old:
@@ -146,18 +138,6 @@ class ClusterRuleController(BaseController):
             name,
             self._status_manager.build_status(response)
         )
-
-    def register(self):
-
-        self.register_method(kopf.on.create, self.create, self.KIND,
-                             errors=kopf.ErrorsMode.TEMPORARY, backoff=ClusterRuleController.BACKOFF)
-
-        self.register_method(kopf.on.field, self.update, self.KIND,
-                             field='spec.enforcements', errors=kopf.ErrorsMode.TEMPORARY,
-                             backoff=ClusterRuleController.BACKOFF)
-
-        self.register_method(kopf.on.timer, self.sync, self.KIND,
-                             interval=6, initial_delay=20, idle=15, errors=kopf.ErrorsMode.PERMANENT)
 
     @classmethod
     def _make_enforcement_list(cls, enforcement_map_list) -> List[Enforcement]:
