@@ -1,7 +1,8 @@
 from injector import Injector
 import signal
 
-from app.config import DataModule, UseCaseModule,  DomainModule, InfraModule, OperatorModule
+from app.config import DataModule, UseCaseModule,  DomainModule, InfraModule, OperatorModule, \
+    OperatorControllerModule
 from app.entrypoint.operator import OperatorEngine
 
 
@@ -11,6 +12,7 @@ injector = Injector([
     DomainModule(),
     InfraModule(),
     OperatorModule(),
+    OperatorControllerModule(),
 ])
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@ from app.infra.kubernetes_helper import KubernetesHelper
 from app.infra.config import Config
 
 
-@inject
+#@inject
 @attr.s(auto_attribs=True)
 class StatusManager:
     _kubernetes_helper: KubernetesHelper
@@ -51,7 +51,7 @@ class StatusManager:
         return status.dict()
 
 
-@inject
+#@inject
 @attr.s(auto_attribs=True)
 class ClusterRuleController(BaseController):
     _apply_rules_use_case: ApplyRulesUseCase
@@ -134,8 +134,8 @@ class ClusterRuleController(BaseController):
                 new_status
             )
 
-    def create(self, name, spec: dict, logger, **kwargs):
-        logger.debug(f"create rules for %s", name)
+    def create(self, name, spec: dict, **kwargs):
+        print(f"create rules for {name}")
 
         cluster_rule = ClusterRule(**spec)
 
