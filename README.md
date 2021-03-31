@@ -55,7 +55,7 @@ docker build -t enforcement .
 ## Configuration 
 Enforcement uses the environment variables described in the table below to run locally or in the production and you have
 the option of create a config.ini to configure as well instead variables and last option is use secret to configure you 
-sources(rancher, gke, eks) . You can see the examples below. 
+sources(rancher, gke, eks). You can see the examples below. 
 
 ### Creating an environment variables
  Environment Variable |      Example     |          Description         |
@@ -64,8 +64,6 @@ sources(rancher, gke, eks) . You can see the examples below.
 | ARGO_USERNAME              | admin                                         | Argo Username            |
 | ARGO_PASSWORD              | password                                      | Argo Password            |
 | OPERATOR_NAMESPACE              | argocd                                      | Operator Namespace            |
-| OPERATOR_API_GROUP              | enforcement.globo.com                                      | Operator API Group            |
-| OPERATOR_API_VERSION              | v1beta1                                      | API group version used by Operator            |
 
 ## Supported cluster sources
 Enforcement aims to detect the creation of clusters in several services of managed Kubernetes and cluster orchestration. Currently, the only cluster source supported is Rancher. We are developing support for EKS, GKE and AKS.
