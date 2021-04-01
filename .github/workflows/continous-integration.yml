@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         uses: VaultVulp/action-pipenv@v2.0.1
         with:
-          command: sync -d
+          command: install -d
 
       - name: Run static type tests
         uses: VaultVulp/action-pipenv@v2.0.1
