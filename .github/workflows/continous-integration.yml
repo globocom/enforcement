@@ -21,7 +21,7 @@ jobs:
       - name: Setup pipenv
         uses: dschep/install-pipenv-action@v1
         with:
-          version: 2019.08.13
+          version: 2018.11.26
 
 
       - name: Install dependencies
