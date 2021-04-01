@@ -21,13 +21,15 @@ jobs:
 
       - name: Install dependencies
         uses: VaultVulp/action-pipenv@v2.0.1
-        run: sync -d
+        with:
+          command: sync -d
 
       - name: Run static type tests
         uses: VaultVulp/action-pipenv@v2.0.1
-        run: run mypy ./**/*.py
+        with:
+          command: run mypy ./**/*.py
       
       - name: Run tests
         uses: VaultVulp/action-pipenv@v2.0.1
-        run:  
-          python run coverage run -m unittest discover -s test -v
+        with:
+          command: run coverage run -m unittest discover -s test -v
