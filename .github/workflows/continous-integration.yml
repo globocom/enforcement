@@ -20,6 +20,8 @@ jobs:
 
       - name: Setup pipenv
         uses: dschep/install-pipenv-action@v1
+        with:
+          version: 2020.11.15
 
       - name: Install dependencies
         run: pipenv sync -d
