@@ -1,6 +1,7 @@
 from typing import List
 
 import attr
+from argocd_client import ApiException
 
 from app.domain.cluster_group import ClusterGroup
 from app.domain.entities import Enforcement, Cluster
@@ -40,13 +41,20 @@ class EnforcementInstaller:
             for enforcement in self._enforcements:
                 instance_name = self._make_enforcement_name(cluster, enforcement)
                 if instance_name in installed_enforcements_names:
-                    self._enforcement_repository.remove_enforcement(instance_name)
+                    self._remove_enforcement(instance_name)
 
     def uninstall_project_apps(self):
         for cluster in self._cluster_group.clusters:
             installed_enforcements = self._enforcement_repository.list_project_apps(project_name=cluster.name)
             for enforcement in installed_enforcements:
-                self._enforcement_repository.remove_enforcement(enforcement.name)
+                self._remove_enforcement(enforcement.name)
+
+    def _remove_enforcement(self, enforcement_name):
+        try:
+            self._enforcement_repository.remove_enforcement(enforcement_name)
+        except ApiException as e:
+            if e.status != 404:
+                raise e
 
     @classmethod
     def _get_enforcements_name(cls, enforcements: List[Enforcement]):
