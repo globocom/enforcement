@@ -19,10 +19,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Setup pipenv
-        uses: dschep/install-pipenv-action@v1
-        with:
-          version: 2018.11.26
-
+        uses: VaultVulp/action-pipenv@v2.0.1
 
       - name: Install dependencies
         run: pipenv sync -d
