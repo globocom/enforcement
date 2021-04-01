@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import List
+from argocd_client import ApiException
 
 import attr
 
@@ -25,8 +26,12 @@ class ClusterGroup:
 
     def unregister(self):
         for cluster in self._clusters:
-            self._cluster_repository.unregister_cluster(cluster)
-            self._project_repository.remove_project(cluster.name)
+            try:
+                self._cluster_repository.unregister_cluster(cluster)
+                self._project_repository.remove_project(cluster.name)
+            except ApiException as e:
+                if e.status != 404:
+                    raise e
 
     def __sub__(self, other: ClusterGroup) -> ClusterGroup:
         cluster_names = {cluster.name: cluster for cluster in other.clusters}
