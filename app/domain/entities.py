@@ -56,3 +56,4 @@ class Trigger(BaseModel):
 class Triggers(BaseModel):
     beforeInstall: Trigger = None
     afterInstall: Trigger = None
+
