@@ -27,9 +27,12 @@ class DomainModule(Module):
 
     @provider
     @singleton
-    def provide_enforcement_installer_builder(self,
-                                              enforcement_repository: EnforcementRepository) -> EnforcementInstallerBuilder:
-        return EnforcementInstallerBuilder(enforcement_repository=enforcement_repository)
+    def provide_enforcement_installer_builder(self, enforcement_repository: EnforcementRepository,
+                                              trigger_builder: TriggerBuilder) -> EnforcementInstallerBuilder:
+        return EnforcementInstallerBuilder(
+            enforcement_repository=enforcement_repository,
+            trigger_builder=trigger_builder,
+        )
 
     @provider
     @singleton

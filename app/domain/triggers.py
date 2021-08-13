@@ -1,6 +1,23 @@
-from app.domain.entities import TriggerConfig, TriggersConfig
+from app.domain.entities import TriggerConfig, TriggersConfig, Cluster, Enforcement
 import attr
 from typing import Callable
+
+
+class InstallEvent:
+    def __call__(self, cluster: Cluster, enforcement: Enforcement, success: bool = None) -> dict:
+        event = {
+            "cluster": {
+                "name": cluster.name,
+                "id": cluster.id,
+                "url": cluster.url,
+            },
+            "enforcement": enforcement.dict(),
+        }
+
+        if type(success) != type(None):
+            event["success"] = success
+
+        return event
 
 
 class TriggerService:
@@ -12,7 +29,7 @@ class TriggerService:
 class TriggerBase:
     _trigger_service: TriggerService
 
-    def notify(self, trigger: TriggerConfig) -> Callable:
+    def notify(self, trigger: TriggerConfig) -> Callable[[dict], None]:
         return lambda payload: \
             self._trigger_service.send(trigger=trigger, payload=payload) if trigger else None
 
@@ -21,9 +38,19 @@ class TriggerBase:
 class TriggerBuilder:
     _trigger_base: TriggerBase
 
-    def build_before_install(self, triggers_config: TriggersConfig) -> Callable:
-        return self._trigger_base.notify(trigger=triggers_config.beforeInstall)
+    def build_before_install(self, triggers_config: TriggersConfig) \
+            -> Callable[[Cluster, Enforcement], None]:
+        def trigger(cluster: Cluster, enforcement: Enforcement):
+            event = InstallEvent()
+            sender = self._trigger_base.notify(trigger=triggers_config.beforeInstall)
+            sender(event(cluster, enforcement))
+        return trigger
 
-    def build_after_install(self, triggers_config: TriggersConfig) -> Callable:
-        return self._trigger_base.notify(trigger=triggers_config.afterInstall)
+    def build_after_install(self, triggers_config: TriggersConfig) \
+            -> Callable[[Cluster, Enforcement], None]:
+        def trigger(cluster: Cluster, enforcement: Enforcement):
+            event = InstallEvent()
+            sender = self._trigger_base.notify(trigger=triggers_config.afterInstall)
+            sender(event(cluster, enforcement))
+        return trigger
 

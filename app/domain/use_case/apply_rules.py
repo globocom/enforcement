@@ -4,7 +4,6 @@ from app.domain.cluster_group_builder import ClusterGroupBuilder
 from app.domain.enforcement_installer_builder import EnforcementInstallerBuilder
 from app.domain.entities import ClusterRule
 from app.domain.source_locator import SourceLocator
-from app.domain.triggers import TriggerBuilder
 from app.domain.use_case.responses import RulesResponse
 
 
@@ -13,7 +12,6 @@ class ApplyRulesUseCase:
     _source_locator: SourceLocator
     _cluster_group_builder: ClusterGroupBuilder
     _enforcement_installer_builder: EnforcementInstallerBuilder
-    _trigger_builder: TriggerBuilder
 
     def execute(self, cluster_rule: ClusterRule) -> RulesResponse:
         source = self._source_locator.locate(cluster_rule.source)
