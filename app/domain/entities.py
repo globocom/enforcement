@@ -46,3 +46,13 @@ class ClusterRuleStatus(BaseModel):
 class Secret(BaseModel):
     token: str
     url: str
+
+
+class Trigger(BaseModel):
+    endpoint: str
+    timeout: int = 5
+
+
+class Triggers(BaseModel):
+    beforeInstall: Trigger = None
+    afterInstall: Trigger = None
