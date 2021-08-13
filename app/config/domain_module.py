@@ -4,9 +4,20 @@ from app.domain.cluster_group_builder import ClusterGroupBuilder
 from app.domain.enforcement_change_detector_builder import EnforcementChangeDetectorBuilder
 from app.domain.enforcement_installer_builder import EnforcementInstallerBuilder
 from app.domain.repositories import ClusterRepository, ProjectRepository, EnforcementRepository
+from app.domain.triggers import TriggerBase, TriggerService, TriggerBuilder
 
 
 class DomainModule(Module):
+
+    @provider
+    @singleton
+    def provide_trigger_base(self, trigger_service: TriggerService) -> TriggerBase:
+        return TriggerBase(trigger_service=trigger_service)
+
+    @provider
+    @singleton
+    def provide_trigger_builder(self, trigger_base: TriggerBase) -> TriggerBuilder:
+        return TriggerBuilder(trigger_base=trigger_base)
 
     @provider
     @singleton

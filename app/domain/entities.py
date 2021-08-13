@@ -33,20 +33,20 @@ class Enforcement(BaseModel):
     helm: Helm = None
 
 
-class Trigger(BaseModel):
+class TriggerConfig(BaseModel):
     endpoint: str
     timeout: int = 5
 
 
-class Triggers(BaseModel):
-    beforeInstall: Trigger = None
-    afterInstall: Trigger = None
+class TriggersConfig(BaseModel):
+    beforeInstall: TriggerConfig = None
+    afterInstall: TriggerConfig = None
 
 
 class ClusterRule(BaseModel):
     enforcements: List[Enforcement]
     source: EnforcementSource
-    triggers: Triggers = None
+    triggers: TriggersConfig = None
 
 
 class ClusterRuleStatus(BaseModel):

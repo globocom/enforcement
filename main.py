@@ -2,7 +2,7 @@ from typing import List
 
 from injector import Injector
 
-from app.config import DataModule, UseCaseModule,  DomainModule, InfraModule
+from app.config import DataModule, UseCaseModule,  DomainModule, InfraModule, ServiceModule
 from app.entrypoint.operator import BaseController, ClusterRuleController
 
 
@@ -15,7 +15,8 @@ injector = Injector([
     UseCaseModule(),
     DataModule(),
     DomainModule(),
-    InfraModule()
+    InfraModule(),
+    ServiceModule(),
 ])
 
 if __name__ == "main":
