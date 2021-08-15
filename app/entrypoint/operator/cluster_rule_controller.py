@@ -22,7 +22,7 @@ class ClusterRuleController(BaseController):
     SYNC_INITIAL_DELAY: ClassVar[int] = 20
     SYNC_IDLE: ClassVar[int] = 15
 
-    def update(self, name, old: List[dict], new: List[dict], status: dict, logger, **kwargs):
+    def update(self, name, spec: dict, old: List[dict], new: List[dict], status: dict, logger, **kwargs):
         if not old:
             return
 
@@ -37,10 +37,13 @@ class ClusterRuleController(BaseController):
             for cluster in current_status.clusters
         ]
 
+        cluster_rule = ClusterRule(**spec)
+
         response = self._update_rules_use_case.execute(
             clusters=current_clusters,
             old_enforcements=old_enforcement_list,
             new_enforcements=new_enforcement_list,
+            triggers_config=cluster_rule.triggers,
         )
 
         enforcements_change = [
