@@ -44,7 +44,7 @@ class TriggerBuilder:
             event = InstallEvent()
             sender = self._trigger_base.notify(trigger=triggers_config.beforeInstall)
             sender(event(cluster, enforcement))
-        return trigger
+        return TriggerBuilder.check_trigger(trigger, triggers_config)
 
     def build_after_install(self, triggers_config: TriggersConfig) \
             -> Callable[[Cluster, Enforcement], None]:
@@ -52,5 +52,13 @@ class TriggerBuilder:
             event = InstallEvent()
             sender = self._trigger_base.notify(trigger=triggers_config.afterInstall)
             sender(event(cluster, enforcement))
-        return trigger
+        return TriggerBuilder.check_trigger(trigger, triggers_config)
+
+    @staticmethod
+    def check_trigger(trigger: Callable[[Cluster, Enforcement], None],
+                      triggers_config: TriggersConfig) \
+            -> Callable[[Cluster, Enforcement], None]:
+        return trigger if triggers_config else lambda: None
+
+
 

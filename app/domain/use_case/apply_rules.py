@@ -21,7 +21,8 @@ class ApplyRulesUseCase:
 
         enforcement_installer = self._enforcement_installer_builder.build(
             enforcements=cluster_rule.enforcements,
-            cluster_group=cluster_group
+            cluster_group=cluster_group,
+            triggers_config=cluster_rule.triggers,
         )
 
         enforcement_errors = enforcement_installer.install()

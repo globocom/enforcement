@@ -15,7 +15,7 @@ class EnforcementInstallerBuilder:
     _trigger_builder: TriggerBuilder
 
     def build(self, enforcements: List[Enforcement], cluster_group: ClusterGroup,
-              triggers_config: TriggersConfig) -> EnforcementInstaller:
+              triggers_config: TriggersConfig = None) -> EnforcementInstaller:
 
         before_install_trigger = self._trigger_builder.build_before_install(triggers_config)
         after_install_trigger = self._trigger_builder.build_after_install(triggers_config)
