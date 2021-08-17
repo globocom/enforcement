@@ -31,6 +31,7 @@ class Enforcement(BaseModel):
     path: str = None
     namespace: str = "default"
     helm: Helm = None
+    labels: dict = None
 
 
 class ClusterRule(BaseModel):

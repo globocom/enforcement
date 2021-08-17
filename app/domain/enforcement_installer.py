@@ -19,8 +19,11 @@ class EnforcementInstaller:
 
         enforcements_error: List[Enforcement] = []
 
+        installed_enforcements = self._enforcement_repository.list_installed_enforcements()
+        enforcements_by_cluster = EnforcementInstaller._make_enforcements_by_cluster(installed_enforcements)
+
         for cluster in self._cluster_group.clusters:
-            installed_enforcements = self._enforcement_repository.list_installed_enforcements(cluster_name=cluster.name)
+            installed_enforcements = enforcements_by_cluster.get(cluster.name, [])
             installed_enforcements_names = self._get_enforcements_name(installed_enforcements)
             for enforcement in self._enforcements:
                 instance_name = self._make_enforcement_name(cluster, enforcement)
@@ -63,3 +66,13 @@ class EnforcementInstaller:
     @classmethod
     def _make_enforcement_name(cls, cluster: Cluster, enforcement: Enforcement) -> str:
         return f"{cluster.name}-{enforcement.name}"
+
+    @classmethod
+    def _make_enforcements_by_cluster(cls, enforcements) -> dict:
+        by_cluster: dict = {}
+        for enforcement in enforcements:
+            cluster_name = enforcement.labels.get("cluster_name")
+            if not cluster_name:
+                continue
+            by_cluster[cluster_name] = by_cluster.get(cluster_name, []) + [enforcement]
+        return by_cluster
