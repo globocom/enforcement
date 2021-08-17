@@ -104,6 +104,30 @@ spec:
 ```
 The rancher.filters, rancher.labels and rancher.ignore fields are specific to Rancher. Other cluster sources may have other values. You can get all the examples of ClusterRules objects [here](https://github.com/globocom/enforcement-service/tree/master/examples/sourcers).
 
+## Triggers
+
+You can configure triggers to be notified every time enforcement is installed on a cluster. Triggers are HTTP requests that Enforcement will make every time a package is installed on some cluster selected by cluster rule.
+
+```yaml
+apiVersion: enforcement.globo.com/v1beta1
+kind: ClusterRule
+metadata:
+  name: dev-rule #Rule name
+spec:
+    - name: guestbook #Name
+      repo: https://github.com/argoproj/argocd-example-apps #Git repository
+      path: guestbook #Package folder within the repository
+  source:
+    rancher: {}
+  triggers:
+    beforeInstall:
+      endpoint: http://myendpoint.com/before
+      timeout: 5 #Optional. 5 seconds is the default
+    afterInstall:
+      endpoint: http://myendpoint.com/after
+      timeout: 15 #Optional. 5 seconds is the default
+```
+
 ### Creating a Secret
 
 Enforcement obtains the credentials to connect to the cluster source through a secret that must be previously created.
