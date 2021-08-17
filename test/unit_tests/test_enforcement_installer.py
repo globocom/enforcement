@@ -27,7 +27,9 @@ class enforcementInstallerTestCase(TestCase):
         enforcement_installer = EnforcementInstaller(
             enforcements=[self.enforcement],
             cluster_group=self.cluster_group,
-            enforcement_repository=self.enforcement_repository
+            enforcement_repository=self.enforcement_repository,
+            before_install_trigger=lambda cluster, enforcement: None,
+            after_install_trigger=lambda cluster,enforcement: None
         )
 
         enforcement_installer.install()
@@ -52,7 +54,9 @@ class enforcementInstallerTestCase(TestCase):
         enforcement_installer = EnforcementInstaller(
             enforcements=[self.enforcement],
             cluster_group=self.cluster_group,
-            enforcement_repository=self.enforcement_repository
+            enforcement_repository=self.enforcement_repository,
+            before_install_trigger=lambda cluster, enforcement: None,
+            after_install_trigger=lambda cluster, enforcement: None
         )
 
         enforcement_installer.install()
@@ -77,7 +81,9 @@ class enforcementInstallerTestCase(TestCase):
         enforcement_installer = EnforcementInstaller(
             enforcements=[self.enforcement],
             cluster_group=self.cluster_group,
-            enforcement_repository=self.enforcement_repository
+            enforcement_repository=self.enforcement_repository,
+            before_install_trigger=lambda cluster, enforcement: None,
+            after_install_trigger=lambda cluster, enforcement: None
         )
 
         enforcement_installer.uninstall()
