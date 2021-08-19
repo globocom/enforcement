@@ -7,6 +7,7 @@ from app.domain.cluster_group import ClusterGroup
 from app.domain.entities import Enforcement, Cluster
 from app.domain.repositories import EnforcementRepository
 from app.domain.exceptions import EnforcementInvalidException
+from app.domain.enforcement_dynamic_mapper import EnforcementDynamicMapper
 
 
 @attr.s(auto_attribs=True)
@@ -14,6 +15,7 @@ class EnforcementInstaller:
     _enforcements: List[Enforcement]
     _cluster_group: ClusterGroup
     _enforcement_repository: EnforcementRepository
+    _enforcement_dynamic_mapper: EnforcementDynamicMapper
 
     def install(self) -> List[Enforcement]:
 
@@ -25,6 +27,7 @@ class EnforcementInstaller:
             for enforcement in self._enforcements:
                 instance_name = self._make_enforcement_name(cluster, enforcement)
                 try:
+                    enforcement = self._enforcement_dynamic_mapper.mapper(cluster, enforcement)
                     if instance_name not in installed_enforcements_names:
                         self._enforcement_repository.create_enforcement(cluster.name, instance_name, enforcement)
                     else:
