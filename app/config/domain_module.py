@@ -4,9 +4,15 @@ from app.domain.cluster_group_builder import ClusterGroupBuilder
 from app.domain.enforcement_change_detector_builder import EnforcementChangeDetectorBuilder
 from app.domain.enforcement_installer_builder import EnforcementInstallerBuilder
 from app.domain.repositories import ClusterRepository, ProjectRepository, EnforcementRepository
+from app.domain.enforcement_dynamic_mapper import EnforcementDynamicMapper
 
 
 class DomainModule(Module):
+
+    @provider
+    @singleton
+    def provide_enforcement_dynamic_mapper(self) -> EnforcementDynamicMapper:
+        return EnforcementDynamicMapper()
 
     @provider
     @singleton
@@ -17,8 +23,12 @@ class DomainModule(Module):
     @provider
     @singleton
     def provide_enforcement_installer_builder(self,
-                                              enforcement_repository: EnforcementRepository) -> EnforcementInstallerBuilder:
-        return EnforcementInstallerBuilder(enforcement_repository=enforcement_repository)
+                                              enforcement_repository: EnforcementRepository,
+                                              enforcement_dynamic_mapper: EnforcementDynamicMapper) -> EnforcementInstallerBuilder:
+        return EnforcementInstallerBuilder(
+            enforcement_repository=enforcement_repository,
+            enforcement_dynamic_mapper=enforcement_dynamic_mapper
+        )
 
     @provider
     @singleton
