@@ -25,9 +25,9 @@ class EnforcementInstaller:
             installed_enforcements = self._enforcement_repository.list_installed_enforcements(cluster_name=cluster.name)
             installed_enforcements_names = self._get_enforcements_name(installed_enforcements)
             for enforcement in self._enforcements:
-                instance_name = self._make_enforcement_name(cluster, enforcement)
                 try:
                     enforcement = self._enforcement_dynamic_mapper(cluster, enforcement)
+                    instance_name = self._make_enforcement_name(cluster, enforcement)
                     if instance_name not in installed_enforcements_names:
                         self._enforcement_repository.create_enforcement(cluster.name, instance_name, enforcement)
                     else:
