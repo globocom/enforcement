@@ -10,6 +10,7 @@ from app.domain.entities import ClusterRule, Cluster, EnforcementSource, Enforce
 from app.domain.repositories import EnforcementRepository, ClusterRepository, ProjectRepository, SourceRepository
 from app.domain.source_locator import SourceLocator
 from app.domain.use_case import ApplyRulesUseCase
+from app.domain.enforcement_dynamic_mapper import EnforcementDynamicMapper
 
 
 class ApplyRulesTestCase(TestCase):
@@ -37,7 +38,8 @@ class ApplyRulesTestCase(TestCase):
             enforcements=[], source=EnforcementSource())
 
         self.enforcement_installer_builder = EnforcementInstallerBuilder(
-            enforcement_repository=self.enforcement_repository
+            enforcement_repository=self.enforcement_repository,
+            enforcement_dynamic_mapper=EnforcementDynamicMapper(),
         )
         self.enforcement_installer = EnforcementInstaller(
             enforcements=[self.enforcement],
