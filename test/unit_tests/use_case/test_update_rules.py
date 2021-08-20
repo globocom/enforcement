@@ -15,6 +15,7 @@ from app.domain.enforcement_dynamic_mapper import EnforcementDynamicMapper
 
 class UpdateRulesTestCase(TestCase):
     def setUp(self) -> None:
+        self.dynamic_mapper = EnforcementDynamicMapper()
         self.cluster_repository = ClusterRepository()
         self.project_repository = ProjectRepository()
         self.enforcement_repository = EnforcementRepository()
@@ -44,7 +45,8 @@ class UpdateRulesTestCase(TestCase):
         self.enforcement_installer = EnforcementInstaller(
             enforcements=[self.enforcement],
             cluster_group=self.cluster_group,
-            enforcement_repository=self.enforcement_repository
+            enforcement_repository=self.enforcement_repository,
+            enforcement_dynamic_mapper=self.dynamic_mapper,
         )
 
         self.enforcement_change_detector_builder = EnforcementChangeDetectorBuilder()
