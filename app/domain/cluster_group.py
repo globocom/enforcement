@@ -25,8 +25,11 @@ class ClusterGroup:
 
         for cluster in self._clusters:
             if cluster.name not in cluster_saved_names:
-                self._cluster_repository.register_cluster(cluster)
-                self._project_repository.create_project(cluster)
+                try:
+                    self._cluster_repository.register_cluster(cluster)
+                    self._project_repository.create_project(cluster)
+                finally:
+                    continue
 
     def unregister(self):
         for cluster in self._clusters:
