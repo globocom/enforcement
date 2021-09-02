@@ -5,11 +5,13 @@ from app.domain.cluster_group import ClusterGroup
 from app.domain.enforcement_installer import EnforcementInstaller
 from app.domain.entities import Enforcement, Cluster
 from app.domain.repositories import EnforcementRepository, ClusterRepository, ProjectRepository
+from app.domain.enforcement_dynamic_mapper import EnforcementDynamicMapper
 
 
 class enforcementInstallerTestCase(TestCase):
     def setUp(self) -> None:
         self.enforcement_repository = EnforcementRepository()
+        self.enforcement_dynamic_mapper = EnforcementDynamicMapper()
         self.enforcement = Enforcement(name='test', repo='somewhere')
         self.cluster_repository = ClusterRepository()
         self.project_repository = ProjectRepository()
@@ -27,7 +29,8 @@ class enforcementInstallerTestCase(TestCase):
         enforcement_installer = EnforcementInstaller(
             enforcements=[self.enforcement],
             cluster_group=self.cluster_group,
-            enforcement_repository=self.enforcement_repository
+            enforcement_repository=self.enforcement_repository,
+            enforcement_dynamic_mapper=EnforcementDynamicMapper(),
         )
 
         enforcement_installer.install()
@@ -52,7 +55,8 @@ class enforcementInstallerTestCase(TestCase):
         enforcement_installer = EnforcementInstaller(
             enforcements=[self.enforcement],
             cluster_group=self.cluster_group,
-            enforcement_repository=self.enforcement_repository
+            enforcement_repository=self.enforcement_repository,
+            enforcement_dynamic_mapper=EnforcementDynamicMapper(),
         )
 
         enforcement_installer.install()
@@ -77,7 +81,8 @@ class enforcementInstallerTestCase(TestCase):
         enforcement_installer = EnforcementInstaller(
             enforcements=[self.enforcement],
             cluster_group=self.cluster_group,
-            enforcement_repository=self.enforcement_repository
+            enforcement_repository=self.enforcement_repository,
+            enforcement_dynamic_mapper=EnforcementDynamicMapper(),
         )
 
         enforcement_installer.uninstall()

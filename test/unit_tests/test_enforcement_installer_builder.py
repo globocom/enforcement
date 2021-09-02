@@ -5,10 +5,12 @@ from app.domain.enforcement_installer import EnforcementInstaller
 from app.domain.enforcement_installer_builder import EnforcementInstallerBuilder
 from app.domain.entities import Enforcement, Cluster
 from app.domain.repositories import EnforcementRepository, ClusterRepository, ProjectRepository
+from app.domain.enforcement_dynamic_mapper import EnforcementDynamicMapper
 
 
 class EnforcementInstallerBuilderTestCase(TestCase):
     def setUp(self) -> None:
+        self.dynamic_mapper = EnforcementDynamicMapper()
         self.enforcement_repository = EnforcementRepository()
         self.enforcement = Enforcement(name='test', repo='somewhere')
         self.cluster_repository = ClusterRepository()
@@ -23,24 +25,30 @@ class EnforcementInstallerBuilderTestCase(TestCase):
         self.enforcement_installer = EnforcementInstaller(
             enforcements=[self.enforcement],
             cluster_group=self.cluster_group,
-            enforcement_repository=self.enforcement_repository
+            enforcement_repository=self.enforcement_repository,
+            enforcement_dynamic_mapper=self.dynamic_mapper,
         )
 
     def test_build(self) -> None:
+
+        dynamic_mapper = EnforcementDynamicMapper()
+
         enforcement_installer_builder = EnforcementInstallerBuilder(
-            enforcement_repository=self.enforcement_repository
+            enforcement_repository=self.enforcement_repository,
+            enforcement_dynamic_mapper=self.dynamic_mapper,
         )
 
         enforcement_installer = enforcement_installer_builder.build(
             enforcements=[self.enforcement],
-            cluster_group=self.cluster_group
+            cluster_group=self.cluster_group,
         )
 
         self.assertEqual(self.enforcement_installer, enforcement_installer)
 
     def test_build_throws_exception_required_argument(self) -> None:
         enforcement_installer_builder = EnforcementInstallerBuilder(
-            enforcement_repository=self.enforcement_repository
+            enforcement_repository=self.enforcement_repository,
+            enforcement_dynamic_mapper=self.dynamic_mapper,
         )
         
         with self.assertRaises(Exception) as context:

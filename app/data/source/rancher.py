@@ -54,6 +54,7 @@ class RancherDatasource(BaseSource):
             id=cluster_map['id'],
             token=self.secret.token,
             url=f'{self.secret.url}/k8s/clusters/{cluster_map["id"]}',
+            additional_data=cluster_map,
         )
 
 

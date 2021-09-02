@@ -8,6 +8,7 @@ class Cluster(BaseModel):
     url: str
     token: str
     id: str
+    additional_data: dict = dict()
 
 
 class Helm(BaseModel):
