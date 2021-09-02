@@ -104,6 +104,50 @@ spec:
 ```
 The rancher.filters, rancher.labels and rancher.ignore fields are specific to Rancher. Other cluster sources may have other values. You can get all the examples of ClusterRules objects [here](https://github.com/globocom/enforcement-service/tree/master/examples/sourcers).
 
+A ClusterRule also supports dynamic configurations using the Jinja expression language. You can create dynamic models 
+using cluster fields returned by cluster source, or any other valid Python code.
+
+```yaml
+apiVersion: enforcement.globo.com/v1beta1
+kind: ClusterRule
+metadata:
+  name: dynamic-rule
+spec:
+  enforcements: 
+      #The variable name references the cluster name defined in the Cluster source.
+    - name: ${% if name=='cluster1' %} guestbook-cluster1 ${% else %} guestbook-other ${% endif %} 
+      repo: https://github.com/argoproj/argocd-example-apps #Git repository
+      path: helm-guestbook 
+      namespace: ${{ name }} #Cluster name
+      helm:
+        parameters: 
+          replicaCount: ${{ 2*5 }}
+          clusterURL: ${{ url }} #Cluster URL
+  source:
+    rancher: {}
+```
+The ***name***, ***url*** and ***id*** fields are available for all cluster sources, however there are also specific fields for each 
+Cluster source, see the list [here](https://github.com/globocom/enforcement-service/tree/master/examples/dynamic-fields).
+
+You can also configure your ClusterRule using HTTP request returns using the Python [requests](https://docs.python-requests.org/en/master/) library.
+
+```yaml
+apiVersion: enforcement.globo.com/v1beta1
+kind: ClusterRule
+metadata:
+  name: dynamic-rule
+spec:
+  enforcements: 
+    - name: guestbook
+      repo: https://github.com/argoproj/argocd-example-apps 
+      path: helm-guestbook 
+      helm:
+        parameters: 
+          uuid: ${{ requests.get('https://httpbin.org/uuid').json()['uuid'] }}
+  source:
+    rancher: {}
+```
+
 ### Creating a Secret
 
 Enforcement obtains the credentials to connect to the cluster source through a secret that must be previously created.
