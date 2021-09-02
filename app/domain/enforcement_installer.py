@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Callable
 
 import attr
 from argocd_client import ApiException
@@ -16,6 +16,8 @@ class EnforcementInstaller:
     _cluster_group: ClusterGroup
     _enforcement_repository: EnforcementRepository
     _enforcement_dynamic_mapper: EnforcementDynamicMapper
+    _before_install_trigger: Callable[[Cluster, Enforcement], None]
+    _after_install_trigger: Callable[[Cluster, Enforcement], None]
 
     def install(self) -> List[Enforcement]:
 
@@ -32,7 +34,9 @@ class EnforcementInstaller:
                     enforcement = self._enforcement_dynamic_mapper(cluster, enforcement)
                     instance_name = self._make_enforcement_name(cluster, enforcement)
                     if instance_name not in installed_enforcements_names:
+                        self._before_install_trigger(cluster, enforcement)
                         self._enforcement_repository.create_enforcement(cluster.name, instance_name, enforcement)
+                        self._after_install_trigger(cluster, enforcement)
                     else:
                         self._enforcement_repository.update_enforcement(cluster.name, instance_name, enforcement)
                 except EnforcementInvalidException:

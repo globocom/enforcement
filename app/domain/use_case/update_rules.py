@@ -5,7 +5,7 @@ from app.domain.cluster_group_builder import ClusterGroupBuilder
 from app.domain.enforcement_change_detector import EnforcementChangeDetector
 from app.domain.enforcement_change_detector_builder import EnforcementChangeDetectorBuilder
 from app.domain.enforcement_installer_builder import EnforcementInstallerBuilder
-from app.domain.entities import Cluster, Enforcement
+from app.domain.entities import Cluster, Enforcement, TriggersConfig
 
 from app.domain.use_case.responses import UpdateRulesResponse
 
@@ -17,7 +17,7 @@ class UpdateRulesUseCase:
     _enforcement_change_detector_builder: EnforcementChangeDetectorBuilder
 
     def execute(self, clusters: List[Cluster], old_enforcements: List[Enforcement],
-                new_enforcements: List[Enforcement]) -> UpdateRulesResponse:
+                new_enforcements: List[Enforcement], triggers_config: TriggersConfig) -> UpdateRulesResponse:
 
         if not clusters:
             return UpdateRulesResponse()
@@ -28,7 +28,8 @@ class UpdateRulesUseCase:
         )
 
         removed_enforcements = self._uninstall_removed_enforcements(change_detector, clusters)
-        add_errors, install_enforcements = self._install_added_enforcements(change_detector, clusters)
+        add_errors, install_enforcements = self._install_added_enforcements(change_detector,
+                                                                            clusters, triggers_config)
         update_errors, update_enforcements = self._update_change_enforcements(change_detector, clusters)
 
         return UpdateRulesResponse(
@@ -57,7 +58,9 @@ class UpdateRulesUseCase:
         return enforcement_installer.install(), change_enforcements
 
     def _install_added_enforcements(self, change_detector: EnforcementChangeDetector,
-                                    clusters: List[Cluster]) -> (List[Enforcement], List[Enforcement]):
+                                    clusters: List[Cluster], triggers_config: TriggersConfig) \
+            -> (List[Enforcement], List[Enforcement]):
+
         added_enforcements = change_detector.detect_new_enforcements()
 
         if not added_enforcements:
@@ -69,7 +72,8 @@ class UpdateRulesUseCase:
 
         enforcement_installer = self._enforcement_installer_builder.build(
             cluster_group=cluster_group_remove_enfocement,
-            enforcements=added_enforcements
+            enforcements=added_enforcements,
+            triggers_config=triggers_config,
         )
 
         return enforcement_installer.install(), added_enforcements

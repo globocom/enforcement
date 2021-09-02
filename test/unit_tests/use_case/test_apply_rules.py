@@ -1,6 +1,5 @@
-from typing import List
 from unittest import TestCase
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from app.domain.cluster_group import ClusterGroup
 from app.domain.cluster_group_builder import ClusterGroupBuilder
@@ -38,15 +37,22 @@ class ApplyRulesTestCase(TestCase):
         self.cluster_rule = ClusterRule(
             enforcements=[], source=EnforcementSource())
 
+        trigger_builder = MagicMock()
+        trigger_builder.build_before_install = MagicMock(return_value=lambda enf, cluster: None)
+        trigger_builder.build_after_install = MagicMock(return_value=lambda enf, cluster: None)
+
         self.enforcement_installer_builder = EnforcementInstallerBuilder(
             enforcement_repository=self.enforcement_repository,
             enforcement_dynamic_mapper=EnforcementDynamicMapper(),
+            trigger_builder=trigger_builder,
         )
         self.enforcement_installer = EnforcementInstaller(
             enforcements=[self.enforcement],
             cluster_group=self.cluster_group,
             enforcement_repository=self.enforcement_repository,
             enforcement_dynamic_mapper=self.dynamic_mapper,
+            before_install_trigger=lambda a1, a2: None,
+            after_install_trigger=lambda a1, a2: None,
         )
 
     def test_execute(self) -> None:
@@ -64,7 +70,7 @@ class ApplyRulesTestCase(TestCase):
         apply_rules = ApplyRulesUseCase(
             source_locator=self.source_locator,
             cluster_group_builder=self.cluster_group_builder,
-            enforcement_installer_builder=self.enforcement_installer_builder
+            enforcement_installer_builder=self.enforcement_installer_builder,
         )
 
         response = apply_rules.execute(self.cluster_rule)

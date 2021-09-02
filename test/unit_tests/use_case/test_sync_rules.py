@@ -35,9 +35,14 @@ class SyncRulesTestCase(TestCase):
         self.cluster_rule = ClusterRule(
             enforcements=[], source=EnforcementSource())
 
+        trigger_builder = MagicMock()
+        trigger_builder.build_before_install = MagicMock(return_value=lambda enf, cluster: None)
+        trigger_builder.build_after_install = MagicMock(return_value=lambda enf, cluster: None)
+
         self.enforcement_installer_builder = EnforcementInstallerBuilder(
             enforcement_repository=self.enforcement_repository,
             enforcement_dynamic_mapper=EnforcementDynamicMapper(),
+            trigger_builder=trigger_builder
         )
 
         self.enforcement_installer = EnforcementInstaller(
@@ -45,6 +50,8 @@ class SyncRulesTestCase(TestCase):
             cluster_group=self.cluster_group,
             enforcement_repository=self.enforcement_repository,
             enforcement_dynamic_mapper=self.dynamic_mapper,
+            before_install_trigger=lambda a1, a2: None,
+            after_install_trigger=lambda a1, a2: None,
         )
 
     def test_execute(self) -> None:

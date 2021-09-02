@@ -35,9 +35,20 @@ class Enforcement(BaseModel):
     labels: dict = None
 
 
+class TriggerConfig(BaseModel):
+    endpoint: str
+    timeout: int = 5
+
+
+class TriggersConfig(BaseModel):
+    beforeInstall: TriggerConfig = None
+    afterInstall: TriggerConfig = None
+
+
 class ClusterRule(BaseModel):
     enforcements: List[Enforcement]
     source: EnforcementSource
+    triggers: TriggersConfig = None
 
 
 class ClusterRuleStatus(BaseModel):
@@ -48,3 +59,5 @@ class ClusterRuleStatus(BaseModel):
 class Secret(BaseModel):
     token: str
     url: str
+
+

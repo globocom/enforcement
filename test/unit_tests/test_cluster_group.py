@@ -15,7 +15,8 @@ class ClusterGroupTestCase(TestCase):
 
     @patch('app.domain.repositories.ProjectRepository.create_project')
     @patch('app.domain.repositories.ClusterRepository.register_cluster')
-    def test_register(self, mock_register_cluster, mock_create_project) -> None:
+    @patch('app.domain.repositories.ClusterRepository.list_clusters_info')
+    def test_register(self, mock_register_cluster, mock_create_project, mock_list_clusters_info) -> None:
         cluster_group = ClusterGroup(
             clusters=[self.cluster],
             cluster_repository=self.cluster_repository,
@@ -25,9 +26,8 @@ class ClusterGroupTestCase(TestCase):
         cluster_group.register()
 
         self.assertTrue(mock_register_cluster.called)
-        self.assertEqual(mock_register_cluster.call_args[0][0], self.cluster)
+        self.assertTrue(mock_list_clusters_info.called)
         self.assertTrue(mock_create_project.called)
-        self.assertEqual(mock_create_project.call_args[0][0], self.cluster)
 
     @patch('app.domain.repositories.ProjectRepository.remove_project')
     @patch('app.domain.repositories.ClusterRepository.unregister_cluster')

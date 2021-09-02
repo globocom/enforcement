@@ -31,6 +31,8 @@ class enforcementInstallerTestCase(TestCase):
             cluster_group=self.cluster_group,
             enforcement_repository=self.enforcement_repository,
             enforcement_dynamic_mapper=EnforcementDynamicMapper(),
+            before_install_trigger=lambda cluster, enforcement: None,
+            after_install_trigger=lambda cluster,enforcement: None
         )
 
         enforcement_installer.install()
@@ -57,6 +59,8 @@ class enforcementInstallerTestCase(TestCase):
             cluster_group=self.cluster_group,
             enforcement_repository=self.enforcement_repository,
             enforcement_dynamic_mapper=EnforcementDynamicMapper(),
+            before_install_trigger=lambda cluster, enforcement: None,
+            after_install_trigger=lambda cluster, enforcement: None
         )
 
         enforcement_installer.install()
@@ -83,6 +87,8 @@ class enforcementInstallerTestCase(TestCase):
             cluster_group=self.cluster_group,
             enforcement_repository=self.enforcement_repository,
             enforcement_dynamic_mapper=EnforcementDynamicMapper(),
+            before_install_trigger=lambda cluster, enforcement: None,
+            after_install_trigger=lambda cluster, enforcement: None
         )
 
         enforcement_installer.uninstall()

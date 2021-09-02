@@ -1,4 +1,5 @@
 from unittest import TestCase
+from unittest.mock import MagicMock
 
 from app.domain.cluster_group import ClusterGroup
 from app.domain.enforcement_installer import EnforcementInstaller
@@ -22,6 +23,9 @@ class EnforcementInstallerBuilderTestCase(TestCase):
             cluster_repository=self.cluster_repository,
             project_repository=self.project_repository
         )
+
+        self.trigger_function = lambda enf, cluster: None
+
         self.enforcement_installer = EnforcementInstaller(
             enforcements=[self.enforcement],
             cluster_group=self.cluster_group,
@@ -30,12 +34,14 @@ class EnforcementInstallerBuilderTestCase(TestCase):
         )
 
     def test_build(self) -> None:
-
-        dynamic_mapper = EnforcementDynamicMapper()
+        trigger_builder = MagicMock()
+        trigger_builder.build_before_install = MagicMock(return_value=self.trigger_function)
+        trigger_builder.build_after_install = MagicMock(return_value=self.trigger_function)
 
         enforcement_installer_builder = EnforcementInstallerBuilder(
             enforcement_repository=self.enforcement_repository,
             enforcement_dynamic_mapper=self.dynamic_mapper,
+            trigger_builder=trigger_builder,
         )
 
         enforcement_installer = enforcement_installer_builder.build(
@@ -46,9 +52,14 @@ class EnforcementInstallerBuilderTestCase(TestCase):
         self.assertEqual(self.enforcement_installer, enforcement_installer)
 
     def test_build_throws_exception_required_argument(self) -> None:
+        trigger_builder = MagicMock()
+        trigger_builder.build_before_install = MagicMock(return_value=self.trigger_function)
+        trigger_builder.build_after_install = MagicMock(return_value=self.trigger_function)
+
         enforcement_installer_builder = EnforcementInstallerBuilder(
             enforcement_repository=self.enforcement_repository,
             enforcement_dynamic_mapper=self.dynamic_mapper,
+            trigger_builder=trigger_builder
         )
         
         with self.assertRaises(Exception) as context:
