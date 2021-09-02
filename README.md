@@ -127,7 +127,7 @@ spec:
     rancher: {}
 ```
 The ***name***, ***url*** and ***id*** fields are available for all cluster sources, however there are also specific fields for each 
-Cluster source, see the list [here](https://github.com/globocom/enforcement-service/tree/master/examples/dynamic).
+Cluster source, see the list [here](https://github.com/globocom/enforcement-service/tree/master/examples/dynamic.md).
 
 You can also configure your ClusterRule using HTTP request returns using the Python [requests](https://docs.python-requests.org/en/master/) library.
 
