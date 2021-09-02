@@ -23,7 +23,6 @@ displayName: ${{appliedSpec['displayName']}}
 rancherAgent: ${{agentImage}}
 creator: ${{creatorId}}
 kubernetesVersion: ${{amazonElasticContainerServiceConfig['kubernetesVersion']}}
-
 ```
 
 See Rancher API ***/v3/clusters/[clusterID]*** for all available fields.
