@@ -20,9 +20,13 @@ class ClusterGroup:
         return self._clusters
 
     def register(self):
+        clusters_saved = self._cluster_repository.list_clusters_info()
+        cluster_saved_names = [cluster["name"] for cluster in clusters_saved]
+
         for cluster in self._clusters:
-            self._cluster_repository.register_cluster(cluster)
-            self._project_repository.create_project(cluster)
+            if cluster.name not in cluster_saved_names:
+                self._cluster_repository.register_cluster(cluster)
+                self._project_repository.create_project(cluster)
 
     def unregister(self):
         for cluster in self._clusters:
