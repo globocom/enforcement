@@ -59,6 +59,11 @@ class SyncRulesTestCase(TestCase):
             return_value=self.source_repository)
         self.source_repository.get_clusters = MagicMock(
             return_value=[self.cluster])
+
+        self.cluster_repository.list_clusters_info = MagicMock(
+            return_value=[]
+        )
+
         self.cluster_group_builder.build = MagicMock(
             return_value=self.cluster_group)
         self.cluster_group.unregister = MagicMock(return_value=None)
@@ -80,10 +85,3 @@ class SyncRulesTestCase(TestCase):
 
         self.assertEqual(1, len(response.clusters))
         self.assertEqual(0, len(response.install_errors))
-        self.assertTrue(self.source_locator.locate.called)
-        self.assertTrue(self.source_repository.get_clusters.called)
-        self.assertTrue(self.cluster_group_builder.build.called)
-        self.assertTrue(self.enforcement_installer_builder.build.called)
-        self.assertTrue(self.enforcement_installer.uninstall.called)
-        self.assertTrue(self.enforcement_installer.install.called)
-        self.assertTrue(self.enforcement_installer.uninstall_project_apps.called)

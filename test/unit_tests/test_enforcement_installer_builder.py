@@ -31,6 +31,8 @@ class EnforcementInstallerBuilderTestCase(TestCase):
             cluster_group=self.cluster_group,
             enforcement_repository=self.enforcement_repository,
             enforcement_dynamic_mapper=self.dynamic_mapper,
+            before_install_trigger=self.trigger_function,
+            after_install_trigger=self.trigger_function,
         )
 
     def test_build(self) -> None:
