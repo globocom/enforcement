@@ -63,3 +63,14 @@ class EnforcementInstaller:
     @classmethod
     def _make_enforcement_name(cls, cluster: Cluster, enforcement: Enforcement) -> str:
         return f"{cluster.name}-{enforcement.name}"
+
+    @classmethod
+    def _make_enforcement_by_cluster(cls, enforcements) -> dict:
+        by_cluster: dict = {}
+        for enforcement in enforcements:
+            cluster_name = enforcement.labels.get("cluster_name")
+            if not cluster_name:
+                continue
+            by_cluster[cluster_name] = by_cluster.get(cluster_name, []) + [enforcement]
+        return by_cluster
+
