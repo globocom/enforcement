@@ -58,7 +58,7 @@ class TriggerBuilder:
     def check_trigger(trigger: Callable[[Cluster, Enforcement], None],
                       triggers_config: TriggersConfig) \
             -> Callable[[Cluster, Enforcement], None]:
-        return trigger if triggers_config else lambda: None
+        return trigger if triggers_config else lambda c, e: None
 
 
 
