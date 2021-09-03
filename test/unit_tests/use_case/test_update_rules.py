@@ -10,10 +10,13 @@ from app.domain.enforcement_installer_builder import EnforcementInstallerBuilder
 from app.domain.entities import ClusterRule, Cluster, EnforcementSource, Enforcement
 from app.domain.repositories import EnforcementRepository, ClusterRepository, ProjectRepository
 from app.domain.use_case import UpdateRulesUseCase
+from app.domain.enforcement_dynamic_mapper import EnforcementDynamicMapper
+from app.domain.triggers import TriggersConfig
 
 
 class UpdateRulesTestCase(TestCase):
     def setUp(self) -> None:
+        self.dynamic_mapper = EnforcementDynamicMapper()
         self.cluster_repository = ClusterRepository()
         self.project_repository = ProjectRepository()
         self.enforcement_repository = EnforcementRepository()
@@ -35,14 +38,23 @@ class UpdateRulesTestCase(TestCase):
         self.cluster_rule = ClusterRule(
             enforcements=[self.enforcement], source=EnforcementSource())
 
+        trigger_builder = MagicMock()
+        trigger_builder.build_before_install = MagicMock(return_value=lambda enf, cluster: None)
+        trigger_builder.build_after_install = MagicMock(return_value=lambda enf, cluster: None)
+
         self.enforcement_installer_builder = EnforcementInstallerBuilder(
-            enforcement_repository=self.enforcement_repository
+            enforcement_repository=self.enforcement_repository,
+            enforcement_dynamic_mapper=EnforcementDynamicMapper(),
+            trigger_builder=trigger_builder,
         )
 
         self.enforcement_installer = EnforcementInstaller(
             enforcements=[self.enforcement],
             cluster_group=self.cluster_group,
-            enforcement_repository=self.enforcement_repository
+            enforcement_repository=self.enforcement_repository,
+            enforcement_dynamic_mapper=self.dynamic_mapper,
+            before_install_trigger=lambda a1, a2: None,
+            after_install_trigger=lambda a1, a2: None,
         )
 
         self.enforcement_change_detector_builder = EnforcementChangeDetectorBuilder()
@@ -70,7 +82,8 @@ class UpdateRulesTestCase(TestCase):
         response = update_rules_use_case.execute(
             clusters=[self.cluster],
             old_enforcements=[self.old_enforcement],
-            new_enforcements=[self.new_enforcement]
+            new_enforcements=[self.new_enforcement],
+            triggers_config=TriggersConfig(),
         )
 
         self.assertEqual(0, len(response.clusters))

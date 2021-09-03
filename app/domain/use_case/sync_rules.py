@@ -25,7 +25,7 @@ class SyncRulesUseCase:
         deleted_clusters = current_cluster_group - source_cluster_group
         enforcement_uninstall = self._enforcement_installer_builder.build(
             cluster_group=deleted_clusters,
-            enforcements=cluster_rule.enforcements
+            enforcements=cluster_rule.enforcements,
         )
 
         enforcement_uninstall.uninstall()
@@ -37,7 +37,8 @@ class SyncRulesUseCase:
 
         enforcement_installer = self._enforcement_installer_builder.build(
             cluster_group=new_clusters,
-            enforcements=cluster_rule.enforcements
+            enforcements=cluster_rule.enforcements,
+            triggers_config=cluster_rule.triggers,
         )
 
         enforcement_installer.install()

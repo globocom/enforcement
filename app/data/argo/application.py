@@ -132,5 +132,6 @@ class ApplicationService(EnforcementRepository):
             name=application.metadata.name,
             repo=application.spec.source.repo_url,
             path=application.spec.source.path,
-            helm=helm
+            helm=helm,
+            labels=application.metadata.labels or []
         )
