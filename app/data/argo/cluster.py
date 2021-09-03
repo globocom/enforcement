@@ -21,7 +21,7 @@ class ClusterService(ClusterRepository):
         argo_clusters: V1alpha1ClusterList = self._cluster_service.list()
 
         info = [
-            {"name": item.name, "url": item.server}
+            {"name": item.name, "url": item.server, "connection": item.connection_state.status}
             for item in argo_clusters.items if item.name != 'in-cluster'
         ]
 

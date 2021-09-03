@@ -1,12 +1,15 @@
 from __future__ import annotations
 
-from typing import List
+from typing import List, Dict
 from argocd_client import ApiException
 
 import attr
 
 from app.domain.entities import Cluster
 from app.domain.repositories import ClusterRepository, ProjectRepository
+
+
+CLUSTER_FAILED_STATE = "Failed"
 
 
 @attr.s(auto_attribs=True)
@@ -21,15 +24,24 @@ class ClusterGroup:
 
     def register(self):
         clusters_saved = self._cluster_repository.list_clusters_info()
+        clusters_health = self._get_clusters_health(clusters_saved)
+
         cluster_saved_names = [cluster["name"] for cluster in clusters_saved]
+        clusters_healthy = []
 
         for cluster in self._clusters:
             if cluster.name not in cluster_saved_names:
                 try:
                     self._cluster_repository.register_cluster(cluster)
                     self._project_repository.create_project(cluster)
+                    clusters_healthy.append(cluster)
                 finally:
                     continue
+            else:
+                if clusters_health.get(cluster.name) != CLUSTER_FAILED_STATE:
+                    clusters_healthy.append(cluster)
+
+        self._clusters = clusters_healthy
 
     def unregister(self):
         for cluster in self._clusters:
@@ -39,6 +51,10 @@ class ClusterGroup:
             except ApiException as e:
                 if e.status != 404:
                     raise e
+
+    @classmethod
+    def _get_clusters_health(cls, clusters: List[Dict[str, str]]) -> Dict[str, str]:
+        return {cluster['name']: cluster['connection'] for cluster in clusters}
 
     def __sub__(self, other: ClusterGroup) -> ClusterGroup:
         cluster_names = {cluster.name: cluster for cluster in other.clusters}
