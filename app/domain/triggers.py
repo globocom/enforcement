@@ -14,7 +14,7 @@ class InstallEvent:
             "enforcement": enforcement.dict(),
         }
 
-        if type(success) != type(None):
+        if not isinstance(success, type(None)):
             event["success"] = success
 
         return event
