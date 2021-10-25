@@ -12,7 +12,7 @@ class RancherDatasource(BaseSource):
             "Authorization": f"Bearer {self.secret.token}"
         }
 
-        filters: dict = self.source.rancher.filters if self.source.rancher.filters else dict()
+        filters: dict = self.source.rancher.filters or dict()
 
         if filters.get('state'):
             del filters['state']
