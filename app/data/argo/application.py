@@ -72,7 +72,7 @@ class ApplicationService(EnforcementRepository):
         return self._make_enforcements(application_list)
 
     def _make_enforcements(self, application_list: V1alpha1ApplicationList) -> List[Enforcement]:
-        applications: List[V1alpha1Application] = application_list.items if application_list.items else []
+        applications: List[V1alpha1Application] = application_list.items or []
 
         return [
             self._make_enforcement_by_application(application)
