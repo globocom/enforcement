@@ -30,7 +30,7 @@ class Config:
     def _get_config_value(
             self, environemnt_variable_name: str, config_name: str, config_attribute: str,
     ) -> str:
-        return (
-                os.getenv(environemnt_variable_name)
-                or self._config.get(config_name, config_attribute)
+        return os.getenv(
+            environemnt_variable_name,
+            default=self._config.get(config_name, config_attribute)
         )
