@@ -15,7 +15,7 @@ class BaseSource(SourceRepository):
     secret: Secret
 
     def get_secret(self) -> Secret:
-        secret_name = self.source.secretName if self.source.secretName is not None else self.source_name
+        secret_name = self.source.secretName or self.source_name
         return self.kubernetes_helper.get_secret(secret_name)
 
     def __attrs_post_init__(self):
