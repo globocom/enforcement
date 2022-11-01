@@ -57,7 +57,7 @@ Enforcement uses the environment variables described in the table below to run l
 the option of create a config.ini to configure as well instead variables and last option is use secret to configure you 
 sources(rancher, gke, eks). You can see the examples below. 
 
-### Creating an environment variables
+### Creating environment variables
  Environment Variable |      Example     |          Description         |
 |:--------------------:|:----------------:|:----------------------------:|
  | ARGO_URL                   | https://myargourl.domain.com                  | Argo URL          |
